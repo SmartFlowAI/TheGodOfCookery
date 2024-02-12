@@ -24,6 +24,7 @@ markdown==3.3.7
 pysqlite3-binary
 accelerate==0.24.1
 huggingface_hub
+langchain==0.0.292
 
 #--extra-index-url https://download.pytorch.org/whl/cu117
 #torch==1.13.1+cu117
