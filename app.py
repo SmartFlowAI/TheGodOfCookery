@@ -32,8 +32,8 @@ from langchain.memory import ConversationBufferMemory
 
 from rag.LLM import CookMasterLLM
 
-embed_model_dir = "/home/zhanghui/models/m3e-base"
-llm_model_dir = "/home/zhanghui/models/zhanghuiATchina/zhangxiaobai_shishen2_full"
+embed_model_dir = "/home/xlab-app-center/models/m3e-base"
+llm_model_dir = "/home/xlab-app-center/models/zhanghuiATchina/zhangxiaobai_shishen2_full"
 
 
 logger = logging.get_logger(__name__)
