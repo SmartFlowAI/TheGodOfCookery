@@ -142,7 +142,7 @@ def combine_history(prompt):
     return total_prompt
 
 
-async def main():
+def main():
     # torch.cuda.empty_cache()
     print("load model begin.")
     # model, tokenizer = load_model()
