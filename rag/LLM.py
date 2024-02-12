@@ -17,7 +17,7 @@ from transformers import AutoTokenizer, AutoModelForCausalLM
 import torch
 
 
-class InternLM_LLM(LLM):
+class CookMasterLLM(LLM):
     # 基于本地 InternLM 自定义 LLM 类
     tokenizer: AutoTokenizer = None
     model: AutoModelForCausalLM = None
@@ -36,10 +36,7 @@ class InternLM_LLM(LLM):
               run_manager: Optional[CallbackManagerForLLMRun] = None,
               **kwargs: Any):
         # 重写调用函数
-        system_prompt = """You are an AI assistant whose name is InternLM (书生·浦语).
-                        - InternLM (书生·浦语) is a conversational language model that is developed by Shanghai AI Laboratory (上海人工智能实验室). It is designed to be helpful, honest, and harmless.
-                        - InternLM (书生·浦语) can understand and communicate fluently in the language chosen by the user such as English and 中文.
-                        """
+        system_prompt = "您是一个厨师，熟悉很多菜的制作方法。用户会问你哪些菜怎么制作，您可以用自己的专业知识答复他。回答的内容一般包含两块：这道菜需要哪些食材，这道菜具体是怎么做出来的。如果用户没有问菜谱相关的问题，就提醒他对菜谱的相关问题进行提问。"
         messages = [(system_prompt, '')]
         response, history = self.model.chat(self.tokenizer, prompt, history=messages)
         return response

@@ -7,21 +7,33 @@ Please refer to these links below for more information:
     3. transformers: https://github.com/huggingface/transformers
 """
 
-from dataclasses import asdict
+# from dataclasses import asdict
+
+import sys
 
 from modelscope import AutoModelForCausalLM, AutoTokenizer
 #from modelscope import GenerationConfig
 
 import streamlit as st
 import torch
-import re  
+# import re  
 #from transformers import AutoModelForCausalLM, AutoTokenizer
 from transformers.utils import logging
 
 from tools.transformers.interface import GenerationConfig, generate_interactive
+from langchain.embeddings.huggingface import HuggingFaceEmbeddings
+from langchain.prompts import PromptTemplate
+from langchain.vectorstores import Chroma
+from langchain.chains import ConversationalRetrievalChain
+from langchain.memory import ConversationBufferMemory
+
+from rag.LLM import CookMasterLLM
 
 logger = logging.get_logger(__name__)
 
+__import__('pysqlite3')
+
+sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
 
 def on_btn_click():
     del st.session_state.messages
@@ -29,14 +41,65 @@ def on_btn_click():
 
 @st.cache_resource
 def load_model():
+    model_dir = "zhanghuiATchina/zhangxiaobai_shishen2_full"
+
     model = (
-        AutoModelForCausalLM.from_pretrained("zhanghuiATchina/zhangxiaobai_shishen2_full", trust_remote_code=True)
+        AutoModelForCausalLM.from_pretrained(model_dir, trust_remote_code=True)
         .to(torch.bfloat16)
         .cuda()
     )
-    tokenizer = AutoTokenizer.from_pretrained("zhanghuiATchina/zhangxiaobai_shishen2_full", trust_remote_code=True)
+    tokenizer = AutoTokenizer.from_pretrained(model_dir, trust_remote_code=True)
     return model, tokenizer
 
+@st.cache_resource
+def load_chain():
+    # model paths 
+    llm_model_dir = "zhanghuiATchina/zhangxiaobai_shishen2_full"
+    embed_model_dir = "/home/xlab-app-center/models/m3e-base"
+
+    # 加载问答链
+    # 定义 Embeddings
+    embeddings = HuggingFaceEmbeddings(model_name=embed_model_dir)
+
+    # 向量数据库持久化路径
+    persist_directory = './rag/database'
+
+    # 加载数据库
+    vectordb = Chroma(
+        persist_directory=persist_directory,  # 允许我们将persist_directory目录保存到磁盘上
+        embedding_function=embeddings
+    )
+
+    llm = CookMasterLLM(model_path=llm_model_dir)
+
+    # template = """使用以下上下文以及提供的知识库来回答用户的问题。如果你不知道答案，就说你不知道。总是使用中文回答。
+    # 问题: {question}
+    # 可参考的上下文：
+    # ···
+    # {context}
+    # ···
+    # 如果给定的上下文无法让你做出回答，请回答你不知道。
+    # 有用的回答:"""
+
+    # QA_CHAIN_PROMPT = PromptTemplate(input_variables=["context", "question"],
+    #                                  template=template)
+    # create memory
+
+    memory = ConversationBufferMemory(
+    memory_key="chat_history", # 与 prompt 的输入变量保持一致。
+    return_messages=True # 将以消息列表的形式返回聊天记录，而不是单个字符串
+)
+    # 运行 chain
+
+    chain = ConversationalRetrievalChain.from_llm(
+        llm,
+        retriever=vectordb.as_retriever(
+            search_type="similarity", search_kwargs={"k": 3}
+        ),
+        memory=memory
+        
+    )
+    return chain
 
 def prepare_generation_config():
     with st.sidebar:
@@ -73,10 +136,11 @@ def combine_history(prompt):
     return total_prompt
 
 
-def main():
+async def main():
     # torch.cuda.empty_cache()
     print("load model begin.")
-    model, tokenizer = load_model()
+    # model, tokenizer = load_model()
+    chain = load_chain()
     print("load model end.")
 
     user_avator = "images/user.png"
@@ -119,17 +183,22 @@ def main():
             # Generate robot response
             with st.chat_message("robot", avatar=robot_avator):
                 message_placeholder = st.empty()
-                for cur_response in generate_interactive(
-                    model=model,
-                    tokenizer=tokenizer,
-                    prompt=real_prompt,
-                    # additional_eos_token_id=103028,
-                    additional_eos_token_id=92542,
-                    **asdict(generation_config),
-                ):
-                    # Display robot response in chat message container
-                    cur_response = cur_response.replace('\\n', '\n')
+                # for cur_response in generate_interactive(
+                #     model=model,
+                #     tokenizer=tokenizer,
+                #     prompt=real_prompt,
+                #     # additional_eos_token_id=103028,
+                #     additional_eos_token_id=92542,
+                #     **asdict(generation_config),
+                # ):
+                #     # Display robot response in chat message container
+                #     cur_response = cur_response.replace('\\n', '\n')
+                #     message_placeholder.markdown(cur_response + "▌")
+                for cur_response in chain.astream({"question": prompt,"chat_history": real_prompt}):
+                    cur_response = cur_response['answer'].replace('\\n', '\n')
                     message_placeholder.markdown(cur_response + "▌")
+
+
                 message_placeholder.markdown(cur_response)
             # Add robot response to chat history
             st.session_state.messages.append({"role": "robot", "content": cur_response, "avatar": robot_avator})
