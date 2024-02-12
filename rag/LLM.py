@@ -13,15 +13,15 @@
 from langchain.llms.base import LLM
 from typing import Any, List, Optional
 from langchain.callbacks.manager import CallbackManagerForLLMRun
-# from transformers import AutoTokenizer, AutoModelForCausalLM
-from modelscope import AutoModelForCausalLM, AutoTokenizer
+from transformers import AutoTokenizer, AutoModelForCausalLM
+# from modelscope import AutoModelForCausalLM, AutoTokenizer
 import torch
 
 
 class CookMasterLLM(LLM):
     # 基于本地 InternLM 自定义 LLM 类
-    tokenizer = None
-    model = None
+    tokenizer: AutoTokenizer = None
+    model: AutoModelForCausalLM = None
 
     def __init__(self, model_path: str):
         # model_path: InternLM 模型路径
@@ -44,7 +44,7 @@ class CookMasterLLM(LLM):
 
     @property
     def _llm_type(self) -> str:
-        return "InternLM"
+        return "InternLM2"
 
 
 # if __name__ == "__main__":
