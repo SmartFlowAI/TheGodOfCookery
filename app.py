@@ -13,7 +13,7 @@ import sys
 
 # from modelscope import AutoModelForCausalLM, AutoTokenizer
 #from modelscope import GenerationConfig
-import os
+# import os
 import streamlit as st
 import torch
 # import re  
@@ -26,9 +26,9 @@ from langchain.embeddings.huggingface import HuggingFaceEmbeddings
 from langchain.vectorstores import Chroma
 from langchain.chains import ConversationalRetrievalChain
 from langchain.memory import ConversationBufferMemory
-from modelscope import snapshot_download
+# from modelscope import snapshot_download
 from rag.LLM import CookMasterLLM
-
+from download import model_dir
 
 logger = logging.get_logger(__name__)
 
@@ -36,10 +36,10 @@ __import__('pysqlite3')
 
 sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
 
-model_dir = snapshot_download('zhanghuiATchina/zhangxiaobai_shishen2_full', cache_dir='/home/xlab-app-center/models')
-os.environ['HF_ENDPOINT'] = 'https://hf-mirror.com'
-os.system('huggingface-cli download --resume-download moka-ai/m3e-base '
-          '--local-dir /home/xlab-app-center/models/m3e-base')
+# model_dir = snapshot_download('zhanghuiATchina/zhangxiaobai_shishen2_full', cache_dir='/home/xlab-app-center/models')
+# os.environ['HF_ENDPOINT'] = 'https://hf-mirror.com'
+# os.system('huggingface-cli download --resume-download moka-ai/m3e-base '
+#           '--local-dir /home/xlab-app-center/models/m3e-base')
 
 def on_btn_click():
     del st.session_state.messages
