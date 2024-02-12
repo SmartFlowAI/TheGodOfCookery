@@ -5,4 +5,4 @@ model_dir = snapshot_download('zhanghuiATchina/zhangxiaobai_shishen2_full', cach
 os.environ['HF_ENDPOINT'] = 'https://hf-mirror.com'
 
 os.system('huggingface-cli download --resume-download moka-ai/m3e-base '
-          '--local-dir /home/xlab-app-center/models/m3e-base')
+          '--local-dir /home/xlab-app-center/models/m3e-base --local-dir-use-symlinks False')
