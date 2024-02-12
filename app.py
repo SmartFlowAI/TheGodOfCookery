@@ -18,7 +18,7 @@ import re
 #from transformers import AutoModelForCausalLM, AutoTokenizer
 from transformers.utils import logging
 
-from tools.transformers.interface import GenerationConfig, generate_interactive
+from tools.transformers.interface import GenerationConfig, generate_interactive, generate_interactive_rag
 
 logger = logging.get_logger(__name__)
 
@@ -26,6 +26,7 @@ logger = logging.get_logger(__name__)
 def on_btn_click():
     del st.session_state.messages
 
+enable_rag = None
 
 @st.cache_resource
 def load_model():
@@ -44,6 +45,9 @@ def prepare_generation_config():
         #top_p = st.slider("Top P", 0.0, 1.0, 0.8, step=0.01)
         #temperature = st.slider("Temperature", 0.0, 1.0, 0.7, step=0.01)
         st.button("Clear Chat History", on_click=on_btn_click)
+        global enable_rag
+        enable_rag = st.checkbox("Enable RAG")
+
 
     #generation_config = GenerationConfig(max_length=max_length, top_p=top_p, temperature=temperature)
     generation_config = GenerationConfig(max_length=max_length, top_p=0.8, temperature=0.8, repetition_penalty=1.002)
@@ -79,8 +83,8 @@ def main():
     model, tokenizer = load_model()
     print("load model end.")
 
-    user_avator = "images/user.png"
-    robot_avator = "images/robot.png"
+    user_avatar = "images/user.png"
+    robot_avatar = "images/robot.png"
 
     st.title("食神2——菜谱小助手 by 张小白")
 
@@ -102,37 +106,45 @@ def main():
         contains_keywords = any(keyword in prompt for keyword in keywords)
 
         # Display user message in chat message container
-        with st.chat_message("user", avatar=user_avator):
+        with st.chat_message("user", avatar=user_avatar):
             st.markdown(prompt)
         real_prompt = combine_history(prompt)
 
         # Add user message to chat history
-        st.session_state.messages.append({"role": "user", "content": prompt, "avatar": user_avator})
+        st.session_state.messages.append({"role": "user", "content": prompt, "avatar": user_avatar})
 
         # If keywords are not present, display a prompt message immediately
         if not contains_keywords:
-            with st.chat_message("robot", avatar=robot_avator):
+            with st.chat_message("robot", avatar=robot_avatar):
                 st.markdown("我是食神周星星的唯一传人张小白，我什么菜都会做，包括黑暗料理，您可以问我什么菜怎么做———比如酸菜鱼怎么做？，我会告诉你具体的做法。")
             # Add robot response to chat history
-            st.session_state.messages.append({"role": "robot", "content": "我是食神周星星的唯一传人张小白，我什么菜都会做，包括黑暗料理，您可以问我什么菜怎么做———比如酸菜鱼怎么做？，我会告诉你具体的做法。", "avatar": robot_avator})
+            st.session_state.messages.append({"role": "robot", "content": "我是食神周星星的唯一传人张小白，我什么菜都会做，包括黑暗料理，您可以问我什么菜怎么做———比如酸菜鱼怎么做？，我会告诉你具体的做法。", "avatar": robot_avatar})
         else:
             # Generate robot response
-            with st.chat_message("robot", avatar=robot_avator):
+            with st.chat_message("robot", avatar=robot_avatar):
                 message_placeholder = st.empty()
-                for cur_response in generate_interactive(
+                if enable_rag:
+                    generator = generate_interactive_rag(
+                        model=model,
+                        tokenizer=tokenizer,
+                        prompt=prompt,
+                        history=real_prompt
+                    )
+                else:
+                    generator = generate_interactive(
                     model=model,
                     tokenizer=tokenizer,
                     prompt=real_prompt,
                     # additional_eos_token_id=103028,
                     additional_eos_token_id=92542,
                     **asdict(generation_config),
-                ):
-                    # Display robot response in chat message container
+                )
+                for cur_response in generator:
                     cur_response = cur_response.replace('\\n', '\n')
                     message_placeholder.markdown(cur_response + "▌")
                 message_placeholder.markdown(cur_response)
             # Add robot response to chat history
-            st.session_state.messages.append({"role": "robot", "content": cur_response, "avatar": robot_avator})
+            st.session_state.messages.append({"role": "robot", "content": cur_response, "avatar": robot_avatar})
             torch.cuda.empty_cache()
 
 
