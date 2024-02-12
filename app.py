@@ -11,9 +11,9 @@ Please refer to these links below for more information:
 
 import sys
 
-from modelscope import AutoModelForCausalLM, AutoTokenizer
+# from modelscope import AutoModelForCausalLM, AutoTokenizer
 #from modelscope import GenerationConfig
-
+import os
 import streamlit as st
 import torch
 # import re  
@@ -26,8 +26,9 @@ from langchain.embeddings.huggingface import HuggingFaceEmbeddings
 from langchain.vectorstores import Chroma
 from langchain.chains import ConversationalRetrievalChain
 from langchain.memory import ConversationBufferMemory
-
+from modelscope import snapshot_download
 from rag.LLM import CookMasterLLM
+
 
 logger = logging.get_logger(__name__)
 
@@ -35,26 +36,31 @@ __import__('pysqlite3')
 
 sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
 
+model_dir = snapshot_download('zhanghuiATchina/zhangxiaobai_shishen2_full', cache_dir='/home/xlab-app-center/models')
+os.environ['HF_ENDPOINT'] = 'https://hf-mirror.com'
+os.system('huggingface-cli download --resume-download moka-ai/m3e-base '
+          '--local-dir /home/xlab-app-center/models/m3e-base')
+
 def on_btn_click():
     del st.session_state.messages
 
 
-@st.cache_resource
-def load_model():
-    model_dir = "zhanghuiATchina/zhangxiaobai_shishen2_full"
+# @st.cache_resource
+# def load_model():
+#     model_dir = "zhanghuiATchina/zhangxiaobai_shishen2_full"
 
-    model = (
-        AutoModelForCausalLM.from_pretrained(model_dir, trust_remote_code=True)
-        .to(torch.bfloat16)
-        .cuda()
-    )
-    tokenizer = AutoTokenizer.from_pretrained(model_dir, trust_remote_code=True)
-    return model, tokenizer
+#     model = (
+#         AutoModelForCausalLM.from_pretrained(model_dir, trust_remote_code=True)
+#         .to(torch.bfloat16)
+#         .cuda()
+#     )
+#     tokenizer = AutoTokenizer.from_pretrained(model_dir, trust_remote_code=True)
+#     return model, tokenizer
 
 @st.cache_resource
 def load_chain():
     # model paths 
-    llm_model_dir = "zhanghuiATchina/zhangxiaobai_shishen2_full"
+    llm_model_dir = model_dir
     embed_model_dir = "/home/xlab-app-center/models/m3e-base"
 
     # 加载问答链
