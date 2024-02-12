@@ -28,7 +28,9 @@ from langchain.chains import ConversationalRetrievalChain
 from langchain.memory import ConversationBufferMemory
 # from modelscope import snapshot_download
 from rag.LLM import CookMasterLLM
-from download import model_dir
+
+
+model_dir = '/home/xlab-app-center/models/zhanghuiATchina/zhangxiaobai_shishen2_full'
 
 logger = logging.get_logger(__name__)
 
