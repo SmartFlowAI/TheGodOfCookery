@@ -23,13 +23,13 @@ class CookMasterLLM(LLM):
     tokenizer: AutoTokenizer = None
     model: AutoModelForCausalLM = None
 
-    def __init__(self, tokenizer, model):
+    def __init__(self, model_path: str):
         # model_path: InternLM 模型路径
         # 从本地初始化模型
         super().__init__()
         print("正在从本地加载模型...")
-        self.tokenizer = tokenizer
-        self.model = model
+        self.tokenizer = AutoTokenizer.from_pretrained(model_path, trust_remote_code=True)
+        self.model = AutoModelForCausalLM.from_pretrained(model_path, trust_remote_code=True).to(torch.bfloat16).cuda()
         self.model = self.model.eval()
         print("完成本地模型的加载")
 
@@ -37,7 +37,8 @@ class CookMasterLLM(LLM):
               run_manager: Optional[CallbackManagerForLLMRun] = None,
               **kwargs: Any):
         # 重写调用函数
-        system_prompt = "您是一个厨师，熟悉很多菜的制作方法。用户会问你哪些菜怎么制作，您可以用自己的专业知识答复他。回答的内容一般包含两块：这道菜需要哪些食材，这道菜具体是怎么做出来的。如果用户没有问菜谱相关的问题，就提醒他对菜谱的相关问题进行提问。"
+        system_prompt = "您是一个厨师，熟悉很多菜的制作方法。用户会问你哪些菜怎么制作，您可以用自己的专业知识答复他。回答的内容一般包含两块：这道菜需要哪些食材，这道菜具体是
+怎么做出来的。如果用户没有问菜谱相关的问题，就提醒他对菜谱的相关问题进行提问。"
         messages = [(system_prompt, '')]
         response, history = self.model.chat(self.tokenizer, prompt, history=messages)
         return response
@@ -45,6 +46,7 @@ class CookMasterLLM(LLM):
     @property
     def _llm_type(self) -> str:
         return "InternLM2"
+
 
 
 # if __name__ == "__main__":
