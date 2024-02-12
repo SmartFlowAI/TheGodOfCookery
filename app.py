@@ -22,7 +22,7 @@ from transformers.utils import logging
 
 from tools.transformers.interface import GenerationConfig, generate_interactive
 from langchain.embeddings.huggingface import HuggingFaceEmbeddings
-from langchain.prompts import PromptTemplate
+# from langchain.prompts import PromptTemplate
 from langchain.vectorstores import Chroma
 from langchain.chains import ConversationalRetrievalChain
 from langchain.memory import ConversationBufferMemory
