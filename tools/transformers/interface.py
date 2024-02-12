@@ -9,11 +9,9 @@ from transformers.generation.utils import LogitsProcessorList, StoppingCriteriaL
 from transformers.utils import logging
 
 from langchain.embeddings.huggingface import HuggingFaceEmbeddings
-# from langchain.prompts import PromptTemplate
 from langchain.vectorstores import Chroma
 from langchain.chains import ConversationalRetrievalChain
 from langchain.memory import ConversationBufferMemory
-# from modelscope import snapshot_download
 from rag.LLM import CookMasterLLM
 
 logger = logging.get_logger(__name__)
@@ -142,7 +140,8 @@ def generate_interactive(
             break
 @torch.inference_mode()
 async def generate_interactive_rag(
-    llm,
+    model,
+    tokenizer,
     prompt, 
     history
 ):
@@ -183,7 +182,7 @@ async def generate_interactive_rag(
     return_messages=True # 将以消息列表的形式返回聊天记录，而不是单个字符串
 )
     # 运行 chain
-
+    llm = CookMasterLLM(model=model, tokenizer=tokenizer)
     chain = ConversationalRetrievalChain.from_llm(
         llm,
         retriever=vectordb.as_retriever(
