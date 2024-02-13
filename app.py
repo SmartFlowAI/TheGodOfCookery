@@ -31,6 +31,7 @@ from langchain.chains import RetrievalQA
 from langchain.memory import ConversationBufferMemory
 
 from rag.LLM import CookMasterLLM
+from parse_cur_response import return_final_md
 
 embed_model_dir = "/home/xlab-app-center/models/m3e-base"
 llm_model_dir = "/home/xlab-app-center/models/zhanghuiATchina/zhangxiaobai_shishen2_full"
@@ -196,7 +197,11 @@ def main():
                     # Display robot response in chat message container
                     #cur_response = cur_response.replace('\\n', '\n')
                     #message_placeholder.markdown(cur_response + "▌")
+
+                # deal with cur response to get better markdown format
+                cur_response = return_final_md(cur_response)
                 message_placeholder.markdown(cur_response)
+    
             # Add robot response to chat history
             st.session_state.messages.append({"role": "robot", "content": cur_response, "avatar": robot_avator})
             torch.cuda.empty_cache()
