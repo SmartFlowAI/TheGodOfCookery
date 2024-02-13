@@ -3,6 +3,7 @@ transformers==4.35.2
 sentencepiece==0.1.99 
 accelerate==0.24.1
 streamlit==1.25.0
+google-auth>=1.0.1
 numpy
 tqdm
 psutil
