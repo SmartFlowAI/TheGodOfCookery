@@ -28,8 +28,8 @@ def return_final_md(cur_response):
     ingredients_raw, _ = ingredients_raw.split("按")
 
     # Evaluating the strings to lists
-    ingredients_list = eval(ingredients_raw)
-    steps_list = eval(steps_raw)
+    ingredients_list = eval(ingredients_raw.strip())
+    steps_list = eval(steps_raw.strip())
 
     # Define the recipe name for the markdown output
     recipe_name = "您的菜谱"
