@@ -15,7 +15,6 @@ pytest
 packaging
 boto3
 botocore
-torch-scatter
 pyecharts
 tiktoken
 chromadb==0.4.15
@@ -26,6 +25,11 @@ pysqlite3-binary
 accelerate==0.24.1
 huggingface_hub
 langchain==0.0.292
+# speech 
+openai-whisper
+streamlit-audiorecorder
+
+
 
 #--extra-index-url https://download.pytorch.org/whl/cu117
 #torch==1.13.1+cu117
