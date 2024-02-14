@@ -1,0 +1,3 @@
+.vscode
+rag/__pycache__
+tools/transformers/__pycache__
