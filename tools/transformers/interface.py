@@ -12,10 +12,59 @@ from langchain.embeddings.huggingface import HuggingFaceEmbeddings
 from langchain.vectorstores import Chroma
 from langchain.chains import ConversationalRetrievalChain
 from langchain.memory import ConversationBufferMemory
+from langchain_core.output_parsers import StrOutputParser
 from rag.LLM import CookMasterLLM
 
 logger = logging.get_logger(__name__)
 
+def _load_chain(model, tokenizer):
+    # model paths 
+    # llm_model_dir = model_dir
+    embed_model_dir = "$HOME/models/m3e-base"
+
+    # 加载问答链
+    # 定义 Embeddings
+    embeddings = HuggingFaceEmbeddings(model_name=embed_model_dir)
+
+    # 向量数据库持久化路径
+    persist_directory = './rag/database'
+
+    # 加载数据库
+    vectordb = Chroma(
+        persist_directory=persist_directory,  # 允许我们将persist_directory目录保存到磁盘上
+        embedding_function=embeddings
+    )
+
+    # llm = CookMasterLLM(model_path=llm_model_dir)
+
+    # template = """使用以下上下文以及提供的知识库来回答用户的问题。如果你不知道答案，就说你不知道。总是使用中文回答。
+    # 问题: {question}
+    # 可参考的上下文：
+    # ···
+    # {context}
+    # ···
+    # 如果给定的上下文无法让你做出回答，请回答你不知道。
+    # 有用的回答:"""
+
+    # QA_CHAIN_PROMPT = PromptTemplate(input_variables=["context", "question"],
+    #                                  template=template)
+    # create memory
+
+    memory = ConversationBufferMemory(
+    memory_key="chat_history", # 与 prompt 的输入变量保持一致。
+    return_messages=True # 将以消息列表的形式返回聊天记录，而不是单个字符串
+)
+    # 运行 chain
+    llm = CookMasterLLM(model=model, tokenizer=tokenizer)
+    chain = ConversationalRetrievalChain.from_llm(
+        llm,
+        retriever=vectordb.as_retriever(
+            search_type="similarity", search_kwargs={"k": 3}
+        ),
+        memory=memory
+        
+    )
+    return chain
 
 @dataclass
 class GenerationConfig:
@@ -139,59 +188,23 @@ def generate_interactive(
         if unfinished_sequences.max() == 0 or stopping_criteria(input_ids, scores):
             break
 @torch.inference_mode()
-async def generate_interactive_rag(
+def generate_interactive_rag_stream(
     model,
     tokenizer,
     prompt, 
     history
 ):
-     # model paths 
-    # llm_model_dir = model_dir
-    embed_model_dir = "/home/xlab-app-center/models/m3e-base"
+    chain = _load_chain(model=model, tokenizer=tokenizer)
+    chain = chain | StrOutputParser()
+    for cur_response in chain.stream({"question": prompt,"chat_history": history}):
+        yield cur_response
 
-    # 加载问答链
-    # 定义 Embeddings
-    embeddings = HuggingFaceEmbeddings(model_name=embed_model_dir)
-
-    # 向量数据库持久化路径
-    persist_directory = './rag/database'
-
-    # 加载数据库
-    vectordb = Chroma(
-        persist_directory=persist_directory,  # 允许我们将persist_directory目录保存到磁盘上
-        embedding_function=embeddings
-    )
-
-    # llm = CookMasterLLM(model_path=llm_model_dir)
-
-    # template = """使用以下上下文以及提供的知识库来回答用户的问题。如果你不知道答案，就说你不知道。总是使用中文回答。
-    # 问题: {question}
-    # 可参考的上下文：
-    # ···
-    # {context}
-    # ···
-    # 如果给定的上下文无法让你做出回答，请回答你不知道。
-    # 有用的回答:"""
-
-    # QA_CHAIN_PROMPT = PromptTemplate(input_variables=["context", "question"],
-    #                                  template=template)
-    # create memory
-
-    memory = ConversationBufferMemory(
-    memory_key="chat_history", # 与 prompt 的输入变量保持一致。
-    return_messages=True # 将以消息列表的形式返回聊天记录，而不是单个字符串
-)
-    # 运行 chain
-    llm = CookMasterLLM(model=model, tokenizer=tokenizer)
-    chain = ConversationalRetrievalChain.from_llm(
-        llm,
-        retriever=vectordb.as_retriever(
-            search_type="similarity", search_kwargs={"k": 3}
-        ),
-        memory=memory
-        
-    )
-
-    async for cur_response in chain.astream({"question": prompt,"chat_history": history}):
-        yield cur_response['answer']
-
+@torch.inference_mode()
+def generate_interactive_rag(
+    model,
+    tokenizer,
+    prompt, 
+    history
+):
+    chain = _load_chain(model=model, tokenizer=tokenizer)
+    return chain({"question": prompt,"chat_history": history})['answer']

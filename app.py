@@ -17,6 +17,7 @@ from transformers.utils import logging
 
 from tools.transformers.interface import (GenerationConfig,
                                           generate_interactive,
+                                          generate_interactive_rag_stream,
                                           generate_interactive_rag)
 from whisper_app import run_whisper
 
@@ -24,6 +25,7 @@ logger = logging.get_logger(__name__)
 
 # global variables
 enable_rag = None
+streaming = None
 user_avatar = "images/user.png"
 robot_avatar = "images/robot.png"
 user_prompt = "<|User|>:{user}\n"
@@ -41,15 +43,6 @@ def on_btn_click():
     Args:
         无
 
-    Returns:
-        无
-    """
-    """
-    点击按钮时执行的函数，用于删除session_state中存储的消息。
-    
-    Args:
-        无
-    
     Returns:
         无
     """
@@ -102,7 +95,12 @@ def prepare_generation_config():
         # 3. Enable RAG
         global enable_rag
         enable_rag = st.checkbox("Enable RAG")
-        # 4. Speech input
+
+        # 4. Streaming
+        global streaming
+        streaming = st.checkbox("Streaming")
+
+        # 5. Speech input
         audio = audiorecorder("Record", "Stop record")
         speech_string = None
         if len(audio) > 0:
@@ -110,7 +108,7 @@ def prepare_generation_config():
             speech_string = run_whisper(
                 whisper_model_scale, "cuda",
                 audio_save_path)
-
+        
     generation_config = GenerationConfig(
         max_length=max_length, top_p=0.8, temperature=0.8, repetition_penalty=1.002)
 
@@ -182,12 +180,24 @@ def process_user_input(prompt,
         with st.chat_message("robot", avatar=robot_avatar):
             message_placeholder = st.empty()
             if enable_rag:
-                generator = generate_interactive_rag(
+                if streaming:
+                    generator = generate_interactive_rag_stream(
                     model=model,
                     tokenizer=tokenizer,
                     prompt=prompt,
                     history=real_prompt
                 )
+                    for cur_response in generator:
+                        cur_response = cur_response.replace('\\n', '\n')
+                        message_placeholder.markdown(cur_response + "▌")
+                    message_placeholder.markdown(cur_response)
+                else:
+                    cur_response = generate_interactive_rag(
+                        model=model,
+                        tokenizer=tokenizer,
+                        prompt=prompt,
+                        history=real_prompt
+                    )
             else:
                 generator = generate_interactive(
                     model=model,
@@ -197,10 +207,14 @@ def process_user_input(prompt,
                     additional_eos_token_id=92542,
                     **asdict(generation_config),
                 )
-            for cur_response in generator:
-                cur_response = cur_response.replace('\\n', '\n')
-                message_placeholder.markdown(cur_response + "▌")
-            message_placeholder.markdown(cur_response)
+                for cur_response in generator:
+                    cur_response = cur_response.replace('\\n', '\n')
+                    message_placeholder.markdown(cur_response + "▌")
+                message_placeholder.markdown(cur_response)
+            # for cur_response in generator:
+            #     cur_response = cur_response.replace('\\n', '\n')
+            #     message_placeholder.markdown(cur_response + "▌")
+            # message_placeholder.markdown(cur_response)
         # Add robot response to chat history
         st.session_state.messages.append(
             {"role": "robot", "content": cur_response, "avatar": robot_avatar})
