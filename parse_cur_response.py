@@ -22,29 +22,32 @@ def split_ingredients(ingredient):
 
 
 def return_final_md(cur_response): 
-
-    # Extracting the ingredients and steps from the given response
-    _, ingredients_raw, steps_raw = cur_response.split(":")
-    ingredients_raw, _ = ingredients_raw.split("按")
-
-    # Evaluating the strings to lists
-    ingredients_list = eval(ingredients_raw.strip())
-    steps_list = eval(steps_raw.strip())
-
-    # Define the recipe name for the markdown output
-    recipe_name = "您的菜谱"
-
-    # Generate markdown for ingredients table
-    ingredients_md = "| 序号 | 数量 | 食材 |\n| --- | --- | --- |\n"
-    ingredients_md += "\n".join([f"| {i+1} | {split_ingredients(item)[0]} | {split_ingredients(item)[1]} |" 
-                                for i, item in enumerate(ingredients_list)])
-
-    # Generate markdown for steps table
-    steps_md = "| 步骤 | 做法 |\n| --- | --- |\n"
-    steps_md += "\n".join([f"| {i+1} | {step} |" for i, step in enumerate(steps_list) if step != '好吃'])
-
-    # Combine both markdowns into one final markdown
-    final_md = f"# {recipe_name}\n\n## 食材\n{ingredients_md}\n\n## 制作步骤\n{steps_md}"
+    try:
+        # Extracting the ingredients and steps from the given response
+        _, ingredients_raw, steps_raw = cur_response.split(":")
+        ingredients_raw, _ = ingredients_raw.split("按")
+    
+        # Evaluating the strings to lists
+        ingredients_list = eval(ingredients_raw.strip())
+        steps_list = eval(steps_raw.strip())
+    
+        # Define the recipe name for the markdown output
+        recipe_name = "您的菜谱"
+    
+        # Generate markdown for ingredients table
+        ingredients_md = "| 序号 | 数量 | 食材 |\n| --- | --- | --- |\n"
+        ingredients_md += "\n".join([f"| {i+1} | {split_ingredients(item)[0]} | {split_ingredients(item)[1]} |" 
+                                    for i, item in enumerate(ingredients_list)])
+    
+        # Generate markdown for steps table
+        steps_md = "| 步骤 | 做法 |\n| --- | --- |\n"
+        steps_md += "\n".join([f"| {i+1} | {step} |" for i, step in enumerate(steps_list) if step != '好吃'])
+    
+        # Combine both markdowns into one final markdown
+        final_md = f"# {recipe_name}\n\n## 食材\n{ingredients_md}\n\n## 制作步骤\n{steps_md}"
+    except Exception as e:
+        print("error message is ...", e)
+        final_md = cur_response
     return final_md
 
 # Execute the function and print the output
