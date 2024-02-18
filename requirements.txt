@@ -28,8 +28,7 @@ langchain==0.0.292
 # speech 
 openai-whisper
 streamlit-audiorecorder
-
-
+langchain-core
 
 #--extra-index-url https://download.pytorch.org/whl/cu117
 #torch==1.13.1+cu117
