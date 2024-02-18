@@ -15,10 +15,8 @@ from audiorecorder import audiorecorder
 from modelscope import AutoModelForCausalLM, AutoTokenizer
 from transformers.utils import logging
 
-from tools.transformers.interface import (GenerationConfig,
-                                          generate_interactive,
-                                          generate_interactive_rag_stream,
-                                          generate_interactive_rag)
+from tools.transformers.interface import (
+    GenerationConfig, generate_interactive)
 from whisper_app import run_whisper
 
 logger = logging.get_logger(__name__)
@@ -92,15 +90,7 @@ def prepare_generation_config():
         # 2. Clear history.
         st.button("Clear Chat History", on_click=on_btn_click)
 
-        # 3. Enable RAG
-        global enable_rag
-        enable_rag = st.checkbox("Enable RAG")
-
-        # 4. Streaming
-        global streaming
-        streaming = st.checkbox("Streaming")
-
-        # 5. Speech input
+        # 3. Speech input
         audio = audiorecorder("Record", "Stop record")
         speech_string = None
         if len(audio) > 0:
@@ -108,7 +98,7 @@ def prepare_generation_config():
             speech_string = run_whisper(
                 whisper_model_scale, "cuda",
                 audio_save_path)
-        
+
     generation_config = GenerationConfig(
         max_length=max_length, top_p=0.8, temperature=0.8, repetition_penalty=1.002)
 
@@ -179,42 +169,18 @@ def process_user_input(prompt,
         # Generate robot response
         with st.chat_message("robot", avatar=robot_avatar):
             message_placeholder = st.empty()
-            if enable_rag:
-                if streaming:
-                    generator = generate_interactive_rag_stream(
-                    model=model,
-                    tokenizer=tokenizer,
-                    prompt=prompt,
-                    history=real_prompt
-                )
-                    for cur_response in generator:
-                        cur_response = cur_response.replace('\\n', '\n')
-                        message_placeholder.markdown(cur_response + "▌")
-                    message_placeholder.markdown(cur_response)
-                else:
-                    cur_response = generate_interactive_rag(
-                        model=model,
-                        tokenizer=tokenizer,
-                        prompt=prompt,
-                        history=real_prompt
-                    )
-            else:
-                generator = generate_interactive(
-                    model=model,
-                    tokenizer=tokenizer,
-                    prompt=real_prompt,
-                    # additional_eos_token_id=103028,
-                    additional_eos_token_id=92542,
-                    **asdict(generation_config),
-                )
-                for cur_response in generator:
-                    cur_response = cur_response.replace('\\n', '\n')
-                    message_placeholder.markdown(cur_response + "▌")
-                message_placeholder.markdown(cur_response)
-            # for cur_response in generator:
-            #     cur_response = cur_response.replace('\\n', '\n')
-            #     message_placeholder.markdown(cur_response + "▌")
-            # message_placeholder.markdown(cur_response)
+            generator = generate_interactive(
+                model=model,
+                tokenizer=tokenizer,
+                prompt=real_prompt,
+                # additional_eos_token_id=103028,
+                additional_eos_token_id=92542,
+                **asdict(generation_config),
+            )
+            for cur_response in generator:
+                cur_response = cur_response.replace('\\n', '\n')
+                message_placeholder.markdown(cur_response + "▌")
+            message_placeholder.markdown(cur_response)
         # Add robot response to chat history
         st.session_state.messages.append(
             {"role": "robot", "content": cur_response, "avatar": robot_avatar})
