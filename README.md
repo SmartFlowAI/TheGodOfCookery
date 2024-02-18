@@ -104,7 +104,7 @@ xtuner chat ${SAVE_PATH} [optional arguments]
 - `--repetition-penalty`: 对于二代模型，建议为1.002，对于一代模型可不填。
 - 更多信息，请执行 `xtuner chat -h` 查看。
 
-## 演示
+## 一阶段演示
 
 Demo 访问地址：https://openxlab.org.cn/apps/detail/zhanghui-china/nlp_shishen
 
@@ -117,7 +117,7 @@ Demo 访问地址：https://openxlab.org.cn/apps/detail/zhanghui-china/nlp_shish
 
 
 
-## 模型
+## 一阶段模型
 
 [openxlab一代模型](https://openxlab.org.cn/models/detail/zhanghui-china/zhangxiaobai_shishen_full)    <br />
 [openxlab二代模型](https://openxlab.org.cn/models/detail/zhanghui-china/zhangxiaobai_shishen2_full)    <br />
@@ -176,6 +176,30 @@ print(response)
 3.嵌入食谱图片（图片能通过文生图模型生成）
 
 4.优化prompt和对话
+
+### 二阶段安装
+
+待添加
+
+### 二阶段数据集
+
+待添加
+
+### 二阶段训练
+
+待添加
+
+### 二阶段对话
+
+待添加
+
+### 二阶段模型
+
+待添加
+
+### 二阶段演示
+
+待添加
 
 
 ## 项目参与人员（排名不分先后）
