@@ -1,8 +1,8 @@
 <div align="center">
-  <img src="https://github.com/zhanghui-china/intro_myself/blob/main/images/cooker.png" width="1092"/>
+  <img src="https://github.com/zhanghui-china/TheGodOfCookery/blob/main/images/cooker.png" width="1092"/>
   <br /><br />
 
-![license](https://img.shields.io/github/license/zhanghui-china/intro_myself.svg)  [![issue resolution](https://img.shields.io/github/issues-closed-raw/zhanghui-china/intro_myself)](https://github.com/zhanghui-china/intro_myself/issues)   [![open issues](https://img.shields.io/github/issues-raw/zhanghui-china/intro_myself)](https://github.com/zhanghui-china/intro_myself/issues)
+![license](https://img.shields.io/github/license/zhanghui-china/TheGodOfCookery.svg)  [![issue resolution](https://img.shields.io/github/issues-closed-raw/zhanghui-china/TheGodOfCookery)](https://github.com/zhanghui-china/TheGodOfCookery/issues)   [![open issues](https://img.shields.io/github/issues-raw/zhanghui-china/TheGodOfCookery)](https://github.com/zhanghui-china/TheGodOfCookery/issues)
 
 🔍 探索我们的模型：
 [![Static Badge](https://img.shields.io/badge/-gery?style=social&label=🤖%20ModelScope)](https://www.modelscope.cn/models/zhanghuiATchina/zhangxiaobai_shishen2_full/summary)
@@ -109,9 +109,9 @@ xtuner chat ${SAVE_PATH} [optional arguments]
 Demo 访问地址：https://openxlab.org.cn/apps/detail/zhanghui-china/nlp_shishen
 
 <div align="center">
-  <img src="https://github.com/zhanghui-china/intro_myself/blob/main/images/answer001.png" width="600"/>
+  <img src="https://github.com/zhanghui-china/TheGodOfCookery/blob/main/images/answer001.png" width="600"/>
   <br />
-  <img src="https://github.com/zhanghui-china/intro_myself/blob/main/images/answer002.png" width="600"/>
+  <img src="https://github.com/zhanghui-china/TheGodOfCookery/blob/main/images/answer002.png" width="600"/>
   <br />
 </div>
 
