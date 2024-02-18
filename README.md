@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://github.com/zhanghui-china/intro_myself/blob/main/images/shishen.jpg" width="600"/>
+  <img src="https://github.com/zhanghui-china/intro_myself/blob/main/images/cooker.png" width="1092"/>
   <br /><br />
 
 ![license](https://img.shields.io/github/license/zhanghui-china/intro_myself.svg)  [![issue resolution](https://img.shields.io/github/issues-closed-raw/zhanghui-china/intro_myself)](https://github.com/zhanghui-china/intro_myself/issues)   [![open issues](https://img.shields.io/github/issues-raw/zhanghui-china/intro_myself)](https://github.com/zhanghui-china/intro_myself/issues)
@@ -33,7 +33,7 @@
 
 
 
-### 安装
+### 一阶段安装
 
 1. 准备 Python 虚拟环境：
 
@@ -58,11 +58,11 @@
 
 
 
-### 训练
+### 一阶段训练
 
-​		本项目一代模型 使用 xtuner0.1.9 训练，在 internlm-chat-7b 上进行微调，[模型地址](https://www.modelscope.cn/models/zhanghuiATchina/zhangxiaobai_shishen_full/summary)
+​		一阶段一代模型 使用 xtuner0.1.9 训练，在 internlm-chat-7b 上进行微调，[模型地址](https://www.modelscope.cn/models/zhanghuiATchina/zhangxiaobai_shishen_full/summary)
 
-​		二代模型 使用 xtuner0.1.13 训练，在 internlm2-chat-7b 上进行微调，[模型地址](https://www.modelscope.cn/models/zhanghuiATchina/zhangxiaobai_shishen2_full/summary)
+​		一阶段二代模型 使用 xtuner0.1.13 训练，在 internlm2-chat-7b 上进行微调，[模型地址](https://www.modelscope.cn/models/zhanghuiATchina/zhangxiaobai_shishen2_full/summary)
 
 1. 微调方法如下
 
@@ -87,7 +87,7 @@ xtuner convert merge ${Base_PATH} ${LoRA_PATH} ${SAVE_PATH}
 
 
 
-### 对话
+### 一阶段对话
 
 ```shell
 xtuner chat ${SAVE_PATH} [optional arguments]
@@ -144,7 +144,9 @@ print(response)
 
 
 
-## 已知问题和未来规划
+## 一阶段已知问题
+
+一阶段在书生.浦语实战营期间由张小白独立完成。
 
 1.目前基于二代模型微调后的食谱模型，可能还会不定期出现死循环吐字的问题。即便加了repetition_penalty=1.002参数也不能完全阻止这一不可控的行为。而且，当repetition_penalty=1.05时，答案会出现不符合预期输出的格式。说明本模型还是太年轻。需要不断完善调教的方法（说不定也需要基准模型不断地提高相关的能力）<br />
 
@@ -152,16 +154,10 @@ print(response)
 
 3.今后会考虑对接文生图的应用，在生成菜谱的制作过程之后，同时生成一副该菜的照片，文图并茂展示信息。  <br />
 
-
-
 4.看看能不能将提示符工程应用到项目里面去。这次虽然写了prompt，但是感觉相关的交互结果并没有严格按照prompt走。 <br />
 
 
-
-
-
-
-## 实践文档
+## 一阶段实践文档
 
 [一代实践](https://zhuanlan.zhihu.com/p/678019309)  <br />
 [二代实践](https://zhuanlan.zhihu.com/p/678376843)  <br />
@@ -169,12 +165,34 @@ print(response)
 [实践视频](https://www.bilibili.com/video/BV1Ut421W7Qg)  <br />
 
 
+## 二阶段规划
 
-## 关于作者
+二阶段引入了各位大佬（参见 项目参与人员），计划完成和完善以下功能：
 
-项目作者：张小白，字大白，优质回复家。斜杠青年，精力充沛。简称钢筋。 [博客地址](https://www.zhihu.com/people/zhanghui_china)
+1.实现RAG+LLM结合
+
+2.实现语音输入、语音输出
+
+3.嵌入食谱图片（图片能通过文生图模型生成）
+
+4.优化prompt和对话
 
 
+## 项目参与人员（排名不分先后）
+
+1.张小白，项目策划、测试和打杂。 [知乎](https://www.zhihu.com/people/zhanghui_china)
+
+2.sole fish：语音输入  [github](https://github.com/YanxingLiu)  
+
+3.Charles：RAG [github](https://github.com/SchweitzerGAO)
+
+4.彬彬：格式化输出 [github](https://github.com/Everfighting)   [知乎](https://www.zhihu.com/people/everfighting)
+
+5.喵喵咪：数据集准备 [github](https://github.com/miyc1996)
+
+6.陈菠萝：待定
+
+7.乐正萌：待定
 
 
 ## 开源许可证
