@@ -35,8 +35,8 @@ def return_final_md(cur_response):
         recipe_name = "您的菜谱"
     
         # Generate markdown for ingredients table
-        ingredients_md = "| 序号 | 数量 | 食材 |\n| --- | --- | --- |\n"
-        ingredients_md += "\n".join([f"| {i+1} | {split_ingredients(item)[0]} | {split_ingredients(item)[1]} |" 
+        ingredients_md = "| 序号 | 数量 | 食材 ||\n| --- | --- | --- |---|\n"
+        ingredients_md += "\n".join([f"| {i+1} | {split_ingredients(item)[0]} | {split_ingredients(item)[1]} |<img src='./src/{split_ingredients(item)[1]}.png' width = '50' height = '50' align=center />|" 
                                     for i, item in enumerate(ingredients_list)])
     
         # Generate markdown for steps table
