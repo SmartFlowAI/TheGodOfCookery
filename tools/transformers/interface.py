@@ -1,7 +1,7 @@
 import copy
 import warnings
 from dataclasses import dataclass
-from typing import Callable, List, Optional
+from typing import Callable, List, Optional, Iterator
 
 import torch
 from torch import nn
@@ -12,7 +12,7 @@ from langchain.embeddings.huggingface import HuggingFaceEmbeddings
 from langchain.vectorstores import Chroma
 from langchain.chains import ConversationalRetrievalChain
 from langchain.memory import ConversationBufferMemory
-from langchain_core.output_parsers import StrOutputParser
+# from langchain_core.output_parsers import StrOutputParser
 from rag.LLM import CookMasterLLM
 
 logger = logging.get_logger(__name__)
@@ -65,6 +65,11 @@ def _load_chain(model, tokenizer):
         
     )
     return chain
+
+# def _get_answer(raw: Iterator[dict]) -> Iterator[str]:
+#     pass
+
+    
 
 @dataclass
 class GenerationConfig:
@@ -195,8 +200,8 @@ def generate_interactive_rag_stream(
     history
 ):
     chain = _load_chain(model=model, tokenizer=tokenizer)
-    chain = chain | StrOutputParser()
-    for cur_response in chain.stream({"question": prompt,"chat_history": history}):
+    # chain = chain | _get_answer
+    for cur_response in chain.stream({"question": prompt,"chat_history": history})['answer']:
         yield cur_response
 
 @torch.inference_mode()
