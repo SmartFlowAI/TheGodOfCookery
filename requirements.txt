@@ -17,8 +17,8 @@ boto3
 botocore
 pyecharts
 # speech 
-openai-whisper
 streamlit-audiorecorder
+funasr
 
 
 
