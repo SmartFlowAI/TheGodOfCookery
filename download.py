@@ -6,8 +6,8 @@ os.environ['HF_ENDPOINT'] = 'https://hf-mirror.com'
 model_root_dir = os.environ.get('HOME') + '/models/'
 
 # download  shishen model
-# _ = snapshot_download('zhanghuiATchina/zhangxiaobai_shishen2_full',
-#                               cache_dir=model_root_dir + 'shishen2')
+_ = snapshot_download('zhanghuiATchina/zhangxiaobai_shishen2_full',
+                              cache_dir=model_root_dir + 'shishen2')
 
 # download paraformer models
 model = AutoModel(
