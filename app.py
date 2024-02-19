@@ -222,6 +222,9 @@ def process_user_input(prompt,
 
 
 def main():
+    print("Torch version:"+ torch.__version__)
+    print("Torch support GPU: "+ torch.cuda.is_available())
+    
     st.title("食神2——菜谱小助手 by 张小白")
     model, tokenizer = load_model()
     generation_config, speech_prompt = prepare_generation_config()
