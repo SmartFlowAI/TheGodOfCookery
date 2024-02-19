@@ -218,6 +218,10 @@ print(response)
 
 8.乐正萌：待定
 
+9.L：待定
+
+10.浦语小助手：提供书生浦语大模型、工具链、训练环境、人才培养等全方面支持 [github](https://github.com/InternLM/InternLM)
+
 
 ## 开源许可证
 
