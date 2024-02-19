@@ -20,6 +20,7 @@ from tools.transformers.interface import (GenerationConfig,
                                           generate_interactive_rag_stream,
                                           generate_interactive_rag)
 from whisper_app import run_whisper
+from text2image import ZhipuAIImage, SDGenImage
 
 logger = logging.get_logger(__name__)
 
@@ -99,6 +100,21 @@ def prepare_generation_config():
         # 4. Streaming
         global streaming
         streaming = st.checkbox("Streaming")
+
+        global image_model_type
+        image_model_type = st.selectbox('image_model_type', ['stable-diffusion', 'glm-4'])
+
+        if image_model_type == 'stable-diffusion':
+            global model_path
+            model_path = st.selectbox('model_path', ['sd1.5'])
+            global lora_path
+            lora_path = st.selectbox('lora_path', ['meishi'])
+            global lora_scale
+            lora_scale = st.slider('lora_scale', 0.0, 1.0, 0.75, step=0.05)
+
+        elif image_model_type == 'glm-4':
+            global zhipu_api_key
+            zhipu_api_key = st.text_input("Zhipu api key, please keep secret")
 
         # 5. Speech input
         audio = audiorecorder("Record", "Stop record")
@@ -220,6 +236,37 @@ def process_user_input(prompt,
             {"role": "robot", "content": cur_response, "avatar": robot_avatar})
         torch.cuda.empty_cache()
 
+def init_image_model(image_model_type):
+    if image_model_type == 'stable-diffusion':
+        global model_path, lora_path, lora_scale
+        if model_path == 'sd1.5':
+            model_path='runwayml/stable-diffusion-v1-5'
+        if lora_path == 'meishi':
+            lora_path = 'text2image/lora_weights/meishi.safetensors'
+        global sd_gen
+        sd_gen = SDGenImage(model_path, lora_path, lora_scale)
+    elif image_model_type == 'glm-4':
+        global zhipu_api_key
+        global zhipu_gen
+        zhipu_gen = ZhipuAIImage(api_key=zhipu_api_key)
+
+def display_image(prompt, image_holder, image_model_type):
+    if image_model_type == 'stable-diffusion':
+        image_model = sd_gen
+    elif image_model_type == 'glm-4':
+        image_model = zhipu_gen
+    else:
+        logger.info(f'{image_model_type} not available!')
+        return
+    
+    ok, ret = image_model.create_img(prompt)
+
+
+    if ok:
+        image_holder.image(ret, caption = prompt) # return the url of image
+    else:
+        image_holder.image('images/error.jpg', caption=ret)
+
 
 def main():
     print("Torch version:")
@@ -231,7 +278,9 @@ def main():
     st.title("食神2——菜谱小助手 by 张小白")
     model, tokenizer = load_model()
     generation_config, speech_prompt = prepare_generation_config()
+    init_image_model(image_model_type)
 
+    image_holder = st.empty()
     # 1.Initialize chat history
     if "messages" not in st.session_state:
         st.session_state.messages = []
@@ -248,6 +297,10 @@ def main():
     # 4. Process speech input
     if speech_prompt is not None:
         process_user_input(speech_prompt, model, tokenizer, generation_config)
+
+    image_prompt = text_prompt or speech_prompt
+    if image_prompt is not None:
+        display_image(image_prompt, image_holder, image_model_type)
 
 
 if __name__ == "__main__":

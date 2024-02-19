@@ -30,9 +30,14 @@ pyecharts==2.0.4
 google-auth>=1.0.1
 tiktoken==0.6.0
 
+# text2image 
+zhipuai
+diffusers
+
 #speech 
 openai-whisper==20231117
 streamlit-audiorecorder==0.0.4
+
 
 
 
