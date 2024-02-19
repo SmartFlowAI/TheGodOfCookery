@@ -1,6 +1,3 @@
-torch
-torchvision
-torchaudio
 modelscope==1.9.5 
 transformers==4.35.2 
 sentencepiece==0.1.99 
@@ -26,13 +23,14 @@ unstructured==0.10.30
 markdown==3.3.7
 pysqlite3-binary
 accelerate==0.24.1
-huggingface_hub
+#huggingface_hub
+
 langchain==0.0.292
+langchain-core==0.1.23
+
 # speech 
 openai-whisper
 streamlit-audiorecorder
-langchain-core
 
-#--extra-index-url https://download.pytorch.org/whl/cu117
 
 
