@@ -1,5 +1,6 @@
 import whisper
-
+import os
+download_root = os.environ.get('HOME') + '/models' + '/whisper'
 
 def run_whisper(
         model_scale: str,
@@ -20,6 +21,8 @@ def run_whisper(
     assert model_scale in ["tiny", "base", "small", "medium",
                            "large"], "model must be one of tiny, base, small, medium or large"
     assert device in ["cpu", "cuda"], "device must be one of cpu or cuda"
-    model = whisper.load_model(model_scale, device=device)
+    model = whisper.load_model(model_scale, 
+                               device=device,
+                               download_root=download_root)
     result = model.transcribe(audio_path)
     return result['text']
