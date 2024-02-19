@@ -218,7 +218,7 @@ print(response)
 
 8.乐正萌：待定
 
-9.L：图标设计，前端优化
+9.刘光磊：图标设计，前端优化 [github](https://github.com/Mrguanglei)
 
 10.浦语小助手：提供书生浦语大模型、工具链、训练环境、人才培养等全方面支持 [github](https://github.com/InternLM/InternLM)
 
