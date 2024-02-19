@@ -14,10 +14,9 @@ import torch
 from audiorecorder import audiorecorder
 from modelscope import AutoModelForCausalLM, AutoTokenizer
 from transformers.utils import logging
-
+from funasr import AutoModel
 from tools.transformers.interface import (
     GenerationConfig, generate_interactive)
-from whisper_app import run_whisper
 
 logger = logging.get_logger(__name__)
 
@@ -31,10 +30,11 @@ robot_prompt = "<|Bot|>:{robot}<eoa>\n"
 cur_query_prompt = "<|User|>:{user}<eoh>\n<|Bot|>:"
 # speech
 audio_save_path = "/tmp/audio.wav"
-whisper_model_scale = "medium"
 # model path
 shishen2_model_path = os.environ.get(
-    'HOME') + '/models/' + 'shishen2/zhanghuiATchina/zhangxiaobai_shishen2_full'
+    'HOME') + '/models' + '/shishen2/' + \
+    'zhanghuiATchina/zhangxiaobai_shishen2_full'
+speech_model_path = 'damo/speech_paraformer-large_asr_nat-zh-cn-16k-common-vocab8404-pytorch'
 
 
 def on_btn_click():
@@ -73,6 +73,23 @@ def load_model():
         shishen2_model_path, trust_remote_code=True)
     return model, tokenizer
 
+@st.cache_resource
+def load_speech_model():
+    model = AutoModel(
+        model=speech_model_path, 
+        model_revision="v2.0.4")
+    return model
+
+def speech_rec(speech_model):
+    with st.sidebar:
+        # 3. Speech input
+        audio = audiorecorder("Record", "Stop record")
+        speech_string = None
+        if len(audio) > 0:
+            audio.export(audio_save_path, format="wav")
+            speech_string = speech_model.generate(input=audio_save_path)[0]['text']
+        return speech_string
+
 
 def prepare_generation_config():
     """
@@ -94,19 +111,10 @@ def prepare_generation_config():
         # 2. Clear history.
         st.button("Clear Chat History", on_click=on_btn_click)
 
-        # 3. Speech input
-        audio = audiorecorder("Record", "Stop record")
-        speech_string = None
-        if len(audio) > 0:
-            audio.export(audio_save_path, format="wav")
-            speech_string = run_whisper(
-                whisper_model_scale, "cuda",
-                audio_save_path)
-
     generation_config = GenerationConfig(
         max_length=max_length, top_p=0.8, temperature=0.8, repetition_penalty=1.002)
 
-    return generation_config, speech_string
+    return generation_config
 
 
 def combine_history(prompt):
@@ -194,7 +202,10 @@ def process_user_input(prompt,
 def main():
     st.title("食神2——菜谱小助手 by 张小白")
     model, tokenizer = load_model()
-    generation_config, speech_prompt = prepare_generation_config()
+    generation_config = prepare_generation_config()
+
+    speech_model = load_speech_model()
+    speech_prompt = speech_rec(speech_model)
 
     # 1.Initialize chat history
     if "messages" not in st.session_state:

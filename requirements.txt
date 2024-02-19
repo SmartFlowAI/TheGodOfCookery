@@ -17,8 +17,8 @@ boto3
 botocore
 pyecharts
 # speech 
-openai-whisper
 streamlit-audiorecorder
+funasr
 langchain-core==0.1.23
 
 #--extra-index-url https://download.pytorch.org/whl/cu117
