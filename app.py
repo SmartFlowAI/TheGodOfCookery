@@ -8,7 +8,7 @@ Please refer to these links below for more information:
 """
 
 from dataclasses import asdict
-
+import os
 import streamlit as st
 import torch
 from audiorecorder import audiorecorder
@@ -32,6 +32,9 @@ cur_query_prompt = "<|User|>:{user}<eoh>\n<|Bot|>:"
 # speech
 audio_save_path = "/tmp/audio.wav"
 whisper_model_scale = "medium"
+# model path
+shishen2_model_path = os.environ.get(
+    'HOME') + '/models/' + 'shishen2/zhanghuiATchina/zhangxiaobai_shishen2_full'
 
 
 def on_btn_click():
@@ -61,12 +64,13 @@ def load_model():
     """
     model = (
         AutoModelForCausalLM.from_pretrained(
-            "zhanghuiATchina/zhangxiaobai_shishen2_full", trust_remote_code=True)
+            shishen2_model_path,
+            trust_remote_code=True)
         .to(torch.bfloat16)
         .cuda()
     )
     tokenizer = AutoTokenizer.from_pretrained(
-        "zhanghuiATchina/zhangxiaobai_shishen2_full", trust_remote_code=True)
+        shishen2_model_path, trust_remote_code=True)
     return model, tokenizer
 
 

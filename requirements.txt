@@ -16,15 +16,6 @@ packaging
 boto3
 botocore
 pyecharts
-tiktoken
-chromadb==0.4.15
-sentence-transformers==2.2.2
-unstructured==0.10.30
-markdown==3.3.7
-pysqlite3-binary
-accelerate==0.24.1
-huggingface_hub
-langchain==0.0.292
 # speech 
 openai-whisper
 streamlit-audiorecorder
