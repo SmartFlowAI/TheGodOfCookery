@@ -7,8 +7,8 @@ import whisper
 
 # download m3e model
 os.environ['HF_ENDPOINT'] = 'https://hf-mirror.com'
-#command_str = 'huggingface-cli download --resume-download moka-ai/m3e-base --local-dir-use-symlinks False --local-dir '+ os.environ.get('HOME') + '/models/m3e-base'
-command_str = 'huggingface-cli download --resume-download moka-ai/m3e-base --local-dir-use-symlinks False --local-dir /home/xlab-app-center/models/m3e-base'
+command_str = 'huggingface-cli download --resume-download moka-ai/m3e-base --local-dir-use-symlinks False --local-dir '+ os.environ.get('HOME') + '/models/m3e-base'
+#command_str = 'huggingface-cli download --resume-download moka-ai/m3e-base --local-dir-use-symlinks False --local-dir /home/xlab-app-center/models/m3e-base'
 os.system(command_str)
 
 # download whisper models
