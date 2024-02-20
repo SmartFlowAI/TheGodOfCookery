@@ -63,12 +63,12 @@ def load_model():
     """
     model = (
         AutoModelForCausalLM.from_pretrained(
-            "zhanghuiATchina/zhangxiaobai_shishen2_full", trust_remote_code=True)
+            "../share/model_repos/internlm2-chat-7b", trust_remote_code=True)
         .to(torch.bfloat16)
         .cuda()
     )
     tokenizer = AutoTokenizer.from_pretrained(
-        "zhanghuiATchina/zhangxiaobai_shishen2_full", trust_remote_code=True)
+        "../share/model_repos/internlm2-chat-7b", trust_remote_code=True)
     return model, tokenizer
 
 
@@ -198,6 +198,7 @@ def process_user_input(prompt,
                         prompt=prompt,
                         history=real_prompt
                     )
+                    message_placeholder.markdown(cur_response)
             else:
                 generator = generate_interactive(
                     model=model,

@@ -55,7 +55,7 @@ docs.extend(get_text(files))
 
 # 对文本进行分块
 text_splitter = TokenTextSplitter(
-    chunk_size=700, chunk_overlap=200, allowed_special={'<|endoftext|>'})  # PDF文件中的特殊词元<|endoftext|>
+    chunk_size=512, chunk_overlap=128, allowed_special={'<|endoftext|>'})  # PDF文件中的特殊词元<|endoftext|>
 split_docs = text_splitter.split_documents(docs)
 
 # 加载开源词向量模型
