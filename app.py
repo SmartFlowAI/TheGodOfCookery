@@ -6,7 +6,7 @@ Please refer to these links below for more information:
     2. chatglm2: https://github.com/THUDM/ChatGLM2-6B
     3. transformers: https://github.com/huggingface/transformers
 """
-
+import os
 from dataclasses import asdict
 
 import streamlit as st
@@ -20,7 +20,7 @@ from tools.transformers.interface import (GenerationConfig,
                                           generate_interactive_rag_stream,
                                           generate_interactive_rag)
 from whisper_app import run_whisper
-
+from download import finetuned
 logger = logging.get_logger(__name__)
 
 # global variables
@@ -61,6 +61,7 @@ def load_model():
         model (Transformers模型): 预训练模型。
         tokenizer (Transformers分词器): 分词器。
     """
+    path = os.environ.get('HOME') + ("/zhanghuiATchina/zhangxiaobai_shishen2_full" if finetuned else "/Shanghai_AI_Laboratory/internlm2-chat-7b")
     model = (
         AutoModelForCausalLM.from_pretrained(
             "zhanghuiATchina/zhangxiaobai_shishen2_full", trust_remote_code=True)
@@ -70,6 +71,7 @@ def load_model():
     tokenizer = AutoTokenizer.from_pretrained(
         "zhanghuiATchina/zhangxiaobai_shishen2_full", trust_remote_code=True)
     return model, tokenizer
+
 
 
 def prepare_generation_config():

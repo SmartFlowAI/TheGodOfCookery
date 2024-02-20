@@ -15,6 +15,8 @@ from langchain.memory import ConversationBufferMemory
 # from langchain_core.output_parsers import StrOutputParser
 from rag.LLM import CookMasterLLM
 
+chain_instance = None
+
 logger = logging.get_logger(__name__)
 
 def _load_chain(model, tokenizer):
@@ -199,10 +201,12 @@ def generate_interactive_rag_stream(
     prompt, 
     history
 ):
-    chain = _load_chain(model=model, tokenizer=tokenizer)
+    global chain_instance
+    if chain_instance is None:
+        chain_instance = _load_chain(model=model, tokenizer=tokenizer)
     # chain = chain | _get_answer
-    for cur_response in chain.stream({"question": prompt,"chat_history": history})['answer']:
-        yield cur_response
+    for cur_response in chain_instance.stream({"question": prompt,"chat_history": history}):
+        yield cur_response.get('answer', "")
 
 @torch.inference_mode()
 def generate_interactive_rag(
@@ -211,5 +215,8 @@ def generate_interactive_rag(
     prompt, 
     history
 ):
-    chain = _load_chain(model=model, tokenizer=tokenizer)
-    return chain({"question": prompt,"chat_history": history})['answer']
+    global chain_instance
+    if chain_instance is None:
+        chain_instance = _load_chain(model=model, tokenizer=tokenizer)
+    # chain = _load_chain(model=model, tokenizer=tokenizer)
+    return chain_instance({"question": prompt,"chat_history": history})['answer']
