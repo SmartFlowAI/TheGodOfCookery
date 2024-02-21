@@ -241,7 +241,7 @@ def init_image_model(image_model_type):
         global model_path, lora_path, lora_scale
         # use Taiyi
         if model_path == 'Taiyi':
-            model_path="IDEA-CCNL/Taiyi-Stable-Diffusion-1B-Chinese-v0.1"
+            model_path= os.environ.get('HOME') +"/models/Taiyi-Stable-Diffusion-1B-Chinese-v0.1"
         # if lora_path == 'meishi':
         #     lora_path = 'gen_image/lora_weights/meishi.safetensors'
         image_model = SDGenImage(model_path)

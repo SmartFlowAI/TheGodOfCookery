@@ -14,3 +14,7 @@ os.system(command_str)
 scales = ["tiny", "base", "small", "medium", "large"]
 for scale in scales:
     whisper.load_model(scale)
+
+# download taiyi model
+command_str = 'huggingface-cli download --resume-download IDEA-CCNL/Taiyi-Stable-Diffusion-1B-Chinese-v0.1 --local-dir-use-symlinks False --local-dir '+ os.environ.get('HOME') + '/models/Taiyi-Stable-Diffusion-1B-Chinese-v0.1'
+os.system(command_str)
