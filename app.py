@@ -21,6 +21,7 @@ from tools.transformers.interface import (GenerationConfig,
                                           generate_interactive_rag)
 from whisper_app import run_whisper
 from gen_image import ZhipuAIImage, SDGenImage
+import os
 
 logger = logging.get_logger(__name__)
 
