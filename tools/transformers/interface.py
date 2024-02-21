@@ -15,6 +15,8 @@ from langchain.memory import ConversationBufferMemory
 # from langchain_core.output_parsers import StrOutputParser
 from rag.LLM import CookMasterLLM
 
+import os
+
 chain_instance = None
 
 logger = logging.get_logger(__name__)
@@ -22,7 +24,7 @@ logger = logging.get_logger(__name__)
 def _load_chain(model, tokenizer):
     # model paths 
     # llm_model_dir = model_dir
-    embed_model_dir = "$HOME/models/m3e-base"
+    embed_model_dir =  os.environ.get('HOME') + "/models/m3e-base"
 
     # 加载问答链
     # 定义 Embeddings

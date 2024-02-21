@@ -21,6 +21,7 @@ from tools.transformers.interface import (GenerationConfig,
                                           generate_interactive_rag_stream,
                                           generate_interactive_rag)
 from whisper_app import run_whisper
+from parse_cur_response import return_final_md
 from download import finetuned
 logger = logging.get_logger(__name__)
 __import__('pysqlite3')
@@ -38,6 +39,7 @@ cur_query_prompt = "<|User|>:{user}<eoh>\n<|Bot|>:"
 # speech
 audio_save_path = "/tmp/audio.wav"
 whisper_model_scale = "medium"
+model_path = "zhanghuiATchina/zhangxiaobai_shishen2_full"
 
 
 def on_btn_click():
@@ -68,12 +70,12 @@ def load_model():
     path = os.environ.get('HOME') + ("/zhanghuiATchina/zhangxiaobai_shishen2_full" if finetuned else "/Shanghai_AI_Laboratory/internlm2-chat-7b")
     model = (
         AutoModelForCausalLM.from_pretrained(
-            "zhanghuiATchina/zhangxiaobai_shishen2_full", trust_remote_code=True)
+            model_path, trust_remote_code=True)
         .to(torch.bfloat16)
         .cuda()
     )
     tokenizer = AutoTokenizer.from_pretrained(
-        "zhanghuiATchina/zhangxiaobai_shishen2_full", trust_remote_code=True)
+        model_path, trust_remote_code=True)
     return model, tokenizer
 
 
@@ -116,8 +118,8 @@ def prepare_generation_config():
                 audio_save_path)
         
     generation_config = GenerationConfig(
-        max_length=max_length, top_p=0.8, temperature=0.8, repetition_penalty=1.002)
-
+        max_length=max_length, top_p=0.8, temperature=0.8, repetition_penalty=1.002)  #if use internlm2-chat-7b
+        #max_length=max_length2)  #if use internlm-chat-7b
     return generation_config, speech_string
 
 
@@ -161,6 +163,7 @@ def process_user_input(prompt,
 
     """
     # Check if the user input contains certain keywords
+    prompt = prompt.replace("怎麼做", "怎么做")
     keywords = ["怎么做", "做法", "菜谱"]
     contains_keywords = any(keyword in prompt for keyword in keywords)
 
@@ -177,10 +180,10 @@ def process_user_input(prompt,
     if not contains_keywords:
         with st.chat_message("robot", avatar=robot_avatar):
             st.markdown(
-                "我是食神周星星的唯一传人张小白，我什么菜都会做，包括黑暗料理，您可以问我什么菜怎么做———比如酸菜鱼怎么做？，我会告诉你具体的做法。")
+                "我是食神周星星的唯一传人，我什么菜都会做，包括黑暗料理，您可以问我什么菜怎么做———比如酸菜鱼怎么做？，我会告诉你具体的做法。")
         # Add robot response to chat history
         st.session_state.messages.append(
-            {"role": "robot", "content": "我是食神周星星的唯一传人张小白，我什么菜都会做，包括黑暗料理，您可以问我什么菜怎么做———比如酸菜鱼怎么做？，我会告诉你具体的做法。", "avatar": robot_avatar})
+            {"role": "robot", "content": "我是食神周星星的唯一传人，我什么菜都会做，包括黑暗料理，您可以问我什么菜怎么做———比如酸菜鱼怎么做？，我会告诉你具体的做法。", "avatar": robot_avatar})
     else:
         # Generate robot response
         with st.chat_message("robot", avatar=robot_avatar):
@@ -209,13 +212,14 @@ def process_user_input(prompt,
                     model=model,
                     tokenizer=tokenizer,
                     prompt=real_prompt,
-                    # additional_eos_token_id=103028,
-                    additional_eos_token_id=92542,
+                    # additional_eos_token_id=103028,  #if use internlm-chat-7b
+                    additional_eos_token_id=92542,   #if use internlm2-chat-7b
                     **asdict(generation_config),
                 )
                 for cur_response in generator:
                     cur_response = cur_response.replace('\\n', '\n')
-                    message_placeholder.markdown(cur_response + "▌")
+                    #message_placeholder.markdown(cur_response + "▌")
+                cur_response  = return_final_md(cur_response)
                 message_placeholder.markdown(cur_response)
             # for cur_response in generator:
             #     cur_response = cur_response.replace('\\n', '\n')
@@ -234,7 +238,7 @@ def main():
     print(torch.cuda.is_available())
 
     
-    st.title("食神2——菜谱小助手 by 张小白")
+    st.title("食神2 by 你也可以是个厨师队")
     model, tokenizer = load_model()
     generation_config, speech_prompt = prepare_generation_config()
 
