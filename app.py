@@ -20,7 +20,7 @@ from tools.transformers.interface import (GenerationConfig,
                                           generate_interactive_rag_stream,
                                           generate_interactive_rag)
 from whisper_app import run_whisper
-from text2image import ZhipuAIImage, SDGenImage
+from gen_image import ZhipuAIImage, SDGenImage
 
 logger = logging.get_logger(__name__)
 
@@ -242,7 +242,7 @@ def init_image_model(image_model_type):
         if model_path == 'sd1.5':
             model_path='runwayml/stable-diffusion-v1-5'
         if lora_path == 'meishi':
-            lora_path = 'text2image/lora_weights/meishi.safetensors'
+            lora_path = 'gen_image/lora_weights/meishi.safetensors'
         global sd_gen
         sd_gen = SDGenImage(model_path, lora_path, lora_scale)
     elif image_model_type == 'glm-4':
