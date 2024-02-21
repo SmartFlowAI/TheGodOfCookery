@@ -224,6 +224,7 @@ def process_user_input(prompt,
             {"role": "robot", "content": cur_response, "avatar": robot_avatar})
         torch.cuda.empty_cache()
 
+@st.cache_resource
 def init_image_model(image_model_type, image_model_config):
     if image_model_type == 'stable-diffusion':
         image_model = SDGenImage(**image_model_config[image_model_type])
