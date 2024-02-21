@@ -17,6 +17,7 @@ from transformers.utils import logging
 from funasr import AutoModel
 from tools.transformers.interface import (
     GenerationConfig, generate_interactive)
+from parse_cur_response import return_final_md
 
 logger = logging.get_logger(__name__)
 
@@ -191,7 +192,8 @@ def process_user_input(prompt,
             )
             for cur_response in generator:
                 cur_response = cur_response.replace('\\n', '\n')
-                message_placeholder.markdown(cur_response + "▌")
+            #    message_placeholder.markdown(cur_response + "▌")
+            cur_response = parse_cur_response(cur_response)
             message_placeholder.markdown(cur_response)
         # Add robot response to chat history
         st.session_state.messages.append(
