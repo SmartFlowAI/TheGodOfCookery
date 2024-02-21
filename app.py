@@ -12,7 +12,7 @@ from dataclasses import asdict
 import streamlit as st
 import torch
 from audiorecorder import audiorecorder
-from transformers import AutoModelForCausalLM, AutoTokenizer
+from modelscope import AutoModelForCausalLM, AutoTokenizer
 from transformers.utils import logging
 
 from tools.transformers.interface import (GenerationConfig,
@@ -21,6 +21,7 @@ from tools.transformers.interface import (GenerationConfig,
                                           generate_interactive_rag)
 from whisper_app import run_whisper
 from gen_image import ZhipuAIImage, SDGenImage
+from gen_image.config import image_model_type, image_model_config
 import os
 
 logger = logging.get_logger(__name__)
@@ -102,20 +103,6 @@ def prepare_generation_config():
         global streaming
         streaming = st.checkbox("Streaming")
 
-        global image_model_type
-        image_model_type = st.selectbox('image_model_type', ['stable-diffusion', 'glm-4'])
-
-        if image_model_type == 'stable-diffusion':
-            global model_path
-            model_path = st.selectbox('model_path', ['Taiyi'])
-            global lora_path
-            lora_path = st.selectbox('lora_path', ['meishi'])
-            global lora_scale
-            lora_scale = st.slider('lora_scale', 0.0, 1.0, 0.75, step=0.05)
-
-        elif image_model_type == 'glm-4':
-            global zhipu_api_key
-            zhipu_api_key = st.text_input("Zhipu api key, please keep secret")
 
         # 5. Speech input
         audio = audiorecorder("Record", "Stop record")
@@ -237,19 +224,13 @@ def process_user_input(prompt,
             {"role": "robot", "content": cur_response, "avatar": robot_avatar})
         torch.cuda.empty_cache()
 
-def init_image_model(image_model_type):
+@st.cache_resource
+def init_image_model(image_model_type, image_model_config):
     if image_model_type == 'stable-diffusion':
-        global model_path, lora_path, lora_scale
-        # use Taiyi
-        if model_path == 'Taiyi':
-            model_path= os.environ.get('HOME') +"/models/Taiyi-Stable-Diffusion-1B-Chinese-v0.1"
-        # if lora_path == 'meishi':
-        #     lora_path = 'gen_image/lora_weights/meishi.safetensors'
-        image_model = SDGenImage(model_path)
+        image_model = SDGenImage(**image_model_config[image_model_type])
 
     elif image_model_type == 'glm-4':
-        global zhipu_api_key
-        image_model = ZhipuAIImage(api_key=zhipu_api_key)
+        image_model = ZhipuAIImage(**image_model_config[image_model_type])
     return image_model
 
 def display_image(prompt, image_holder, image_model):
@@ -272,8 +253,8 @@ def main():
     
     st.title("食神2——菜谱小助手 by 张小白")
     model, tokenizer = load_model()
+    image_model = init_image_model(image_model_type, image_model_config)
     generation_config, speech_prompt = prepare_generation_config()
-    image_model = init_image_model(image_model_type)
 
     image_holder = st.empty()
     # 1.Initialize chat history
