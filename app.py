@@ -16,7 +16,7 @@ from audiorecorder import audiorecorder
 from modelscope import AutoModelForCausalLM, AutoTokenizer
 from transformers.utils import logging
 
-from tools.transformers.interface import (GenerationConfig,
+from rag.interface import (GenerationConfig,
                                           generate_interactive,
                                           generate_interactive_rag_stream,
                                           generate_interactive_rag)
