@@ -7,8 +7,6 @@ Please refer to these links below for more information:
     3. transformers: https://github.com/huggingface/transformers
 """
 import sys
-__import__('pysqlite3') 
-sys.modules['sqlite3'] = sys.modules.pop('pysqlite3') 
 
 from dataclasses import asdict
 
@@ -25,8 +23,10 @@ from tools.transformers.interface import (GenerationConfig,
 from whisper_app import run_whisper
 from parse_cur_response import return_final_md
 
-
 logger = logging.get_logger(__name__)
+
+__import__('pysqlite3')
+sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
 
 # global variables
 enable_rag = None
@@ -40,7 +40,6 @@ cur_query_prompt = "<|User|>:{user}<eoh>\n<|Bot|>:"
 audio_save_path = "/tmp/audio.wav"
 whisper_model_scale = "medium"
 model_path = "zhanghuiATchina/zhangxiaobai_shishen2_full"
-
 
 def on_btn_click():
     """
