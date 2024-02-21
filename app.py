@@ -12,7 +12,7 @@ from dataclasses import asdict
 import streamlit as st
 import torch
 from audiorecorder import audiorecorder
-from modelscope import AutoModelForCausalLM, AutoTokenizer
+from transformers import AutoModelForCausalLM, AutoTokenizer
 from transformers.utils import logging
 
 from tools.transformers.interface import (GenerationConfig,
@@ -20,7 +20,7 @@ from tools.transformers.interface import (GenerationConfig,
                                           generate_interactive_rag_stream,
                                           generate_interactive_rag)
 from whisper_app import run_whisper
-from text2image import ZhipuAIImage, SDGenImage
+from gen_image import ZhipuAIImage, SDGenImage
 
 logger = logging.get_logger(__name__)
 
@@ -106,7 +106,7 @@ def prepare_generation_config():
 
         if image_model_type == 'stable-diffusion':
             global model_path
-            model_path = st.selectbox('model_path', ['sd1.5'])
+            model_path = st.selectbox('model_path', ['Taiyi'])
             global lora_path
             lora_path = st.selectbox('lora_path', ['meishi'])
             global lora_scale
@@ -239,26 +239,20 @@ def process_user_input(prompt,
 def init_image_model(image_model_type):
     if image_model_type == 'stable-diffusion':
         global model_path, lora_path, lora_scale
-        if model_path == 'sd1.5':
-            model_path='runwayml/stable-diffusion-v1-5'
-        if lora_path == 'meishi':
-            lora_path = 'text2image/lora_weights/meishi.safetensors'
-        global sd_gen
-        sd_gen = SDGenImage(model_path, lora_path, lora_scale)
+        # use Taiyi
+        if model_path == 'Taiyi':
+            model_path="IDEA-CCNL/Taiyi-Stable-Diffusion-1B-Chinese-v0.1"
+        # if lora_path == 'meishi':
+        #     lora_path = 'gen_image/lora_weights/meishi.safetensors'
+        image_model = SDGenImage(model_path)
+
     elif image_model_type == 'glm-4':
         global zhipu_api_key
-        global zhipu_gen
-        zhipu_gen = ZhipuAIImage(api_key=zhipu_api_key)
+        image_model = ZhipuAIImage(api_key=zhipu_api_key)
+    return image_model
 
-def display_image(prompt, image_holder, image_model_type):
-    if image_model_type == 'stable-diffusion':
-        image_model = sd_gen
-    elif image_model_type == 'glm-4':
-        image_model = zhipu_gen
-    else:
-        logger.info(f'{image_model_type} not available!')
-        return
-    
+def display_image(prompt, image_holder, image_model):
+
     ok, ret = image_model.create_img(prompt)
 
 
@@ -278,7 +272,7 @@ def main():
     st.title("食神2——菜谱小助手 by 张小白")
     model, tokenizer = load_model()
     generation_config, speech_prompt = prepare_generation_config()
-    init_image_model(image_model_type)
+    image_model = init_image_model(image_model_type)
 
     image_holder = st.empty()
     # 1.Initialize chat history
@@ -300,7 +294,7 @@ def main():
 
     image_prompt = text_prompt or speech_prompt
     if image_prompt is not None:
-        display_image(image_prompt, image_holder, image_model_type)
+        display_image(image_prompt, image_holder, image_model)
 
 
 if __name__ == "__main__":

@@ -1,5 +1,5 @@
 # coding: utf-8
-from diffusers import DiffusionPipeline
+from diffusers import DiffusionPipeline, StableDiffusionPipeline
 import os
 import torch
 import logging
@@ -10,12 +10,13 @@ class SDGenImage:
         os.environ['HF_ENDPOINT'] = 'https://hf-mirror.com'
 
         # model_path="/root/data/model/stable-diffusion-v1-5/"
-        self.pipe = DiffusionPipeline.from_pretrained(model_path, torch_dtype=torch.float16, use_safetensors=True, variant="fp16")
+        # self.pipe = DiffusionPipeline.from_pretrained(model_path, torch_dtype=torch.float16, use_safetensors=True, variant="fp16")
+        self.pipe = StableDiffusionPipeline.from_pretrained(model_path, torch_dtype=torch.float16)
         self.pipe.to("cuda")
         # lora_path = "/root/data/TheGodOfCookery/lora/meishi.safetensors"
-        if lora_path is not None:
-            self.pipe.load_lora_weights(lora_path)
-            self.pipe.fuse_lora(lora_scale = lora_scale)
+        # if lora_path is not None:
+        #     self.pipe.load_lora_weights(lora_path)
+        #     self.pipe.fuse_lora(lora_scale = lora_scale)
         # if using torch < 2.0
         # pipe.enable_xformers_memory_efficient_attention()
 
@@ -26,7 +27,7 @@ class SDGenImage:
     def create_img(self, prompt):
         try:
             logging.info("[Stable Diffusion] image_query={}".format(prompt))
-            img = self.pipe('meishi,' + prompt).images[0]
+            img = self.pipe(prompt, guidance_scale=7.5).images[0]
             return True, img
         except Exception as e:
             logging.exception(e)
