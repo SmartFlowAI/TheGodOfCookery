@@ -12,7 +12,7 @@ from dataclasses import asdict
 import streamlit as st
 import torch
 from audiorecorder import audiorecorder
-from modelscope import AutoModelForCausalLM, AutoTokenizer
+from transformers import AutoModelForCausalLM, AutoTokenizer
 from transformers.utils import logging
 
 from tools.transformers.interface import (GenerationConfig,
