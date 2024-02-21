@@ -7,6 +7,7 @@ Please refer to these links below for more information:
     3. transformers: https://github.com/huggingface/transformers
 """
 import os
+import sys
 from dataclasses import asdict
 
 import streamlit as st
@@ -22,6 +23,9 @@ from tools.transformers.interface import (GenerationConfig,
 from whisper_app import run_whisper
 from download import finetuned
 logger = logging.get_logger(__name__)
+__import__('pysqlite3')
+
+sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
 
 # global variables
 enable_rag = None
