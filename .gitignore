@@ -1,8 +1,4 @@
 .vscode
-.idea
 rag/__pycache__
-rag/model
-rag/faiss_index
-rag/chroma_db
 tools/transformers/__pycache__
 whisper_app/__pycache__/
