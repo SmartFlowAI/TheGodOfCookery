@@ -68,9 +68,9 @@ def return_final_md(cur_response):
 
         # Combine both markdowns into one final markdown
         # Define the recipe name for the markdown output
-        recipe_name = f'<span style="color: red;">您的菜谱</span>'
-        ingredients_title = f'<span style="color: green;">食材</span>'
-        step_title = f'<span style="color: blue;">制作步骤</span>'
+        recipe_name = f'您的菜谱'
+        ingredients_title = f'食材'
+        step_title = f'制作步骤'
         final_md = f"# {recipe_name}\n\n## {ingredients_title}\n{ingredients_md}\n\n## {step_title}\n{steps_md}"
     except Exception as e:
         print("error message is ...", e)
