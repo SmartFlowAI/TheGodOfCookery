@@ -23,8 +23,6 @@ from whisper_app import run_whisper
 from gen_image import ZhipuAIImage, SDGenImage
 from gen_image.config import image_model_type, image_model_config
 import os
-from PIL import Image
-import numpy as np
 
 logger = logging.get_logger(__name__)
 
@@ -243,9 +241,7 @@ def display_image(prompt, image_model):
     ok, ret = image_model.create_img(prompt)
     if ok:
         food_image_path = os.path.join(file_dir, f"images/food.jpg")
-        img_array = ret.astype(np.uint8)
-        img = Image.fromarray(img_array)
-        img.save(food_image_path)
+        ret.save(food_image_path)
     else:
         food_image_path = os.path.join(file_dir, f"images/error.jpg")
 
