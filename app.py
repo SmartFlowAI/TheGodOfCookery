@@ -23,6 +23,8 @@ from whisper_app import run_whisper
 from gen_image import ZhipuAIImage, SDGenImage
 from gen_image.config import image_model_type, image_model_config
 import os
+from datetime import datetime
+from PIL import Image
 
 logger = logging.get_logger(__name__)
 
@@ -37,6 +39,11 @@ cur_query_prompt = "<|User|>:{user}<eoh>\n<|Bot|>:"
 # speech
 audio_save_path = "/tmp/audio.wav"
 whisper_model_scale = "medium"
+
+# llm
+llm_model_path = "zhanghuiATchina/zhangxiaobai_shishen2_full"
+
+error_response = "我是食神周星星的唯一传人，我什么菜都会做，包括黑暗料理，您可以问我什么菜怎么做———比如酸菜鱼怎么做？我会告诉你具体的做法。"
 
 
 def on_btn_click():
@@ -65,13 +72,11 @@ def load_model():
         tokenizer (Transformers分词器): 分词器。
     """
     model = (
-        AutoModelForCausalLM.from_pretrained(
-            "zhanghuiATchina/zhangxiaobai_shishen2_full", trust_remote_code=True)
+        AutoModelForCausalLM.from_pretrained( llm_model_path , trust_remote_code=True)
         .to(torch.bfloat16)
         .cuda()
     )
-    tokenizer = AutoTokenizer.from_pretrained(
-        "zhanghuiATchina/zhangxiaobai_shishen2_full", trust_remote_code=True)
+    tokenizer = AutoTokenizer.from_pretrained( llm_model_path , trust_remote_code=True)
     return model, tokenizer
 
 
@@ -158,6 +163,7 @@ def process_user_input(prompt,
 
     """
     # Check if the user input contains certain keywords
+    prompt = prompt.replace("怎麼做", "怎么做")
     keywords = ["怎么做", "做法", "菜谱"]
     contains_keywords = any(keyword in prompt for keyword in keywords)
 
@@ -173,12 +179,10 @@ def process_user_input(prompt,
     # If keywords are not present, display a prompt message immediately
     if not contains_keywords:
         with st.chat_message("robot", avatar=robot_avatar):
-            st.markdown(
-                "我是食神周星星的唯一传人张小白，我什么菜都会做，包括黑暗料理，您可以问我什么菜怎么做———比如酸菜鱼怎么做？，我会告诉你具体的做法。")
+            st.markdown( error_response )
         # Add robot response to chat history
         st.session_state.messages.append(
-            {"role": "robot", "content": "我是食神周星星的唯一传人张小白，我什么菜都会做，包括黑暗料理，您可以问我什么菜怎么做———比如酸菜鱼怎么做？，我会告诉你具体的做法。",
-             "avatar": robot_avatar})
+            {"role": "robot", "content": error_response, "avatar": robot_avatar})
     else:
         # Generate robot response
         with st.chat_message("robot", avatar=robot_avatar):
@@ -240,23 +244,27 @@ def display_image(prompt, image_model):
     # generate image
     ok, ret = image_model.create_img(prompt)
     if ok:
-        food_image_path = os.path.join(file_dir, f"images/food.jpg")
+        current_datetime = datetime.now().strftime("%Y%m%d_%H%M%S")
+        new_file_name = f"food_{current_datetime}.jpg"
+        food_image_path = os.path.join(file_dir, "images/" , new_file_name)
+        print("Image file name")
+        print(food_image_path)
         ret.save(food_image_path)
     else:
         food_image_path = os.path.join(file_dir, f"images/error.jpg")
 
-    food_path_and_style = f"<img src={food_image_path} width = '230' height = '140' align=center />"
+    food_path_and_style = f"<img src=\"{food_image_path}\" width = '230' height = '140' align=center />"
     # add food image
-    st.markdown(food_path_and_style)
+    #st.markdown(food_path_and_style)
+    img = Image.open(food_image_path)
+    st.image(img,width = 230)
 
 
 def main():
-    print("Torch version:")
-    print(torch.__version__)
     print("Torch support GPU: ")
     print(torch.cuda.is_available())
 
-    st.title("食神2——菜谱小助手 by 张小白")
+    st.title("食神2 by 其实你也可以是个厨师队")
     model, tokenizer = load_model()
     image_model = init_image_model(image_model_type, image_model_config)
     generation_config, speech_prompt = prepare_generation_config()
