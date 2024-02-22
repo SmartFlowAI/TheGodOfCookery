@@ -103,7 +103,6 @@ def prepare_generation_config():
         global streaming
         streaming = st.checkbox("Streaming")
 
-
         # 5. Speech input
         audio = audiorecorder("Record", "Stop record")
         speech_string = None
@@ -112,7 +111,7 @@ def prepare_generation_config():
             speech_string = run_whisper(
                 whisper_model_scale, "cuda",
                 audio_save_path)
-        
+
     generation_config = GenerationConfig(
         max_length=max_length, top_p=0.8, temperature=0.8, repetition_penalty=1.002)
 
@@ -178,7 +177,8 @@ def process_user_input(prompt,
                 "我是食神周星星的唯一传人张小白，我什么菜都会做，包括黑暗料理，您可以问我什么菜怎么做———比如酸菜鱼怎么做？，我会告诉你具体的做法。")
         # Add robot response to chat history
         st.session_state.messages.append(
-            {"role": "robot", "content": "我是食神周星星的唯一传人张小白，我什么菜都会做，包括黑暗料理，您可以问我什么菜怎么做———比如酸菜鱼怎么做？，我会告诉你具体的做法。", "avatar": robot_avatar})
+            {"role": "robot", "content": "我是食神周星星的唯一传人张小白，我什么菜都会做，包括黑暗料理，您可以问我什么菜怎么做———比如酸菜鱼怎么做？，我会告诉你具体的做法。",
+             "avatar": robot_avatar})
     else:
         # Generate robot response
         with st.chat_message("robot", avatar=robot_avatar):
@@ -186,11 +186,11 @@ def process_user_input(prompt,
             if enable_rag:
                 if streaming:
                     generator = generate_interactive_rag_stream(
-                    model=model,
-                    tokenizer=tokenizer,
-                    prompt=prompt,
-                    history=real_prompt
-                )
+                        model=model,
+                        tokenizer=tokenizer,
+                        prompt=prompt,
+                        history=real_prompt
+                    )
                     for cur_response in generator:
                         cur_response = cur_response.replace('\\n', '\n')
                         message_placeholder.markdown(cur_response + "▌")
@@ -224,6 +224,7 @@ def process_user_input(prompt,
             {"role": "robot", "content": cur_response, "avatar": robot_avatar})
         torch.cuda.empty_cache()
 
+
 @st.cache_resource
 def init_image_model(image_model_type, image_model_config):
     if image_model_type == 'stable-diffusion':
@@ -233,15 +234,20 @@ def init_image_model(image_model_type, image_model_config):
         image_model = ZhipuAIImage(**image_model_config[image_model_type])
     return image_model
 
-def display_image(prompt, image_holder, image_model):
 
+def display_image(prompt, image_model):
+    file_dir = os.path.dirname(__file__)
+    # generate image
     ok, ret = image_model.create_img(prompt)
-
-
     if ok:
-        image_holder.image(ret, caption = prompt) # return the url of image
+        food_image_path = os.path.join(file_dir, f"images/food.jpg")
+        ret.save(food_image_path)
     else:
-        image_holder.image('images/error.jpg', caption=ret)
+        food_image_path = os.path.join(file_dir, f"images/error.jpg")
+
+    food_path_and_style = f"<img src={food_image_path} width = '230' height = '140' align=center />"
+    # add food image
+    st.markdown(food_path_and_style)
 
 
 def main():
@@ -250,13 +256,11 @@ def main():
     print("Torch support GPU: ")
     print(torch.cuda.is_available())
 
-    
     st.title("食神2——菜谱小助手 by 张小白")
     model, tokenizer = load_model()
     image_model = init_image_model(image_model_type, image_model_config)
     generation_config, speech_prompt = prepare_generation_config()
 
-    image_holder = st.empty()
     # 1.Initialize chat history
     if "messages" not in st.session_state:
         st.session_state.messages = []
@@ -276,7 +280,7 @@ def main():
 
     image_prompt = text_prompt or speech_prompt
     if image_prompt is not None:
-        display_image(image_prompt, image_holder, image_model)
+        display_image(image_prompt, image_model)
 
 
 if __name__ == "__main__":
