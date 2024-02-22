@@ -34,5 +34,8 @@ tiktoken==0.6.0
 openai-whisper==20231117
 streamlit-audiorecorder==0.0.4
 
+#markdown
+jieba==0.39
+
 
 
