@@ -160,6 +160,7 @@ def process_user_input(prompt,
         model (str): 使用的模型名称。
         tokenizer (object): 分词器对象。
         generation_config (dict): 生成配置参数。
+：1
 
     """
     # Check if the user input contains certain keywords
