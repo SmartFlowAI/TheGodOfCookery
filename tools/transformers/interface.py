@@ -19,8 +19,9 @@ import os
 
 logger = logging.get_logger(__name__)
 
+
 def _load_chain(model, tokenizer):
-    # model paths 
+    # model paths
     # llm_model_dir = model_dir
     embed_model_dir =  os.environ.get('HOME') + "/models/m3e-base"
 
@@ -53,9 +54,9 @@ def _load_chain(model, tokenizer):
     # create memory
 
     memory = ConversationBufferMemory(
-    memory_key="chat_history", # 与 prompt 的输入变量保持一致。
-    return_messages=True # 将以消息列表的形式返回聊天记录，而不是单个字符串
-)
+        memory_key="chat_history",  # 与 prompt 的输入变量保持一致。
+        return_messages=True  # 将以消息列表的形式返回聊天记录，而不是单个字符串
+    )
     # 运行 chain
     llm = CookMasterLLM(model=model, tokenizer=tokenizer)
     chain = ConversationalRetrievalChain.from_llm(
@@ -64,14 +65,14 @@ def _load_chain(model, tokenizer):
             search_type="similarity", search_kwargs={"k": 3}
         ),
         memory=memory
-        
+
     )
     return chain
+
 
 # def _get_answer(raw: Iterator[dict]) -> Iterator[str]:
 #     pass
 
-    
 
 @dataclass
 class GenerationConfig:
@@ -84,15 +85,15 @@ class GenerationConfig:
 
 @torch.inference_mode()
 def generate_interactive(
-    model,
-    tokenizer,
-    prompt,
-    generation_config: Optional[GenerationConfig] = None,
-    logits_processor: Optional[LogitsProcessorList] = None,
-    stopping_criteria: Optional[StoppingCriteriaList] = None,
-    prefix_allowed_tokens_fn: Optional[Callable[[int, torch.Tensor], List[int]]] = None,
-    additional_eos_token_id: Optional[int] = None,
-    **kwargs,
+        model,
+        tokenizer,
+        prompt,
+        generation_config: Optional[GenerationConfig] = None,
+        logits_processor: Optional[LogitsProcessorList] = None,
+        stopping_criteria: Optional[StoppingCriteriaList] = None,
+        prefix_allowed_tokens_fn: Optional[Callable[[int, torch.Tensor], List[int]]] = None,
+        additional_eos_token_id: Optional[int] = None,
+        **kwargs,
 ):
     inputs = tokenizer([prompt], padding=True, return_tensors="pt")
     input_length = len(inputs["input_ids"][0])
@@ -194,24 +195,38 @@ def generate_interactive(
         # stop when each sentence is finished, or if we exceed the maximum length
         if unfinished_sequences.max() == 0 or stopping_criteria(input_ids, scores):
             break
+
+
 @torch.inference_mode()
 def generate_interactive_rag_stream(
-    model,
-    tokenizer,
-    prompt, 
-    history
+        model,
+        tokenizer,
+        prompt,
+        history
 ):
     chain = _load_chain(model=model, tokenizer=tokenizer)
     # chain = chain | _get_answer
-    for cur_response in chain.stream({"question": prompt,"chat_history": history})['answer']:
+    for cur_response in chain.stream({"question": prompt, "chat_history": history})['answer']:
         yield cur_response
+
 
 @torch.inference_mode()
 def generate_interactive_rag(
-    model,
-    tokenizer,
-    prompt, 
-    history
+        model,
+        tokenizer,
+        prompt,
+        history
 ):
     chain = _load_chain(model=model, tokenizer=tokenizer)
-    return chain({"question": prompt,"chat_history": history})['answer']
+    return chain({"question": prompt, "chat_history": history})['answer']
+
+
+@torch.inference_mode()
+def generate_interactive_rag_enhanced(
+        model,
+        tokenizer,
+        prompt,
+        history
+):
+    chain = _load_chain(model=model, tokenizer=tokenizer)
+    return chain({"question": prompt, "chat_history": history})['answer']
