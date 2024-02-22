@@ -16,7 +16,7 @@ import sys
 # import os
 import streamlit as st
 import torch
-# import re  
+# import re
 #from transformers import AutoModelForCausalLM, AutoTokenizer
 from transformers.utils import logging
 
@@ -27,7 +27,7 @@ from langchain.vectorstores import Chroma
 from langchain.chains import ConversationalRetrievalChain
 from langchain.memory import ConversationBufferMemory
 # from modelscope import snapshot_download
-from rag.LLM import CookMasterLLM
+from rag.CookMasterLLM import CookMasterLLM
 
 
 model_dir = '/home/xlab-app-center/models/zhanghuiATchina/zhangxiaobai_shishen2_full'
@@ -61,7 +61,7 @@ def on_btn_click():
 
 @st.cache_resource
 def load_chain():
-    # model paths 
+    # model paths
     llm_model_dir = model_dir
     embed_model_dir = "/home/xlab-app-center/models/m3e-base"
 
@@ -105,7 +105,7 @@ def load_chain():
             search_type="similarity", search_kwargs={"k": 3}
         ),
         memory=memory
-        
+
     )
     return chain
 
