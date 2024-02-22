@@ -1,4 +1,4 @@
-import os
+import os.path
 import re
 
 import jieba.posseg as pseg
@@ -44,13 +44,12 @@ def return_final_md(cur_response):
             print("error message is ...", e)
             return cur_response
 
-        file_dir = os.path.dirname(os.path.abspath(__file__))
         # Generate markdown for ingredients table
         ingredients_md = "| 序号 | 数量 | 食材 ||\n| --- | --- | --- |---|\n"
         for i, item in enumerate(ingredients_list):
             try:
                 quantity, name = split_ingredients(item)
-                image_path = os.path.join(file_dir, f"src/{name}.png")
+                image_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), f"src/{name}.png")
                 if os.path.exists(image_path):
                     image_path_and_style = f"<img src={image_path} width = '50' height = '50' align=center />"
                 else:
@@ -69,10 +68,9 @@ def return_final_md(cur_response):
 
         # Combine both markdowns into one final markdown
         # Define the recipe name for the markdown output
-        recipe_name = f'<span style="color: red;">您的菜谱</span>'
-        # add ingredients and steps
-        ingredients_title = f'<span style="color: green;">食材</span>'
-        step_title = f'<span style="color: blue;">制作步骤</span>'
+        recipe_name = f'您的菜谱'
+        ingredients_title = f'食材'
+        step_title = f'制作步骤'
         final_md = f"# {recipe_name}\n\n## {ingredients_title}\n{ingredients_md}\n\n## {step_title}\n{steps_md}"
     except Exception as e:
         print("error message is ...", e)
