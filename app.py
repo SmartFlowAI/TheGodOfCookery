@@ -21,7 +21,7 @@ from tools.transformers.interface import (GenerationConfig,
                                           generate_interactive_rag_stream,
                                           generate_interactive_rag)
 from whisper_app import run_whisper
-#from parse_cur_response import return_final_md
+from parse_cur_response import return_final_md
 
 logger = logging.get_logger(__name__)
 __import__('pysqlite3')
@@ -217,7 +217,7 @@ def process_user_input(prompt,
                 for cur_response in generator:
                     cur_response = cur_response.replace('\\n', '\n')
                     #message_placeholder.markdown(cur_response + "▌")
-                #cur_response  = return_final_md(cur_response)
+                cur_response  = return_final_md(cur_response)
                 message_placeholder.markdown(cur_response)
             # for cur_response in generator:
             #     cur_response = cur_response.replace('\\n', '\n')
