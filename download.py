@@ -22,3 +22,13 @@ if not os.path.exists(os.environ.get('HOME') + '/models/m3e-base'):
 # scales = ["tiny", "base", "small", "medium", "large"]
 # for scale in scales:
 #     whisper.load_model(scale)
+
+# download RAG model
+if not os.path.exists(os.environ.get('HOME') + '/models/bce-embedding-base_v1'):
+    command_str = 'huggingface-cli download --resume-download maidalun1020/bce-embedding-base_v1 --local-dir-use-symlinks False --local-dir '+ os.environ.get('HOME') + '/models/bce-embedding-base_v1"'
+    os.system(command_str)
+
+
+if not os.path.exists(os.environ.get('HOME') + '/models/bce-reranker-base_v1'):
+    command_str = 'huggingface-cli download --resume-download maidalun1020/bce-reranker-base_v1 --local-dir-use-symlinks False --local-dir '+ os.environ.get('HOME') + '/models/bce-reranker-base_v1"'
+    os.system(command_str)
