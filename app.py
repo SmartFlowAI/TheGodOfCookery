@@ -20,8 +20,8 @@ from tools.transformers.interface import (GenerationConfig,
                                           generate_interactive_rag_stream,
                                           generate_interactive_rag)
 from whisper_app import run_whisper
-from gen_image import ZhipuAIImage, SDGenImage
-from gen_image.config import image_model_type, image_model_config
+from gen_image import image_models
+from config import load_config 
 import os
 from datetime import datetime
 from PIL import Image
@@ -29,22 +29,21 @@ from PIL import Image
 logger = logging.get_logger(__name__)
 
 # global variables
-enable_rag = None
-streaming = None
-user_avatar = "images/user.png"
-robot_avatar = "images/robot.png"
-user_prompt = "<|User|>:{user}\n"
-robot_prompt = "<|Bot|>:{robot}<eoa>\n"
-cur_query_prompt = "<|User|>:{user}<eoh>\n<|Bot|>:"
+enable_rag = load_config('global', 'enable_rag')
+streaming = load_config('global', 'streaming')
+user_avatar = load_config('global', 'user_avatar')
+robot_avatar = load_config('global', 'robot_avatar')
+user_prompt = load_config('global', 'user_prompt')
+robot_prompt = load_config('global', 'robot_prompt')
+cur_query_prompt = load_config('global', 'cur_query_prompt')
+error_response = load_config('global', 'error_response')
+
 # speech
-audio_save_path = "/tmp/audio.wav"
-whisper_model_scale = "medium"
+audio_save_path = load_config('speech', 'audio_save_path')
+whisper_model_scale = load_config('speech', 'whisper_model_scale')
 
 # llm
-llm_model_path = "zhanghuiATchina/zhangxiaobai_shishen2_full"
-
-error_response = "我是食神周星星的唯一传人，我什么菜都会做，包括黑暗料理，您可以问我什么菜怎么做———比如酸菜鱼怎么做？我会告诉你具体的做法。"
-
+llm_model_path = load_config('llm', 'llm_model_path')
 
 def on_btn_click():
     """
@@ -231,12 +230,10 @@ def process_user_input(prompt,
 
 
 @st.cache_resource
-def init_image_model(image_model_type, image_model_config):
-    if image_model_type == 'stable-diffusion':
-        image_model = SDGenImage(**image_model_config[image_model_type])
-
-    elif image_model_type == 'glm-4':
-        image_model = ZhipuAIImage(**image_model_config[image_model_type])
+def init_image_model():
+    image_model_type = load_config('image', 'image_model_type')
+    image_model_config = load_config('image', 'image_model_config').get(image_model_type)
+    image_model = image_models[image_model_type](**image_model_config)
     return image_model
 
 
@@ -267,7 +264,7 @@ def main():
 
     st.title("食神2 by 其实你也可以是个厨师队")
     model, tokenizer = load_model()
-    image_model = init_image_model(image_model_type, image_model_config)
+    image_model = init_image_model()
     generation_config, speech_prompt = prepare_generation_config()
 
     # 1.Initialize chat history
