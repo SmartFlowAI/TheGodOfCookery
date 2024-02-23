@@ -264,7 +264,7 @@ def main():
 
     st.title("食神2 by 其实你也可以是个厨师队")
     model, tokenizer = load_model()
-    image_model = init_image_model(image_model_type, image_model_config)
+    image_model = init_image_model()
     generation_config, speech_prompt = prepare_generation_config()
 
     # 1.Initialize chat history
