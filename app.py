@@ -25,7 +25,6 @@ from tools.transformers.interface import (GenerationConfig,
 from whisper_app import run_whisper
 from gen_image import image_models
 
-from gen_image.config import image_model_type, image_model_config
 import os
 from datetime import datetime
 from PIL import Image
