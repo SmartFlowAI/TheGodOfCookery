@@ -39,4 +39,9 @@ openai-whisper==20231117
 streamlit-audiorecorder==0.0.4
 
 
+gradio
+dashscope
+rank_bm25
+
+
 
