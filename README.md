@@ -24,7 +24,7 @@
 
 - [2024.1.30] 基于二代150万菜谱微调的模型和APP发布。（使用InternStudio+A100 1/4X2 40G显存微调，1.25 15:46-1.30 12:25，微调历时4天20小时39分钟）
 - [2024.1.28] 基于一代150万菜谱微调的模型和APP发布。（使用WSL+Ubuntu22.04+RTX4090 24G显存微调，1.26 18:40-1.28 13:46历时1天19小时6分钟）。
-
+- [2024.2.22] 基于团队成员 @房生亮 的Stabble Diffsion模型 以及 @solo fish 的 语音输入模型，整合 text2image分支，发布二阶段第一个版本应用 [openxlab app](https://openxlab.org.cn/apps/detail/zhanghui-china/nlp_shishen3)
 
 
 ## 快速上手
