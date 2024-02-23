@@ -14,7 +14,6 @@ from langchain.llms.base import LLM
 from typing import Any, List, Optional
 from langchain.callbacks.manager import CallbackManagerForLLMRun
 from transformers import AutoTokenizer, AutoModelForCausalLM
-# from modelscope import AutoModelForCausalLM, AutoTokenizer
 import torch
 
 
@@ -23,13 +22,13 @@ class CookMasterLLM(LLM):
     tokenizer: AutoTokenizer = None
     model: AutoModelForCausalLM = None
 
-    def __init__(self, model, tokenizer):
+    def __init__(self, model_path):
         # model_path: InternLM 模型路径
         # 从本地初始化模型
         super().__init__()
         print("正在从本地加载模型...")
-        self.tokenizer = tokenizer
-        self.model = model
+        self.tokenizer = AutoTokenizer.from_pretrained(model_path)
+        self.model = AutoModelForCausalLM.from_pretrained(model_path).to(torch.bfloat16).cuda()
         self.model = self.model.eval()
         print("完成本地模型的加载")
 

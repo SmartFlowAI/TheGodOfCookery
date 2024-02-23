@@ -24,7 +24,7 @@ from langchain.retrievers import BM25Retriever
 from langchain.memory import ConversationBufferMemory
 from langchain.chains import ConversationalRetrievalChain, LLMChain, RetrievalQA
 from langchain_community.llms.tongyi import Tongyi
-from CookMasterLLM import CookMasterLLM
+from .CookMasterLLM import CookMasterLLM
 
 logger = logging.get_logger(__name__)
 chain_instance = None
@@ -32,7 +32,8 @@ chain_instance = None
 
 def load_vector_db(vector_db_name="faiss"):
     # 加载编码模型
-    embedding_model_name = './model/bce-embedding-base_v1'
+    # embedding_model_name = './model/bce-embedding-base_v1'
+    embedding_model_name = 'F:/OneDrive/Pythoncode/TheGodOfCookery/rag\model/bce-embedding-base_v1'
     embedding_model_kwargs = {'device': 'cuda:0'}
     embedding_encode_kwargs = {'batch_size': 32, 'normalize_embeddings': True, 'show_progress_bar': False}
     embeddings = HuggingFaceEmbeddings(
@@ -43,9 +44,11 @@ def load_vector_db(vector_db_name="faiss"):
     # 加载本地索引，创建向量检索器
     # 除非指定使用chroma，否则默认使用faiss
     if vector_db_name == "chroma":
-        vectordb = Chroma(persist_directory='./chroma_db', embedding_function=embeddings)
+        # vectordb = Chroma(persist_directory='./chroma_db', embedding_function=embeddings)
+        vectordb = Chroma(persist_directory='F:/OneDrive/Pythoncode/TheGodOfCookery/rag/chroma_db', embedding_function=embeddings)
     else:
-        vectordb = FAISS.load_local(folder_path='./faiss_index', embeddings=embeddings)
+        # vectordb = FAISS.load_local(folder_path='./faiss_index', embeddings=embeddings)
+        vectordb = FAISS.load_local(folder_path='F:/OneDrive/Pythoncode/TheGodOfCookery/rag/faiss_index', embeddings=embeddings)
     return vectordb
 
 
@@ -59,7 +62,8 @@ def load_retriever(llm, vector_db_name="faiss", verbose=False):
         db_retriever = vectordb.as_retriever(search_type="similarity", search_kwargs={"k": 5})
 
     # 创建BM25检索器
-    bm25retriever = pickle.load(open('./retriever/bm25retriever.pkl', 'rb'))
+    # bm25retriever = pickle.load(open('./retriever/bm25retriever.pkl', 'rb'))
+    bm25retriever = pickle.load(open('F:/OneDrive/Pythoncode/TheGodOfCookery/rag/retriever/bm25retriever.pkl', 'rb'))
     bm25retriever.k = 5
 
     # 向量检索器与BM25检索器组合为集成检索器
@@ -88,7 +92,8 @@ def load_retriever(llm, vector_db_name="faiss", verbose=False):
     #     )
 
     # 创建带reranker的检索器，对大模型过滤器的结果进行再排序
-    reranker_args = {'model': './model/bce-reranker-base_v1', 'top_n': 2, 'device': 'cuda:0'}
+    # reranker_args = {'model': './model/bce-reranker-base_v1', 'top_n': 2, 'device': 'cuda:0'}
+    reranker_args = {'model': 'F:/OneDrive/Pythoncode/TheGodOfCookery/rag\model/bce-reranker-base_v1', 'top_n': 2, 'device': 'cuda:0'}
     reranker = BCERerank(**reranker_args)
     compression_retriever = ContextualCompressionRetriever(base_compressor=reranker, base_retriever=ensemble_retriever)
     return compression_retriever
@@ -271,14 +276,15 @@ def generate_interactive(
 
 @torch.inference_mode()
 def generate_interactive_rag_stream(
-        model,
-        tokenizer,
+        llm,
         prompt,
-        history
+        history,
+        vector_db_name="faiss",
+        verbose=False
 ):
     global chain_instance
     if chain_instance is None:
-        chain_instance = load_chain(model=model, tokenizer=tokenizer)
+        chain_instance = load_chain(llm, vector_db_name=vector_db_name, verbose=verbose)
     # chain = chain | _get_answer
     for cur_response in chain_instance.stream({"question": prompt, "chat_history": history}):
         yield cur_response.get('answer', '')
@@ -286,12 +292,13 @@ def generate_interactive_rag_stream(
 
 @torch.inference_mode()
 def generate_interactive_rag(
-        model,
-        tokenizer,
+        llm,
         prompt,
-        history
+        history,
+        vector_db_name="faiss",
+        verbose=False
 ):
     global chain_instance
     if chain_instance is None:
-        chain_instance = load_chain(model=model, tokenizer=tokenizer)
+        chain_instance = load_chain(llm, vector_db_name=vector_db_name, verbose=verbose)
     return chain_instance({"question": prompt, "chat_history": history})['answer']
