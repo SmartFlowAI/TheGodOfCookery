@@ -6,6 +6,7 @@ Please refer to these links below for more information:
     2. chatglm2: https://github.com/THUDM/ChatGLM2-6B
     3. transformers: https://github.com/huggingface/transformers
 """
+import sys
 
 from dataclasses import asdict
 
@@ -25,8 +26,12 @@ from gen_image.config import image_model_type, image_model_config
 import os
 from datetime import datetime
 from PIL import Image
+from parse_cur_response import return_final_md
 
 logger = logging.get_logger(__name__)
+
+__import__('pysqlite3')
+sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
 
 # global variables
 enable_rag = None
@@ -118,8 +123,8 @@ def prepare_generation_config():
                 audio_save_path)
 
     generation_config = GenerationConfig(
-        max_length=max_length, top_p=0.8, temperature=0.8, repetition_penalty=1.002)
-
+        max_length=max_length, top_p=0.8, temperature=0.8, repetition_penalty=1.002)  #if use internlm2-chat-7b
+        #max_length=max_length2)  #if use internlm-chat-7b
     return generation_config, speech_string
 
 
@@ -212,13 +217,14 @@ def process_user_input(prompt,
                     model=model,
                     tokenizer=tokenizer,
                     prompt=real_prompt,
-                    # additional_eos_token_id=103028,
-                    additional_eos_token_id=92542,
+                    # additional_eos_token_id=103028,  #if use internlm-chat-7b
+                    additional_eos_token_id=92542,   #if use internlm2-chat-7b
                     **asdict(generation_config),
                 )
                 for cur_response in generator:
                     cur_response = cur_response.replace('\\n', '\n')
-                    message_placeholder.markdown(cur_response + "▌")
+                    #message_placeholder.markdown(cur_response + "▌")
+                cur_response  = return_final_md(cur_response)
                 message_placeholder.markdown(cur_response)
             # for cur_response in generator:
             #     cur_response = cur_response.replace('\\n', '\n')
