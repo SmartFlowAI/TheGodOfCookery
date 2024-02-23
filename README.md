@@ -212,7 +212,7 @@ print(response)
 
 5.喵喵咪：数据集准备 [github](https://github.com/miyc1996)
 
-6.房宇亮：文生图 [github](https://github.com/leonfrank)
+6.房宇亮：文生图 [github](https://github.com/leonfrank)   
 
 7.陈菠萝：待定
 

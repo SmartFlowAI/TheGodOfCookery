@@ -1,77 +1,155 @@
+import os
 import copy
 import warnings
 from dataclasses import dataclass
-from typing import Callable, List, Optional, Iterator
-
+from typing import Callable, List, Optional
+import pickle
 import torch
 from torch import nn
 from transformers.generation.utils import LogitsProcessorList, StoppingCriteriaList
 from transformers.utils import logging
 
+import gradio as gr
 from langchain.embeddings.huggingface import HuggingFaceEmbeddings
-from langchain.vectorstores import Chroma
-from langchain.chains import ConversationalRetrievalChain
+from BCEmbedding.tools.langchain import BCERerank
+from langchain.chains.question_answering import load_qa_chain
+from langchain.output_parsers import BooleanOutputParser
+from langchain.prompts import PromptTemplate
+from langchain_community.vectorstores import FAISS
+from langchain_community.vectorstores import Chroma
+from langchain.embeddings import HuggingFaceEmbeddings
+from langchain.retrievers import ContextualCompressionRetriever, EnsembleRetriever
+from langchain.retrievers.document_compressors import LLMChainFilter
+from langchain.retrievers import BM25Retriever
 from langchain.memory import ConversationBufferMemory
-# from langchain_core.output_parsers import StrOutputParser
-from rag.LLM import CookMasterLLM
-import os
+from langchain.chains import ConversationalRetrievalChain, LLMChain, RetrievalQA
+from langchain_community.llms.tongyi import Tongyi
+from .CookMasterLLM import CookMasterLLM
 
 logger = logging.get_logger(__name__)
 chain_instance = None
 
-def _load_chain(model, tokenizer):
-    # model paths 
-    # llm_model_dir = model_dir
-    embed_model_dir = os.environ.get('HOME') + "/models/m3e-base"
 
-    # 加载问答链
-    # 定义 Embeddings
-    embeddings = HuggingFaceEmbeddings(model_name=embed_model_dir)
+def load_vector_db(vector_db_name="faiss"):
+    # 加载编码模型
+    # embedding_model_name = './model/bce-embedding-base_v1'
+    embedding_model_name = 'F:/OneDrive/Pythoncode/TheGodOfCookery/rag\model/bce-embedding-base_v1'
+    embedding_model_kwargs = {'device': 'cuda:0'}
+    embedding_encode_kwargs = {'batch_size': 32, 'normalize_embeddings': True, 'show_progress_bar': False}
+    embeddings = HuggingFaceEmbeddings(
+        model_name=embedding_model_name,
+        model_kwargs=embedding_model_kwargs,
+        encode_kwargs=embedding_encode_kwargs
+    )
+    # 加载本地索引，创建向量检索器
+    # 除非指定使用chroma，否则默认使用faiss
+    if vector_db_name == "chroma":
+        # vectordb = Chroma(persist_directory='./chroma_db', embedding_function=embeddings)
+        vectordb = Chroma(persist_directory='F:/OneDrive/Pythoncode/TheGodOfCookery/rag/chroma_db', embedding_function=embeddings)
+    else:
+        # vectordb = FAISS.load_local(folder_path='./faiss_index', embeddings=embeddings)
+        vectordb = FAISS.load_local(folder_path='F:/OneDrive/Pythoncode/TheGodOfCookery/rag/faiss_index', embeddings=embeddings)
+    return vectordb
 
-    # 向量数据库持久化路径
-    persist_directory = './rag/database'
 
-    # 加载数据库
-    vectordb = Chroma(
-        persist_directory=persist_directory,  # 允许我们将persist_directory目录保存到磁盘上
-        embedding_function=embeddings
+def load_retriever(llm, vector_db_name="faiss", verbose=False):
+    # 加载本地索引，创建向量检索器
+    vectordb = load_vector_db(vector_db_name)
+    # 分别创建向量数据库检索器，便于未来为每个检索器设置不同的参数
+    if vector_db_name == "chroma":
+        db_retriever = vectordb.as_retriever(search_type="similarity", search_kwargs={"k": 5})
+    else:
+        db_retriever = vectordb.as_retriever(search_type="similarity", search_kwargs={"k": 5})
+
+    # 创建BM25检索器
+    # bm25retriever = pickle.load(open('./retriever/bm25retriever.pkl', 'rb'))
+    bm25retriever = pickle.load(open('F:/OneDrive/Pythoncode/TheGodOfCookery/rag/retriever/bm25retriever.pkl', 'rb'))
+    bm25retriever.k = 5
+
+    # 向量检索器与BM25检索器组合为集成检索器
+    ensemble_retriever = EnsembleRetriever(
+        retrievers=[bm25retriever, db_retriever], weights=[0.5, 0.5],
     )
 
-    # llm = CookMasterLLM(model_path=llm_model_dir)
-
-    # template = """使用以下上下文以及提供的知识库来回答用户的问题。如果你不知道答案，就说你不知道。总是使用中文回答。
-    # 问题: {question}
+    #     # 创建带大模型过滤器的检索器，对集成检索器的结果进行过滤
+    #     # TongYi api拒绝该请求，可能是禁止将大模型用于数据标注任务
+    #     filter_prompt_template = """以下是一段可参考的上下文和一个问题, 如果可参看上下文和问题相关请输出 YES , 否则输出 NO .
     # 可参考的上下文：
     # ···
     # {context}
     # ···
-    # 如果给定的上下文无法让你做出回答，请回答你不知道。
-    # 有用的回答:"""
+    # 问题: {question}
+    # 相关性 (YES / NO):"""
+    #
+    #     FILTER_PROMPT_TEMPLATE = PromptTemplate(
+    #         template=filter_prompt_template,
+    #         input_variables=["question", "context"],
+    #         output_parser=BooleanOutputParser(),
+    #     )
+    #     llm_filter = LLMChainFilter.from_llm(llm, prompt=FILTER_PROMPT_TEMPLATE, verbose=verbose)
+    #     filter_retriever = ContextualCompressionRetriever(
+    #         base_compressor=llm_filter, base_retriever=ensemble_retriever
+    #     )
 
-    # QA_CHAIN_PROMPT = PromptTemplate(input_variables=["context", "question"],
-    #                                  template=template)
-    # create memory
+    # 创建带reranker的检索器，对大模型过滤器的结果进行再排序
+    # reranker_args = {'model': './model/bce-reranker-base_v1', 'top_n': 2, 'device': 'cuda:0'}
+    reranker_args = {'model': 'F:/OneDrive/Pythoncode/TheGodOfCookery/rag\model/bce-reranker-base_v1', 'top_n': 2, 'device': 'cuda:0'}
+    reranker = BCERerank(**reranker_args)
+    compression_retriever = ContextualCompressionRetriever(base_compressor=reranker, base_retriever=ensemble_retriever)
+    return compression_retriever
 
+
+def load_chain(llm, vector_db_name="faiss", verbose=False):
+    # 加载检索器
+    retriever = load_retriever(llm=llm, vector_db_name=vector_db_name, verbose=verbose)
+
+    # RAG对话模板
+    qa_template = """使用以下可参考的上下文来回答用户的问题。
+可参考的上下文：
+···
+{context}
+···
+问题: {question}
+如果你不知道答案，就说你不知道。如果给定的上下文无法让你做出回答，请回答无法从上下文找到相关内容。
+有用的回答:"""
+    QA_CHAIN_PROMPT = PromptTemplate(input_variables=["context", "question"],
+                                     template=qa_template)
+    # RAG问答链
+    doc_chain = load_qa_chain(llm=llm, chain_type="stuff", verbose=verbose, prompt=QA_CHAIN_PROMPT)
+
+    # 基于大模型的问题生成器
+    # 将多轮对话和问题整合为一个新的问题
+    question_template = """以下是一段对话和一个后续问题，请将上下文和后续问题整合为一个新的问题。
+对话内容:
+···
+{chat_history}
+···
+后续问题: {question}
+新的问题:"""
+    QUESTION_PROMPT = PromptTemplate(input_variables=["chat_history", "question"],
+                                     template=question_template)
+    question_generator = LLMChain(llm=llm, prompt=QUESTION_PROMPT, verbose=verbose)
+
+    # 记录对话历史
     memory = ConversationBufferMemory(
-    memory_key="chat_history", # 与 prompt 的输入变量保持一致。
-    return_messages=True # 将以消息列表的形式返回聊天记录，而不是单个字符串
-)
-    # 运行 chain
-    llm = CookMasterLLM(model=model, tokenizer=tokenizer)
-    chain = ConversationalRetrievalChain.from_llm(
-        llm,
-        retriever=vectordb.as_retriever(
-            search_type="similarity", search_kwargs={"k": 1}
-        ),
-        memory=memory
-        
+        memory_key="chat_history",  # 与 prompt 的输入变量保持一致。
+        return_messages=True  # 将以消息列表的形式返回聊天记录，而不是单个字符串
     )
-    return chain
+
+    # 多轮对话RAG问答链
+    qa_chain = ConversationalRetrievalChain(
+        question_generator=question_generator,
+        retriever=retriever,
+        combine_docs_chain=doc_chain,
+        memory=memory,
+        verbose=True
+    )
+    return qa_chain
+
 
 # def _get_answer(raw: Iterator[dict]) -> Iterator[str]:
 #     pass
 
-    
 
 @dataclass
 class GenerationConfig:
@@ -84,15 +162,15 @@ class GenerationConfig:
 
 @torch.inference_mode()
 def generate_interactive(
-    model,
-    tokenizer,
-    prompt,
-    generation_config: Optional[GenerationConfig] = None,
-    logits_processor: Optional[LogitsProcessorList] = None,
-    stopping_criteria: Optional[StoppingCriteriaList] = None,
-    prefix_allowed_tokens_fn: Optional[Callable[[int, torch.Tensor], List[int]]] = None,
-    additional_eos_token_id: Optional[int] = None,
-    **kwargs,
+        model,
+        tokenizer,
+        prompt,
+        generation_config: Optional[GenerationConfig] = None,
+        logits_processor: Optional[LogitsProcessorList] = None,
+        stopping_criteria: Optional[StoppingCriteriaList] = None,
+        prefix_allowed_tokens_fn: Optional[Callable[[int, torch.Tensor], List[int]]] = None,
+        additional_eos_token_id: Optional[int] = None,
+        **kwargs,
 ):
     inputs = tokenizer([prompt], padding=True, return_tensors="pt")
     input_length = len(inputs["input_ids"][0])
@@ -194,28 +272,33 @@ def generate_interactive(
         # stop when each sentence is finished, or if we exceed the maximum length
         if unfinished_sequences.max() == 0 or stopping_criteria(input_ids, scores):
             break
+
+
 @torch.inference_mode()
 def generate_interactive_rag_stream(
-    model,
-    tokenizer,
-    prompt, 
-    history
+        llm,
+        prompt,
+        history,
+        vector_db_name="faiss",
+        verbose=False
 ):
     global chain_instance
     if chain_instance is None:
-        chain_instance = _load_chain(model=model, tokenizer=tokenizer)
+        chain_instance = load_chain(llm, vector_db_name=vector_db_name, verbose=verbose)
     # chain = chain | _get_answer
-    for cur_response in chain_instance.stream({"question": prompt,"chat_history": history}):
-        yield cur_response.get('answer','')
+    for cur_response in chain_instance.stream({"question": prompt, "chat_history": history}):
+        yield cur_response.get('answer', '')
+
 
 @torch.inference_mode()
 def generate_interactive_rag(
-    model,
-    tokenizer,
-    prompt, 
-    history
+        llm,
+        prompt,
+        history,
+        vector_db_name="faiss",
+        verbose=False
 ):
     global chain_instance
     if chain_instance is None:
-        chain_instance = _load_chain(model=model, tokenizer=tokenizer)
-    return chain_instance({"question": prompt,"chat_history": history})['answer']
+        chain_instance = load_chain(llm, vector_db_name=vector_db_name, verbose=verbose)
+    return chain_instance({"question": prompt, "chat_history": history})['answer']
