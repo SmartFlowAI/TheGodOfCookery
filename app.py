@@ -33,7 +33,7 @@ logger = logging.get_logger(__name__)
 
 # global variables
 enable_rag = True
-streaming = None
+streaming = False
 user_avatar = "images/user.png"
 robot_avatar = "images/robot.png"
 user_prompt = "<|User|>:{user}\n"
