@@ -177,7 +177,27 @@ print(response)
 
 ### 二阶段安装
 
-待添加
+1. 准备 Python 虚拟环境：
+
+   ```bash
+   conda create -n cook python=3.10 -y
+   conda activate cook
+   ```
+
+2. 克隆该仓库：
+
+   ```shell
+   git clone https://github.com/zhanghui-china/TheGodOfCookery.git
+   cd ./TheGodOfCookery
+   ```
+
+3. 安装Pytorch和依赖库：
+
+   ```shell
+   conda install pytorch torchvision torchaudio pytorch-cuda=12.1 -c pytorch -c nvidia
+   pip install -r requirements.txt
+   ```
+这里cuda的版本根据用户自己的cuda版本确定。一般为 11.8或12.1
 
 ### 二阶段数据集
 
@@ -197,7 +217,18 @@ print(response)
 
 ### 二阶段演示
 
-待添加
+Demo 访问地址：https://openxlab.org.cn/apps/detail/zhanghui-china/nlp_shishen3
+
+<div align="center">
+  <img src="https://github.com/zhanghui-china/TheGodOfCookery/blob/main/images/answer101.png" width="600"/>
+  <br />
+  <img src="https://github.com/zhanghui-china/TheGodOfCookery/blob/main/images/answer102.png" width="600"/>
+  <br />
+  <img src="https://github.com/zhanghui-china/TheGodOfCookery/blob/main/images/answer103.png" width="600"/>
+  <br />
+  <img src="https://github.com/zhanghui-china/TheGodOfCookery/blob/main/images/answer104.png" width="600"/>
+  <br />
+</div>
 
 
 ## 项目参与人员（排名不分先后）
