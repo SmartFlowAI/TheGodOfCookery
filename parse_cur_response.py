@@ -51,10 +51,13 @@ def return_final_md(cur_response):
             try:
                 quantity, name = split_ingredients(item)
                 image_path = os.path.join(file_dir, f"src/{name}.png")
-                if os.path.exists(image_path):
-                    image_path_and_style = f"<img src={image_path} width = '50' height = '50' align=center />"
-                else:
-                    image_path_and_style = ""
+
+                # 如果不展示图片则修改show_flag为False,修改了图片给了引号，下次尝试下是否能正常显示
+                show_flag = False
+                image_path_and_style = ""
+                if show_flag:
+                    if os.path.exists(image_path):
+                        image_path_and_style = f"<img src='{image_path}' width = '50' height = '50' align=center />"
                 line = f"| {i + 1} | {quantity} | {name} |{image_path_and_style}|"
                 ingredients_md += line + "\n"
             except Exception as e:
