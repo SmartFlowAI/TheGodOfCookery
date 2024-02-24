@@ -225,6 +225,11 @@ def process_user_input(prompt,
                     cur_response = cur_response.replace('\\n', '\n')
                     message_placeholder.markdown(cur_response + "▌")
                 message_placeholder.markdown(cur_response)
+            if enable_image and prompt:
+                food_image_path = text_to_image(prompt, image_model)
+                # add food image
+                # img = Image.open(food_image_path)
+                st.image(food_image_path,width = 230)
             # for cur_response in generator:
             #     cur_response = cur_response.replace('\\n', '\n')
             #     message_placeholder.markdown(cur_response + "▌")
@@ -232,14 +237,7 @@ def process_user_input(prompt,
         # Add robot response to chat history
         response_message = {"role": "robot", "content": cur_response, "avatar": robot_avatar}
 
-        # generate image
-
         if enable_image and prompt:
-            food_image_path = text_to_image(prompt, image_model)
-            # food_path_and_style = f"<img src=\"{food_image_path}\" width = '230' height = '140' align=center />"
-            # add food image
-            # img = Image.open(food_image_path)
-            st.image(food_image_path,width = 230)
             response_message.update({'food_image_path': food_image_path})
 
         st.session_state.messages.append(response_message)
@@ -289,6 +287,8 @@ def main():
     for message in st.session_state.messages:
         with st.chat_message(message["role"], avatar=message.get("avatar")):
             st.markdown(message["content"])
+            if 'food_image_path' in message:
+                st.image(message['food_image_path'], width = 230)
 
     # 3.Process text input
     if text_prompt := st.chat_input("What is up?"):
