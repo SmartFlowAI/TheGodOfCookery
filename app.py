@@ -253,7 +253,7 @@ def init_image_model():
     return image_model
 
 
-@st.cache_resource
+# @st.cache_resource
 def text_to_image(prompt, image_model):
     file_dir = os.path.dirname(__file__)
     # generate image
