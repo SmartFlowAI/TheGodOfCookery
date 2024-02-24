@@ -8,6 +8,7 @@ Config = defaultdict(dict)
 Config['global']= {
     'enable_rag': None,
     'streaming': None,
+    'enable_image': None,
     'user_avatar': "images/user.png",
     'robot_avatar': "images/robot.png",
     'user_prompt': "<|User|>:{user}\n",

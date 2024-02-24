@@ -107,6 +107,9 @@ def prepare_generation_config():
         global streaming
         streaming = st.checkbox("Streaming")
 
+        global enable_image
+        enable_image = st.checkbox("Enable Image")
+
         # 5. Speech input
         audio = audiorecorder("Record", "Stop record")
         speech_string = None
@@ -140,6 +143,8 @@ def combine_history(prompt):
             cur_prompt = user_prompt.replace("{user}", cur_content)
         elif message["role"] == "robot":
             cur_prompt = robot_prompt.replace("{robot}", cur_content)
+            if 'food_image_path' in message:
+                st.image(message['food_image_path'], width = 230)
         else:
             raise RuntimeError
         total_prompt += cur_prompt
@@ -224,8 +229,22 @@ def process_user_input(prompt,
             #     message_placeholder.markdown(cur_response + "▌")
             # message_placeholder.markdown(cur_response)
         # Add robot response to chat history
-        st.session_state.messages.append(
-            {"role": "robot", "content": cur_response, "avatar": robot_avatar})
+        response_message = {"role": "robot", "content": cur_response, "avatar": robot_avatar}
+
+        # generate image
+
+        image_prompt = text_prompt or speech_prompt
+        global enable_image
+        if enable_image and prompt:
+            global image_model
+            food_image_path = text_to_image(prompt, image_model)
+            # food_path_and_style = f"<img src=\"{food_image_path}\" width = '230' height = '140' align=center />"
+            # add food image
+            # img = Image.open(food_image_path)
+            st.image(food_image_path,width = 230)
+            response_message.update({'food_image_path': food_image_path})
+
+        st.session_state.messages.append(response_message)
         torch.cuda.empty_cache()
 
 
@@ -237,7 +256,7 @@ def init_image_model():
     return image_model
 
 
-def display_image(prompt, image_model):
+def text_to_image(prompt, image_model):
     file_dir = os.path.dirname(__file__)
     # generate image
     ok, ret = image_model.create_img(prompt)
@@ -251,11 +270,7 @@ def display_image(prompt, image_model):
     else:
         food_image_path = os.path.join(file_dir, f"images/error.jpg")
 
-    food_path_and_style = f"<img src=\"{food_image_path}\" width = '230' height = '140' align=center />"
-    # add food image
-    #st.markdown(food_path_and_style)
-    img = Image.open(food_image_path)
-    st.image(img,width = 230)
+    return food_image_path
 
 
 def main():
@@ -264,7 +279,10 @@ def main():
 
     st.title("食神2 by 其实你也可以是个厨师队")
     model, tokenizer = load_model()
-    image_model = init_image_model()
+    global enable_image
+    global image_model
+    if enable_image:
+        image_model = init_image_model()
     generation_config, speech_prompt = prepare_generation_config()
 
     # 1.Initialize chat history
@@ -284,9 +302,6 @@ def main():
     if speech_prompt is not None:
         process_user_input(speech_prompt, model, tokenizer, generation_config)
 
-    image_prompt = text_prompt or speech_prompt
-    if image_prompt is not None:
-        display_image(image_prompt, image_model)
 
 
 if __name__ == "__main__":
