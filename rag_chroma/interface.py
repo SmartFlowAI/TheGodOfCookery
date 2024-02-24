@@ -52,18 +52,18 @@ def _load_chain(model, tokenizer):
     #                                  template=template)
     # create memory
 
-    memory = ConversationBufferMemory(
-    memory_key="chat_history", # 与 prompt 的输入变量保持一致。
-    return_messages=True # 将以消息列表的形式返回聊天记录，而不是单个字符串
-)
+#     memory = ConversationBufferMemory(
+#     memory_key="chat_history", # 与 prompt 的输入变量保持一致。
+#     return_messages=True # 将以消息列表的形式返回聊天记录，而不是单个字符串
+# )
     # 运行 chain
     llm = CookMasterLLM(model=model, tokenizer=tokenizer)
     chain = ConversationalRetrievalChain.from_llm(
         llm,
         retriever=vectordb.as_retriever(
-            search_type="similarity", search_kwargs={"k": 1}
+            search_type="similarity", search_kwargs={"k": 3}
         ),
-        memory=memory
+        # memory=memory
         
     )
     return chain
@@ -205,7 +205,9 @@ def generate_interactive_rag_stream(
     if chain_instance is None:
         chain_instance = _load_chain(model=model, tokenizer=tokenizer)
     # chain = chain | _get_answer
-    for cur_response in chain_instance.stream({"question": prompt,"chat_history": history}):
+    # for cur_response in chain_instance.stream({"question": prompt,"chat_history": history}):
+    #     yield cur_response.get('answer','')
+    for cur_response in chain_instance.stream({"question": prompt}):
         yield cur_response.get('answer','')
 
 @torch.inference_mode()
@@ -218,4 +220,5 @@ def generate_interactive_rag(
     global chain_instance
     if chain_instance is None:
         chain_instance = _load_chain(model=model, tokenizer=tokenizer)
-    return chain_instance({"question": prompt,"chat_history": history})['answer']
+    # return chain_instance({"question": prompt,"chat_history": history})['answer']
+    return chain_instance({"question": prompt})['answer']
