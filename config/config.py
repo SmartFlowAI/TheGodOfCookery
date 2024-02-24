@@ -8,12 +8,14 @@ Config = defaultdict(dict)
 Config['global']= {
     'enable_rag': None,
     'streaming': None,
+    'enable_markdown': None,
+    'enable_image': None,
     'user_avatar': "images/user.png",
     'robot_avatar': "images/robot.png",
     'user_prompt': "<|User|>:{user}\n",
     'robot_prompt': "<|Bot|>:{robot}<eoa>\n",
     'cur_query_prompt': "<|User|>:{user}<eoh>\n<|Bot|>:",
-    'error_response': "我是食神周星星的唯一传人，我什么菜都会做，包括黑暗料理，您可以问我什么菜怎么做———比如酸菜鱼怎么做？我会告诉你具体的做法。"
+    'error_response': "我是食神周星星的唯一传人，我什么菜都会做，包括黑暗料理，您可以问我什么菜怎么做———比如酸菜鱼怎么做？我会告诉你具体的做法。如果您遇到一些异常，请刷新页面重新提问。"
 
 }
 
@@ -48,5 +50,3 @@ Config['image'] = {
     }
 }
 
-def load_config(domain, key):
-    return Config.get(domain).get(key, None)
