@@ -133,7 +133,7 @@ def prepare_generation_config():
                 audio_save_path)
 
     generation_config = GenerationConfig(
-        max_length=max_length, top_p=0.8, temperature=0.8, repetition_penalty=1.002)
+        max_length=max_length, top_p=0.8, temperature=0.8, repetition_penalty=1.002)   #InternLM2
 
     return generation_config, speech_string
 
@@ -246,14 +246,26 @@ def process_user_input(prompt,
                     cur_response  = return_final_md(cur_response)
                     print('afer markdown')
                     print(cur_response)
+
                 message_placeholder.markdown(cur_response)
+
+        if enable_image and prompt:
+            food_image_path = text_to_image(prompt, image_model)
+            # add food image
+            # img = Image.open(food_image_path)
+            st.image(food_image_path,width = 230)
             # for cur_response in generator:
             #     cur_response = cur_response.replace('\\n', '\n')
             #     message_placeholder.markdown(cur_response + "▌")
             # message_placeholder.markdown(cur_response)
+
         # Add robot response to chat history
-        st.session_state.messages.append(
-            {"role": "robot", "content": cur_response, "avatar": robot_avatar})
+        response_message = {"role": "robot", "content": cur_response, "avatar": robot_avatar}
+        if enable_image and prompt:
+            response_message.update({'food_image_path': food_image_path})
+        
+        st.session_state.messages.append(response_message)
+
         torch.cuda.empty_cache()
 
 
@@ -285,6 +297,22 @@ def display_image(prompt, image_model):
     img = Image.open(food_image_path)
     st.image(img,width = 230)
 
+# @st.cache_resource
+def text_to_image(prompt, image_model):
+    file_dir = os.path.dirname(__file__)
+    # generate image
+    ok, ret = image_model.create_img(prompt)
+    if ok:
+        current_datetime = datetime.now().strftime("%Y%m%d_%H%M%S")
+        new_file_name = f"food_{current_datetime}.jpg"
+        food_image_path = os.path.join(file_dir, "images/" , new_file_name)
+        print("Image file name")
+        print(food_image_path)
+        ret.save(food_image_path)
+    else:
+        food_image_path = os.path.join(file_dir, f"images/error.jpg")
+
+    return food_image_path
 
 def main():
     print("Torch support GPU: ")
@@ -292,6 +320,7 @@ def main():
 
     st.title("食神2 by 其实你也可以是个厨师队")
     model, tokenizer = load_model()
+    global image_model
     image_model = init_image_model()
     generation_config, speech_prompt = prepare_generation_config()
 
@@ -303,6 +332,8 @@ def main():
     for message in st.session_state.messages:
         with st.chat_message(message["role"], avatar=message.get("avatar")):
             st.markdown(message["content"])
+            if 'food_image_path' in message:
+                st.image(message['food_image_path'], width = 230)
 
     # 3.Process text input
     if text_prompt := st.chat_input("What is up?"):
@@ -312,10 +343,10 @@ def main():
     if speech_prompt is not None:
         process_user_input(speech_prompt, model, tokenizer, generation_config)
 
-    image_prompt = text_prompt or speech_prompt
-    if enable_image:
-        if image_prompt is not None:
-            display_image(image_prompt, image_model)
+    #image_prompt = text_prompt or speech_prompt
+    #if enable_image:
+    #    if image_prompt is not None:
+    #        display_image(image_prompt, image_model)
 
 
 if __name__ == "__main__":
