@@ -3,6 +3,7 @@ torch-scatter
 #RAG
 langchain==0.0.292
 langchain-core==0.1.23
+langchain_community==0.0.16
 chromadb==0.4.15
 sentence-transformers==2.2.2
 unstructured==0.10.30

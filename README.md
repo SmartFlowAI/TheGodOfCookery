@@ -216,7 +216,7 @@ print(response)
 
 7.陈菠萝：待定
 
-8.乐正萌：待定
+8.乐正萌：RAG优化 [github](https://github.com/YueZhengMeng)   
 
 9.刘光磊：图标设计，前端优化 [github](https://github.com/Mrguanglei)
 

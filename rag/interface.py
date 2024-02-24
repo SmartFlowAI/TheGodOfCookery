@@ -24,7 +24,7 @@ from langchain.retrievers import BM25Retriever
 from langchain.memory import ConversationBufferMemory
 from langchain.chains import ConversationalRetrievalChain, LLMChain, RetrievalQA
 from langchain_community.llms.tongyi import Tongyi
-from .CookMasterLLM import CookMasterLLM
+from rag.CookMasterLLM import CookMasterLLM
 
 logger = logging.get_logger(__name__)
 chain_instance = None
@@ -67,9 +67,7 @@ def load_retriever(llm, vector_db_name="faiss", verbose=False):
     bm25retriever.k = 5
 
     # 向量检索器与BM25检索器组合为集成检索器
-    ensemble_retriever = EnsembleRetriever(
-        retrievers=[bm25retriever, db_retriever], weights=[0.5, 0.5],
-    )
+    ensemble_retriever = EnsembleRetriever(retrievers=[bm25retriever, db_retriever], weights=[0.5, 0.5])
 
     #     # 创建带大模型过滤器的检索器，对集成检索器的结果进行过滤
     #     # TongYi api拒绝该请求，可能是禁止将大模型用于数据标注任务
