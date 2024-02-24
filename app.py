@@ -212,6 +212,7 @@ def process_user_input(prompt,
                         prompt=prompt,
                         history=real_prompt
                     )
+                    message_placeholder.markdown(cur_response)
             else:
                 generator = generate_interactive(
                     model=model,
