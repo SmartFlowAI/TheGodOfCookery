@@ -9,6 +9,7 @@ Please refer to these links below for more information:
 
 from dataclasses import asdict
 
+import sys
 import streamlit as st
 import torch
 from audiorecorder import audiorecorder
@@ -27,6 +28,9 @@ from datetime import datetime
 from PIL import Image
 
 logger = logging.get_logger(__name__)
+__import__('pysqlite3')
+
+sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
 
 # global variables
 enable_rag = load_config('global', 'enable_rag')
