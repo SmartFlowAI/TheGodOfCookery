@@ -1,4 +1,7 @@
 import os
+
+os.environ['HF_ENDPOINT'] = 'https://hf-mirror.com'
+
 # download RAG model
 print("Download bce embudding base model")
 if not os.path.exists(os.environ.get('HOME') + '/models/bce-embedding-base_v1'):
