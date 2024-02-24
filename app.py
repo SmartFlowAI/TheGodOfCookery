@@ -33,8 +33,9 @@ logger = logging.get_logger(__name__)
 
 # global variables
 enable_rag = load_config('global', 'enable_rag')
-streaming = load_config('global', 'streaming')
+#streaming = load_config('global', 'streaming')
 enable_image = load_config('global', 'enable_image')
+enable_markdown = load_config('global', 'enable_markdown')
 user_avatar = load_config('global', 'user_avatar')
 robot_avatar = load_config('global', 'robot_avatar')
 user_prompt = load_config('global', 'user_prompt')
@@ -108,11 +109,16 @@ def prepare_generation_config():
         enable_rag = st.checkbox("Enable RAG")
 
         # 4. Streaming
-        global streaming
-        streaming = st.checkbox("Streaming")
+        #global streaming
+        #streaming = st.checkbox("Streaming")
 
+        # 6. Output markdown
+        global enable_markdown
+        enable_markdown = st.checkbox("Markdown output")
+
+        # 7. Image
         global enable_image
-        enable_image = st.checkbox("Enable Image")
+        enable_image = st.checkbox("Show Image")
 
         # 5. Speech input
         audio = audiorecorder("Record", "Stop record")
@@ -166,11 +172,15 @@ def process_user_input(prompt,
         model (str): 使用的模型名称。
         tokenizer (object): 分词器对象。
         generation_config (dict): 生成配置参数。
-：1
 
     """
     # Check if the user input contains certain keywords
-    prompt = prompt.replace("怎麼做", "怎么做")
+    print("Origin Prompt:")
+    print(prompt)
+    prompt = convert_t2s(prompt)
+    print("Converted Prompt:")
+    print(prompt)
+    
     keywords = ["怎么做", "做法", "菜谱"]
     contains_keywords = any(keyword in prompt for keyword in keywords)
 
@@ -195,43 +205,40 @@ def process_user_input(prompt,
         with st.chat_message("robot", avatar=robot_avatar):
             message_placeholder = st.empty()
             if enable_rag:
-                if streaming:
-                    generator = generate_interactive_rag_stream(
-                        model=model,
-                        tokenizer=tokenizer,
-                        prompt=prompt,
-                        history=real_prompt
-                    )
-                    for cur_response in generator:
-                        cur_response = cur_response.replace('\\n', '\n')
-                        message_placeholder.markdown(cur_response + "▌")
-                    message_placeholder.markdown(cur_response)
-                else:
-                    cur_response = generate_interactive_rag(
-                        model=model,
-                        tokenizer=tokenizer,
-                        prompt=prompt,
-                        history=real_prompt
-                    )
-                    message_placeholder.markdown(cur_response)
+                cur_response = generate_interactive_rag(
+                    model=model,
+                    tokenizer=tokenizer,
+                    prompt=prompt,
+                    history=real_prompt
+                )
+                if enable_markdown:
+                    print('begin markdown')
+                    print(cur_response)
+                    cur_response  = return_final_md(cur_response)
+                    print('afer markdown')
+                    print(cur_response)
+                message_placeholder.markdown(cur_response)
             else:
                 generator = generate_interactive(
                     model=model,
                     tokenizer=tokenizer,
                     prompt=real_prompt,
-                    # additional_eos_token_id=103028,
-                    additional_eos_token_id=92542,
+                    # additional_eos_token_id=103028,  #InternLM-7b-chat
+                    additional_eos_token_id=92542,   #InternLM2-7b-chat
                     **asdict(generation_config),
                 )
                 for cur_response in generator:
                     cur_response = cur_response.replace('\\n', '\n')
                     message_placeholder.markdown(cur_response + "▌")
-                print('begin markdown')
-                print(cur_response)
-                cur_response  = return_final_md(cur_response)
-                print('after markdown')
-                print(cur_response)
+
+                if enable_markdown:
+                    print('begin markdown')
+                    print(cur_response)
+                    cur_response  = return_final_md(cur_response)
+                    print('after markdown')
+                    print(cur_response)
                 message_placeholder.markdown(cur_response)
+
             if enable_image and prompt:
                 food_image_path = text_to_image(prompt, image_model)
                 # add food image
