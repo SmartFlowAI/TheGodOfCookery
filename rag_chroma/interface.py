@@ -13,7 +13,7 @@ from langchain.vectorstores import Chroma
 from langchain.chains import ConversationalRetrievalChain
 from langchain.memory import ConversationBufferMemory
 # from langchain_core.output_parsers import StrOutputParser
-from LLM import CookMasterLLM
+from rag_chroma.LLM import CookMasterLLM
 import os
 
 logger = logging.get_logger(__name__)
@@ -29,7 +29,7 @@ def _load_chain(model, tokenizer):
     embeddings = HuggingFaceEmbeddings(model_name=embed_model_dir)
 
     # 向量数据库持久化路径
-    persist_directory = './rag/database'
+    persist_directory = './database'
 
     # 加载数据库
     vectordb = Chroma(
