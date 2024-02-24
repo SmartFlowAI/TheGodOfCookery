@@ -37,10 +37,12 @@ diffusers
 #speech 
 openai-whisper==20231117
 streamlit-audiorecorder==0.0.4
-OpenCC==1.1.6
 
+#markdown
+OpenCC==1.1.6
 jieba==0.39
 
+#Enhanced RAG
 BCEmbedding
 faiss-gpu==1.7.2
 langchain_community
