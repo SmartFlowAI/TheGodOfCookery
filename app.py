@@ -31,6 +31,7 @@ logger = logging.get_logger(__name__)
 # global variables
 enable_rag = load_config('global', 'enable_rag')
 streaming = load_config('global', 'streaming')
+enable_image = load_config('global', 'enable_image')
 user_avatar = load_config('global', 'user_avatar')
 robot_avatar = load_config('global', 'robot_avatar')
 user_prompt = load_config('global', 'user_prompt')
@@ -233,10 +234,7 @@ def process_user_input(prompt,
 
         # generate image
 
-        image_prompt = text_prompt or speech_prompt
-        global enable_image
         if enable_image and prompt:
-            global image_model
             food_image_path = text_to_image(prompt, image_model)
             # food_path_and_style = f"<img src=\"{food_image_path}\" width = '230' height = '140' align=center />"
             # add food image
@@ -279,10 +277,8 @@ def main():
 
     st.title("食神2 by 其实你也可以是个厨师队")
     model, tokenizer = load_model()
-    global enable_image
     global image_model
-    if enable_image:
-        image_model = init_image_model()
+    image_model = init_image_model()
     generation_config, speech_prompt = prepare_generation_config()
 
     # 1.Initialize chat history
