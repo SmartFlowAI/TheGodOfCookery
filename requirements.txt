@@ -39,5 +39,5 @@ openai-whisper==20231117
 streamlit-audiorecorder==0.0.4
 OpenCC==1.1.6
 
-
+jieba==0.39
 
