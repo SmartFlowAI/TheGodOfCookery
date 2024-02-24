@@ -15,7 +15,7 @@ from audiorecorder import audiorecorder
 from modelscope import AutoModelForCausalLM, AutoTokenizer
 from transformers.utils import logging
 
-from tools.transformers.interface import (GenerationConfig,
+from rag_chroma.interface import (GenerationConfig,
                                           generate_interactive,
                                           generate_interactive_rag_stream,
                                           generate_interactive_rag)
@@ -26,6 +26,8 @@ import os
 from datetime import datetime
 from PIL import Image
 from parse_cur_response import return_final_md
+import opencc
+from convert_t2s import convert_t2s
 
 logger = logging.get_logger(__name__)
 
