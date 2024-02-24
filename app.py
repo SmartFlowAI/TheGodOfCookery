@@ -15,7 +15,7 @@ from audiorecorder import audiorecorder
 from modelscope import AutoModelForCausalLM, AutoTokenizer
 from transformers.utils import logging
 
-from tools.transformers.interface import (GenerationConfig,
+from rag_chroma.interface import (GenerationConfig,
                                           generate_interactive,
                                           generate_interactive_rag_stream,
                                           generate_interactive_rag)
@@ -26,12 +26,15 @@ import os
 from datetime import datetime
 from PIL import Image
 from parse_cur_response import return_final_md
+import opencc
+from convert_t2s import convert_t2s
 
 logger = logging.get_logger(__name__)
 
 # global variables
 enable_rag = load_config('global', 'enable_rag')
 streaming = load_config('global', 'streaming')
+enable_image = load_config('global', 'enable_image')
 user_avatar = load_config('global', 'user_avatar')
 robot_avatar = load_config('global', 'robot_avatar')
 user_prompt = load_config('global', 'user_prompt')
@@ -107,6 +110,9 @@ def prepare_generation_config():
         # 4. Streaming
         global streaming
         streaming = st.checkbox("Streaming")
+
+        global enable_image
+        enable_image = st.checkbox("Enable Image")
 
         # 5. Speech input
         audio = audiorecorder("Record", "Stop record")
@@ -207,6 +213,7 @@ def process_user_input(prompt,
                         prompt=prompt,
                         history=real_prompt
                     )
+                    message_placeholder.markdown(cur_response)
             else:
                 generator = generate_interactive(
                     model=model,
@@ -222,17 +229,25 @@ def process_user_input(prompt,
                 print('begin markdown')
                 print(cur_response)
                 cur_response  = return_final_md(cur_response)
-                print('afer markdown')
+                print('after markdown')
                 print(cur_response)
                 message_placeholder.markdown(cur_response)
-            
+            if enable_image and prompt:
+                food_image_path = text_to_image(prompt, image_model)
+                # add food image
+                # img = Image.open(food_image_path)
+                st.image(food_image_path,width = 230)
             # for cur_response in generator:
             #     cur_response = cur_response.replace('\\n', '\n')
             #     message_placeholder.markdown(cur_response + "▌")
             # message_placeholder.markdown(cur_response)
         # Add robot response to chat history
-        st.session_state.messages.append(
-            {"role": "robot", "content": cur_response, "avatar": robot_avatar})
+        response_message = {"role": "robot", "content": cur_response, "avatar": robot_avatar}
+
+        if enable_image and prompt:
+            response_message.update({'food_image_path': food_image_path})
+
+        st.session_state.messages.append(response_message)
         torch.cuda.empty_cache()
 
 
@@ -244,7 +259,8 @@ def init_image_model():
     return image_model
 
 
-def display_image(prompt, image_model):
+# @st.cache_resource
+def text_to_image(prompt, image_model):
     file_dir = os.path.dirname(__file__)
     # generate image
     ok, ret = image_model.create_img(prompt)
@@ -258,11 +274,7 @@ def display_image(prompt, image_model):
     else:
         food_image_path = os.path.join(file_dir, f"images/error.jpg")
 
-    food_path_and_style = f"<img src=\"{food_image_path}\" width = '230' height = '140' align=center />"
-    # add food image
-    #st.markdown(food_path_and_style)
-    img = Image.open(food_image_path)
-    st.image(img,width = 230)
+    return food_image_path
 
 
 def main():
@@ -271,6 +283,7 @@ def main():
 
     st.title("食神2 by 其实你也可以是个厨师队")
     model, tokenizer = load_model()
+    global image_model
     image_model = init_image_model()
     generation_config, speech_prompt = prepare_generation_config()
 
@@ -282,6 +295,8 @@ def main():
     for message in st.session_state.messages:
         with st.chat_message(message["role"], avatar=message.get("avatar")):
             st.markdown(message["content"])
+            if 'food_image_path' in message:
+                st.image(message['food_image_path'], width = 230)
 
     # 3.Process text input
     if text_prompt := st.chat_input("What is up?"):
@@ -291,9 +306,6 @@ def main():
     if speech_prompt is not None:
         process_user_input(speech_prompt, model, tokenizer, generation_config)
 
-    image_prompt = text_prompt or speech_prompt
-    if image_prompt is not None:
-        display_image(image_prompt, image_model)
 
 
 if __name__ == "__main__":

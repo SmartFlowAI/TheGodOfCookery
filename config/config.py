@@ -50,5 +50,3 @@ Config['image'] = {
     }
 }
 
-def load_config(domain, key):
-    return Config.get(domain).get(key, None)
