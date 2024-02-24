@@ -20,24 +20,30 @@ from tools.transformers.interface import (GenerationConfig,
                                           generate_interactive_rag_stream,
                                           generate_interactive_rag)
 from whisper_app import run_whisper
-from gen_image import ZhipuAIImage, SDGenImage
-from gen_image.config import image_model_type, image_model_config
+from gen_image import image_models
+from config import load_config 
 import os
+from datetime import datetime
+from PIL import Image
 
 logger = logging.get_logger(__name__)
 
 # global variables
-enable_rag = None
-streaming = None
-user_avatar = "images/user.png"
-robot_avatar = "images/robot.png"
-user_prompt = "<|User|>:{user}\n"
-robot_prompt = "<|Bot|>:{robot}<eoa>\n"
-cur_query_prompt = "<|User|>:{user}<eoh>\n<|Bot|>:"
-# speech
-audio_save_path = "/tmp/audio.wav"
-whisper_model_scale = "medium"
+enable_rag = load_config('global', 'enable_rag')
+streaming = load_config('global', 'streaming')
+user_avatar = load_config('global', 'user_avatar')
+robot_avatar = load_config('global', 'robot_avatar')
+user_prompt = load_config('global', 'user_prompt')
+robot_prompt = load_config('global', 'robot_prompt')
+cur_query_prompt = load_config('global', 'cur_query_prompt')
+error_response = load_config('global', 'error_response')
 
+# speech
+audio_save_path = load_config('speech', 'audio_save_path')
+whisper_model_scale = load_config('speech', 'whisper_model_scale')
+
+# llm
+llm_model_path = load_config('llm', 'llm_model_path')
 
 def on_btn_click():
     """
@@ -65,13 +71,11 @@ def load_model():
         tokenizer (Transformers分词器): 分词器。
     """
     model = (
-        AutoModelForCausalLM.from_pretrained(
-            "zhanghuiATchina/zhangxiaobai_shishen2_full", trust_remote_code=True)
+        AutoModelForCausalLM.from_pretrained( llm_model_path , trust_remote_code=True)
         .to(torch.bfloat16)
         .cuda()
     )
-    tokenizer = AutoTokenizer.from_pretrained(
-        "zhanghuiATchina/zhangxiaobai_shishen2_full", trust_remote_code=True)
+    tokenizer = AutoTokenizer.from_pretrained( llm_model_path , trust_remote_code=True)
     return model, tokenizer
 
 
@@ -155,9 +159,11 @@ def process_user_input(prompt,
         model (str): 使用的模型名称。
         tokenizer (object): 分词器对象。
         generation_config (dict): 生成配置参数。
+：1
 
     """
     # Check if the user input contains certain keywords
+    prompt = prompt.replace("怎麼做", "怎么做")
     keywords = ["怎么做", "做法", "菜谱"]
     contains_keywords = any(keyword in prompt for keyword in keywords)
 
@@ -173,12 +179,10 @@ def process_user_input(prompt,
     # If keywords are not present, display a prompt message immediately
     if not contains_keywords:
         with st.chat_message("robot", avatar=robot_avatar):
-            st.markdown(
-                "我是食神周星星的唯一传人张小白，我什么菜都会做，包括黑暗料理，您可以问我什么菜怎么做———比如酸菜鱼怎么做？，我会告诉你具体的做法。")
+            st.markdown( error_response )
         # Add robot response to chat history
         st.session_state.messages.append(
-            {"role": "robot", "content": "我是食神周星星的唯一传人张小白，我什么菜都会做，包括黑暗料理，您可以问我什么菜怎么做———比如酸菜鱼怎么做？，我会告诉你具体的做法。",
-             "avatar": robot_avatar})
+            {"role": "robot", "content": error_response, "avatar": robot_avatar})
     else:
         # Generate robot response
         with st.chat_message("robot", avatar=robot_avatar):
@@ -226,12 +230,10 @@ def process_user_input(prompt,
 
 
 @st.cache_resource
-def init_image_model(image_model_type, image_model_config):
-    if image_model_type == 'stable-diffusion':
-        image_model = SDGenImage(**image_model_config[image_model_type])
-
-    elif image_model_type == 'glm-4':
-        image_model = ZhipuAIImage(**image_model_config[image_model_type])
+def init_image_model():
+    image_model_type = load_config('image', 'image_model_type')
+    image_model_config = load_config('image', 'image_model_config').get(image_model_type)
+    image_model = image_models[image_model_type](**image_model_config)
     return image_model
 
 
@@ -240,25 +242,29 @@ def display_image(prompt, image_model):
     # generate image
     ok, ret = image_model.create_img(prompt)
     if ok:
-        food_image_path = os.path.join(file_dir, f"images/food.jpg")
+        current_datetime = datetime.now().strftime("%Y%m%d_%H%M%S")
+        new_file_name = f"food_{current_datetime}.jpg"
+        food_image_path = os.path.join(file_dir, "images/" , new_file_name)
+        print("Image file name")
+        print(food_image_path)
         ret.save(food_image_path)
     else:
         food_image_path = os.path.join(file_dir, f"images/error.jpg")
 
-    food_path_and_style = f"<img src={food_image_path} width = '230' height = '140' align=center />"
+    food_path_and_style = f"<img src=\"{food_image_path}\" width = '230' height = '140' align=center />"
     # add food image
-    st.markdown(food_path_and_style)
+    #st.markdown(food_path_and_style)
+    img = Image.open(food_image_path)
+    st.image(img,width = 230)
 
 
 def main():
-    print("Torch version:")
-    print(torch.__version__)
     print("Torch support GPU: ")
     print(torch.cuda.is_available())
 
-    st.title("食神2——菜谱小助手 by 张小白")
+    st.title("食神2 by 其实你也可以是个厨师队")
     model, tokenizer = load_model()
-    image_model = init_image_model(image_model_type, image_model_config)
+    image_model = init_image_model()
     generation_config, speech_prompt = prepare_generation_config()
 
     # 1.Initialize chat history

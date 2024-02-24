@@ -16,7 +16,7 @@ huggingface_hub
 accelerate==0.24.1
 streamlit==1.25.0
 numpy==1.26.3
-tqdm==4.66.2
+tqdm==4.65.0
 psutil==5.9.8
 packaging==23.2
 pre-commit==3.6.1
@@ -37,6 +37,9 @@ diffusers
 #speech 
 openai-whisper==20231117
 streamlit-audiorecorder==0.0.4
+
+#markdown
+jieba==0.39
 
 
 

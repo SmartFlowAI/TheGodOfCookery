@@ -3,7 +3,7 @@ import os
 from modelscope import snapshot_download
 import whisper
 # download  shishen model
-# model_dir = snapshot_download('zhanghuiATchina/zhangxiaobai_shishen2_full')
+model_dir = snapshot_download('zhanghuiATchina/zhangxiaobai_shishen2_full', cache_dir=os.environ.get('HOME'))
 os.environ['HF_ENDPOINT'] = 'https://hf-mirror.com'
 
 # # download m3e model

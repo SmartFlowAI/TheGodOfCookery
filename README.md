@@ -24,7 +24,7 @@
 
 - [2024.1.30] 基于二代150万菜谱微调的模型和APP发布。（使用InternStudio+A100 1/4X2 40G显存微调，1.25 15:46-1.30 12:25，微调历时4天20小时39分钟）
 - [2024.1.28] 基于一代150万菜谱微调的模型和APP发布。（使用WSL+Ubuntu22.04+RTX4090 24G显存微调，1.26 18:40-1.28 13:46历时1天19小时6分钟）。
-
+- [2024.2.22] 基于团队成员 @房生亮 的Stabble Diffsion模型 以及 @solo fish 的 语音输入模型，整合 text2image分支，发布二阶段第一个版本应用 [openxlab app](https://openxlab.org.cn/apps/detail/zhanghui-china/nlp_shishen3)
 
 
 ## 快速上手
@@ -177,7 +177,27 @@ print(response)
 
 ### 二阶段安装
 
-待添加
+1. 准备 Python 虚拟环境：
+
+   ```bash
+   conda create -n cook python=3.10 -y
+   conda activate cook
+   ```
+
+2. 克隆该仓库：
+
+   ```shell
+   git clone https://github.com/zhanghui-china/TheGodOfCookery.git
+   cd ./TheGodOfCookery
+   ```
+
+3. 安装Pytorch和依赖库：
+
+   ```shell
+   conda install pytorch torchvision torchaudio pytorch-cuda=12.1 -c pytorch -c nvidia
+   pip install -r requirements.txt
+   ```
+这里cuda的版本根据用户自己的cuda版本确定。一般为 11.8或12.1
 
 ### 二阶段数据集
 
@@ -197,7 +217,18 @@ print(response)
 
 ### 二阶段演示
 
-待添加
+Demo 访问地址：https://openxlab.org.cn/apps/detail/zhanghui-china/nlp_shishen3
+
+<div align="center">
+  <img src="https://github.com/zhanghui-china/TheGodOfCookery/blob/main/images/answer101.png" width="600"/>
+  <br />
+  <img src="https://github.com/zhanghui-china/TheGodOfCookery/blob/main/images/answer102.png" width="600"/>
+  <br />
+  <img src="https://github.com/zhanghui-china/TheGodOfCookery/blob/main/images/answer103.png" width="600"/>
+  <br />
+  <img src="https://github.com/zhanghui-china/TheGodOfCookery/blob/main/images/answer104.png" width="600"/>
+  <br />
+</div>
 
 
 ## 项目参与人员（排名不分先后）
