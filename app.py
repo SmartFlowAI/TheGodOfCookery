@@ -147,8 +147,6 @@ def combine_history(prompt):
             cur_prompt = user_prompt.replace("{user}", cur_content)
         elif message["role"] == "robot":
             cur_prompt = robot_prompt.replace("{robot}", cur_content)
-            if 'food_image_path' in message:
-                st.image(message['food_image_path'], width = 230)
         else:
             raise RuntimeError
         total_prompt += cur_prompt
