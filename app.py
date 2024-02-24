@@ -25,6 +25,7 @@ from config import load_config
 import os
 from datetime import datetime
 from PIL import Image
+from parse_cur_response import return_final_md
 
 logger = logging.get_logger(__name__)
 
@@ -225,6 +226,11 @@ def process_user_input(prompt,
                 for cur_response in generator:
                     cur_response = cur_response.replace('\\n', '\n')
                     message_placeholder.markdown(cur_response + "▌")
+                print('begin markdown')
+                print(cur_response)
+                cur_response  = return_final_md(cur_response)
+                print('after markdown')
+                print(cur_response)
                 message_placeholder.markdown(cur_response)
             if enable_image and prompt:
                 food_image_path = text_to_image(prompt, image_model)
