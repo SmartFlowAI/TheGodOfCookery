@@ -25,7 +25,7 @@
 - [2024.1.30] 基于二代150万菜谱微调的模型和APP发布。（使用InternStudio+A100 1/4X2 40G显存微调，1.25 15:46-1.30 12:25，微调历时4天20小时39分钟）
 - [2024.1.28] 基于一代150万菜谱微调的模型和APP发布。（使用WSL+Ubuntu22.04+RTX4090 24G显存微调，1.26 18:40-1.28 13:46历时1天19小时6分钟）。
 - [2024.2.22] 基于团队成员 @房生亮 的文生图模块 以及 @solo fish 的 语音输入模块，整合 text2image分支，发布二阶段第一个基于openxlab A100的应用 [openxlab app](https://openxlab.org.cn/apps/detail/zhanghui-china/nlp_shishen3)
-
+- [2024.2.24] 基于团队成员 @Charles 的RAG模块(Chroma)，整合 text2image分支，发布二阶段第2个版本应用 [openxlab app](https://openxlab.org.cn/apps/detail/zhanghui-china/nlp_shishen3)
 
 ## 一阶段
 
@@ -245,7 +245,7 @@ Demo 访问地址：https://openxlab.org.cn/apps/detail/zhanghui-china/nlp_shish
 
 3.Charles：一代RAG（基于Chroma） [github](https://github.com/SchweitzerGAO)
 
-4.乐正萌：二代RAG（基于faiss）[github](https://github.com/YueZhengMeng)
+4.乐正萌：二代RAG（基于faiss&Chroma）[github](https://github.com/YueZhengMeng)
 
 5.彬彬：格式化输出 [github](https://github.com/Everfighting) [知乎](https://www.zhihu.com/people/everfighting)
 
@@ -259,9 +259,11 @@ Demo 访问地址：https://openxlab.org.cn/apps/detail/zhanghui-china/nlp_shish
 
 10.LindSey：待定
 
-11.王巍龙：待定
+11.王巍龙：数据集，微调
 
-12.浦语小助手：提供书生浦语大模型、工具链、训练环境、人才培养等全方面支持 [github](https://github.com/InternLM/InternLM)
+12.轩辕：数据集，微调
+
+13.浦语小助手：提供书生浦语大模型、工具链、训练环境、人才培养等全方面支持 [github](https://github.com/InternLM/InternLM)
 
 
 ## 开源许可证
