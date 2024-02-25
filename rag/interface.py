@@ -8,7 +8,7 @@ import torch
 from torch import nn
 from transformers.generation.utils import LogitsProcessorList, StoppingCriteriaList
 from transformers.utils import logging
-
+from modelscope import AutoTokenizer
 import gradio as gr
 from langchain.embeddings.huggingface import HuggingFaceEmbeddings
 from BCEmbedding.tools.langchain import BCERerank
@@ -25,10 +25,13 @@ from langchain.memory import ConversationBufferMemory
 from langchain.chains import ConversationalRetrievalChain, LLMChain, RetrievalQA
 from langchain_community.llms.tongyi import Tongyi
 from rag.CookMasterLLM import CookMasterLLM
-from config import *
+from config import load_config
 
 logger = logging.get_logger(__name__)
 chain_instance = None
+
+llm_model_path = load_config('llm', 'llm_model_path')
+tokenizer = AutoTokenizer.from_pretrained(llm_model_path , trust_remote_code=True)
 
 
 project_path = load_config('rag', 'project_path')
@@ -165,7 +168,6 @@ class GenerationConfig:
 @torch.inference_mode()
 def generate_interactive(
         model,
-        tokenizer,
         prompt,
         generation_config: Optional[GenerationConfig] = None,
         logits_processor: Optional[LogitsProcessorList] = None,
