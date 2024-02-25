@@ -1,4 +1,9 @@
 .vscode
+.idea
+/.idea/
+rag/model/
+/rag/TONGYI_API_KEY.txt
 rag/__pycache__
 tools/transformers/__pycache__
 whisper_app/__pycache__/
+
