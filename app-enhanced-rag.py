@@ -189,7 +189,6 @@ def process_user_input(prompt, llm, generation_config):
                         llm=llm,
                         prompt=prompt,
                         history=real_prompt,
-                        vector_db_name="faiss",
                         verbose=False
                     )
                     for cur_response in generator:
@@ -201,7 +200,6 @@ def process_user_input(prompt, llm, generation_config):
                         llm=llm,
                         prompt=prompt,
                         history=real_prompt,
-                        vector_db_name="faiss",
                         verbose=False
                     )
                     message_placeholder.markdown(cur_response)
