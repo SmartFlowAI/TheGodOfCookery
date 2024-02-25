@@ -37,9 +37,9 @@ Config['rag'] = {
         'local_path': './rag/faiss_index'
     },
     'hf_emb_config': {
-        'embedding_model_name ': './rag/model/bce-embedding-base_v1',
-        'embedding_model_kwargs': {'device': 'cuda:0'},
-        'embedding_encode_kwargs': {'batch_size': 32, 'normalize_embeddings': True, 'show_progress_bar': False}
+        'model_name': os.environ.get('HOME') + "/models/bce-embedding-base_v1",
+        'model_kwargs': {'device': 'cuda:0'},
+        'encode_kwargs': {'batch_size': 32, 'normalize_embeddings': True, 'show_progress_bar': False}
     },
     'retriever': {
         'db': {
@@ -53,7 +53,7 @@ Config['rag'] = {
     },
     'reranker': {
         'bce' :{
-            'model': './rag/model/bce-reranker-base_v1', 
+            'model': os.environ.get('HOME') + '/models/bce-reranker-base_v1', 
             'top_n': 2, 
             'device': 'cuda:0'
         }
