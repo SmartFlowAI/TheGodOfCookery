@@ -239,6 +239,7 @@ Demo 访问地址：https://openxlab.org.cn/apps/detail/zhanghui-china/nlp_shish
 
 ## 代码结构
 
+   ```shell
 项目目录
 |---config   # 配置文件目录（主要贡献者 @房宇亮）
 |     |---__init__.py                                      #初始化脚本
@@ -304,6 +305,8 @@ Demo 访问地址：https://openxlab.org.cn/apps/detail/zhanghui-china/nlp_shish
 |---app2.py                                                #Web Demo主脚本（RAG2+void+image+markdown）
 |---app-enhanced-rag.py                                    #仅支持RAG2的主脚本
 |---app-rag-with-chroma.py                                 #支持RAG1的主脚本
+
+   ```
 
 ## 项目参与人员（排名不分先后）
 
