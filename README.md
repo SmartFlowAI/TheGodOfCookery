@@ -237,6 +237,77 @@ Demo 访问地址：https://openxlab.org.cn/apps/detail/zhanghui-china/nlp_shish
 3.格式化输出 部分：食材图片似乎因文件名数据集问题无法显示。解析食材会出现部分偏差。
 
 
+## 代码结构
+
+   ```shell
+项目目录
+|---config   # 配置文件目录（主要贡献者 @房宇亮）
+|     |---__init__.py                                      #初始化脚本
+|     |---config.py                                        #配置脚本
+|
+|---gen_image    # 文生图目录（主要贡献者 @房宇亮）
+|     |---__init__.py                                      #初始化脚本
+|     |---sd_gen_image.py                                  #使用Stabble Disffion的文生图模块
+|     |---zhipu_ai_image.py                                #使用智谱AI的文生图模块
+|
+|---images  # 的图片目录，生成的图片临时也放在这里，今后会考虑迁移到其他目录
+|     |---robot.png                                        #对话机器人图标 
+|     |---user.png                                         #对话用户图标 
+|     |---shishen.png                                      #项目图标 
+|
+|---rag   # 二代RAG代码目录（主要贡献者 @乐正萌）
+|     |---source_data                                      #原始数据集目录
+|     |     |- text.txt                                    #原始菜谱数据集
+|     |---data                                             #处理后的数据集目录
+|     |     |- caipu.txt                                   #处理后的菜谱数据集
+|     |---chroma_db                                        #chroma数据库目录
+|     |     |- chroma.sqlite3                              #chroma库文件
+|     |---faiss_index                                      #FAISS数据库目录
+|     |     |- index.faiss   
+|     |     |- index.pkl
+|     |---retrieve                                         #retrieve目录
+|     |     |- bm25retriever.pkl
+|     |---CookMasterLLM.py
+|     |---convert_txt.py
+|     |---create_db.py
+|     |---interface.py
+|     |---rag_test.py
+|     |---run_local.py
+|
+|---rag_chroma   # 二代RAG代码目录（主要贡献者 @Charles）
+|     |---database                                         #chroma数据库目录
+|     |     |- chroma.sqlite3                              #chroma库文件
+|     |---LLM.py
+|     |---create_db.py
+|     |---interface.py
+|
+|---src    # 食材图标目录
+|     |---*.png                                            #各类食材图标
+|
+|---tools    # 工具文件目录
+|
+|---whisper_app    # 语音识别目录（主要贡献者 @solo fish）
+|     |---__init__.py                                      #初始化脚本
+|     |---whisper.py                                       #语音识别处理脚本
+|
+|---requirements.txt                                       #系统依赖包（请使用pip install -r requirements.txt安装）
+|---convert_t2s.py                                         #繁体字转简体字工具（主要贡献者 @彬彬）
+|---parse_cur_response.py                                  #输出格式化处理工具 （主要贡献者 @彬彬）
+|---README.md                                              #本文档
+|---cli_demo.py                                            #模型下载脚本
+|---download.py                                            #模型测试脚本
+|---download_rag2_model.py                                 #仅二代RAG所需模型的下载脚本
+|---start.py                                               #Web Demo启动脚本
+|---start2.py                                              #Web Demo启动脚本（支持RAG2）
+|---start_rag_chroma.py                                    #Web Demo启动脚本（支持RAG1）
+|---start_rag2.py                                          #Web Demo启动脚本（仅支持RAG2）
+|---app.py                                                 #Web Demo主脚本（RAG1+void+image+markdown）
+|---app2.py                                                #Web Demo主脚本（RAG2+void+image+markdown）
+|---app-enhanced-rag.py                                    #仅支持RAG2的主脚本
+|---app-rag-with-chroma.py                                 #支持RAG1的主脚本
+
+   ```
+
 ## 项目参与人员（排名不分先后）
 
 1.张小白，项目策划、测试和打杂。 [知乎](https://www.zhihu.com/people/zhanghui_china)
