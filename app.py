@@ -211,12 +211,15 @@ def process_user_input(prompt,
                     prompt=prompt,
                     history=real_prompt
                 )
+                cur_response = cur_response.replace('\\n', '\n')
+  
+                print(cur_response)
+
                 if enable_markdown:
-                    print('begin markdown')
-                    print(cur_response)
                     cur_response  = return_final_md(cur_response)
                     print('afer markdown')
                     print(cur_response)
+
                 message_placeholder.markdown(cur_response)
             else:
                 generator = generate_interactive(
@@ -231,9 +234,9 @@ def process_user_input(prompt,
                     cur_response = cur_response.replace('\\n', '\n')
                     message_placeholder.markdown(cur_response + "▌")
 
+                print(cur_response)
                 if enable_markdown:
-                    print('begin markdown')
-                    print(cur_response)
+
                     cur_response  = return_final_md(cur_response)
                     print('after markdown')
                     print(cur_response)
