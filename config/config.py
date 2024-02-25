@@ -44,7 +44,7 @@ Config['rag'] = {
     'retriever': {
         'db': {
             'search_type': "similarity", 
-            'search_kwargs': {"k": 5}
+            'search_kwargs': {"k": 3}
         },
         'bm25':{
             'pickle_path': './rag/retriever/bm25retriever.pkl',
