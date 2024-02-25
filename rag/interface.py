@@ -54,7 +54,6 @@ def load_retriever(llm, verbose=False):
     # 加载本地索引，创建向量检索器
     db_retriever_config = load_config('rag', 'retriever').get('db')
     bm25_retriever_config = load_config('rag', 'retriever').get('bm25')
-    bce_reranker_config = load_config('rag', 'reranker').get('bce')
 
     vectordb = load_vector_db()
     # 分别创建向量数据库检索器，便于未来为每个检索器设置不同的参数
@@ -66,8 +65,8 @@ def load_retriever(llm, verbose=False):
 
     # 创建BM25检索器
     pickle_path = bm25_retriever_config.get('pickle_path')
-    bm25_retriever = pickle.load(open(pickle_path, 'rb'))
-    bm25_retriever.k = bm25_retriever_config.get('search_kwargs').get('k')
+    bm25retriever = pickle.load(open(pickle_path, 'rb'))
+    bm25retriever.k = bm25_retriever_config.get('search_kwargs').get('k')
 
     # 向量检索器与BM25检索器组合为集成检索器
     ensemble_retriever = EnsembleRetriever(retrievers=[bm25retriever, db_retriever], weights=[0.5, 0.5])
@@ -93,6 +92,7 @@ def load_retriever(llm, verbose=False):
     #     )
 
     # 创建带reranker的检索器，对大模型过滤器的结果进行再排序
+    bce_reranker_config = load_config('rag', 'reranker').get('bce')
     reranker = BCERerank(**bce_reranker_config)
     compression_retriever = ContextualCompressionRetriever(base_compressor=reranker, base_retriever=ensemble_retriever)
     return compression_retriever
