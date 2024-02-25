@@ -9,9 +9,9 @@ unstructured==0.10.30
 markdown==3.3.7
 pysqlite3-binary
 
-modelscope==1.9.5 
-transformers==4.35.2 
-sentencepiece==0.1.99 
+modelscope==1.9.5
+transformers==4.35.2
+sentencepiece==0.1.99
 huggingface_hub
 accelerate==0.24.1
 streamlit==1.25.0
@@ -30,11 +30,11 @@ pyecharts==2.0.4
 google-auth>=1.0.1
 tiktoken==0.6.0
 
-# text2image 
+# text2image
 zhipuai
 diffusers
 
-#speech 
+#speech
 openai-whisper==20231117
 streamlit-audiorecorder==0.0.4
 
@@ -43,7 +43,7 @@ OpenCC==1.1.6
 jieba==0.39
 
 #Enhanced RAG
-BCEmbedding
+BCEmbedding==0.1.3
 faiss-gpu==1.7.2
 langchain_community
 dashscope
