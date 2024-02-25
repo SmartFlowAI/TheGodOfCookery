@@ -61,7 +61,7 @@ def _load_chain(model, tokenizer):
     chain = ConversationalRetrievalChain.from_llm(
         llm,
         retriever=vectordb.as_retriever(
-            search_type="similarity", search_kwargs={"k": 3}
+            search_type="similarity", search_kwargs={"k": 1}
         ),
         memory=memory
         

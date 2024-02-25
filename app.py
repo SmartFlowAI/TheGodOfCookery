@@ -211,6 +211,7 @@ def process_user_input(prompt,
                     prompt=prompt,
                     history=real_prompt
                 )
+                cur_response = cur_response.replace('\\n', '\n')
                 if enable_markdown:
                     print('begin markdown')
                     print(cur_response)
