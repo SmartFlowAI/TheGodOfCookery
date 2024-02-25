@@ -32,13 +32,13 @@ Config['speech'] = {
 
 # rag
 Config['rag'] = {
-    'project_path': "/root/TheGodOfCookery/",    
-    'model_dir_path': "/root/models/",  
-    'bm25retriever_file': "/root/TheGodOfCookery/rag/retriever/bm25retriever.pkl",  
+    'project_path': os.environ.get('HOME') + "/TheGodOfCookery/",    
+    'model_dir_path': os.environ.get('HOME') + "/models/",  
+    'bm25retriever_file': os.environ.get('HOME') + "/TheGodOfCookery/rag/retriever/bm25retriever.pkl",  
     'embedding_model_path': os.environ.get('HOME') + "/models/bce-embedding-base_v1", 
     'reranker_model_path': os.environ.get('HOME') + "/models/bce-reranker-base_v1", 
-    'vectordb_chroma_path': "/root/TheGodOfCookery/rag/chroma_db", 
-    'vectordb_faiss_path': "/root/TheGodOfCookery/rag/faiss_index"  
+    'vectordb_chroma_path': os.environ.get('HOME') + "/TheGodOfCookery/rag/chroma_db", 
+    'vectordb_faiss_path': os.environ.get('HOME') + "/TheGodOfCookery/rag/faiss_index"  
 }
 
 # 文生图部分config
