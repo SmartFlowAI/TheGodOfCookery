@@ -24,6 +24,7 @@ from rag.interface import (GenerationConfig,
                            generate_interactive_rag)
 # from whisper_app import run_whisper
 # from download import finetuned
+from config import load_config
 
 logger = logging.get_logger(__name__)
 
@@ -69,7 +70,7 @@ def load_model():
         llm (langchain.llms.base.LLM): 预训练模型,langchain格式。
     """
     # path = os.environ.get('HOME') + ("/zhanghuiATchina/zhangxiaobai_shishen2_full" if finetuned else "/Shanghai_AI_Laboratory/internlm2-chat-7b")
-    path = os.environ.get('HOME') + "/models/zhanghuiATchina/zhangxiaobai_shishen2_full"
+    path = load_config('llm', 'llm_model_path')
     llm = CookMasterLLM(model_path=path)
     #TONGYI_API_KEY = open("./rag/TONGYI_API_KEY.txt", "r").read().strip()
     # 加载通义千问大语言模型
