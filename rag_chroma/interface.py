@@ -61,7 +61,7 @@ def _load_chain(model, tokenizer):
     chain = ConversationalRetrievalChain.from_llm(
         llm,
         retriever=vectordb.as_retriever(
-            search_type="similarity", search_kwargs={"k": 3}
+            search_type="similarity", search_kwargs={"k": 1}
         ),
         memory=memory
         
@@ -207,6 +207,8 @@ def generate_interactive_rag_stream(
     # chain = chain | _get_answer
     for cur_response in chain_instance.stream({"question": prompt,"chat_history": history}):
         yield cur_response.get('answer','')
+    # for cur_response in chain_instance.stream({"question": prompt}):
+    #     yield cur_response.get('answer','')
 
 @torch.inference_mode()
 def generate_interactive_rag(
@@ -219,3 +221,4 @@ def generate_interactive_rag(
     if chain_instance is None:
         chain_instance = _load_chain(model=model, tokenizer=tokenizer)
     return chain_instance({"question": prompt,"chat_history": history})['answer']
+    # return chain_instance({"question": prompt})['answer']

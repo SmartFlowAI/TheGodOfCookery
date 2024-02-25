@@ -27,7 +27,7 @@ Config['llm'] = {
 # speech
 Config['speech'] = {
     'audio_save_path': "/tmp/audio.wav", 
-    'whisper_model_scale': "medium"
+    'whisper_model_scale': "medium"   
 }
 
 # rag
