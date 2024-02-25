@@ -32,13 +32,32 @@ Config['speech'] = {
 
 # rag
 Config['rag'] = {
-    'project_path': "/root/TheGodOfCookery/",    
-    'model_dir_path': "/root/models/",  
-    'bm25retriever_file': "/root/TheGodOfCookery/rag/retriever/bm25retriever.pkl",  
-    'embedding_model_path': os.environ.get('HOME') + "/models/bce-embedding-base_v1", 
-    'reranker_model_path': os.environ.get('HOME') + "/models/bce-reranker-base_v1", 
-    'vectordb_chroma_path': "/root/TheGodOfCookery/rag/chroma_db", 
-    'vectordb_faiss_path': "/root/TheGodOfCookery/rag/faiss_index"  
+    'vector_db': {
+        'name': "faiss",
+        'path': './rag/faiss_index'
+    },
+    'hf_emb_config': {
+        'model_name': os.environ.get('HOME') + "/models/bce-embedding-base_v1",
+        'model_kwargs': {'device': 'cuda:0'},
+        'encode_kwargs': {'batch_size': 32, 'normalize_embeddings': True, 'show_progress_bar': False}
+    },
+    'retriever': {
+        'db': {
+            'search_type': "similarity", 
+            'search_kwargs': {"k": 3}
+        },
+        'bm25':{
+            'pickle_path': './rag/retriever/bm25retriever.pkl',
+            'search_kwargs': {"k": 5}
+        }
+    },
+    'reranker': {
+        'bce' :{
+            'model': os.environ.get('HOME') + '/models/bce-reranker-base_v1', 
+            'top_n': 2, 
+            'device': 'cuda:0'
+        }
+    }
 }
 
 # 文生图部分config
