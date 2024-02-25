@@ -34,7 +34,7 @@ Config['speech'] = {
 Config['rag'] = {
     'vector_db': {
         'name': "faiss",
-        'local_path': './rag/faiss_index'
+        'path': './rag/faiss_index'
     },
     'hf_emb_config': {
         'model_name': os.environ.get('HOME') + "/models/bce-embedding-base_v1",
