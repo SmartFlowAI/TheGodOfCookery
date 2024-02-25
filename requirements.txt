@@ -1,8 +1,11 @@
 torch-scatter
 
 #RAG
-langchain==0.0.292
-langchain-core==0.1.23
+langchain==0.1.4
+langchain-core==0.1.16
+langchain_community==0.0.16
+langsmith==0.0.83
+
 chromadb==0.4.15
 sentence-transformers==2.2.2
 unstructured==0.10.30
@@ -45,7 +48,6 @@ jieba==0.39
 #Enhanced RAG
 BCEmbedding==0.1.3
 faiss-gpu==1.7.2
-langchain_community
 dashscope
 rank_bm25
 
