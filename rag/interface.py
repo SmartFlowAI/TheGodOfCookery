@@ -9,7 +9,6 @@ from torch import nn
 from transformers.generation.utils import LogitsProcessorList, StoppingCriteriaList
 from transformers.utils import logging
 
-import gradio as gr
 from langchain.embeddings.huggingface import HuggingFaceEmbeddings
 from BCEmbedding.tools.langchain import BCERerank
 from langchain.chains.question_answering import load_qa_chain
@@ -24,47 +23,48 @@ from langchain.retrievers import BM25Retriever
 from langchain.memory import ConversationBufferMemory
 from langchain.chains import ConversationalRetrievalChain, LLMChain, RetrievalQA
 from langchain_community.llms.tongyi import Tongyi
-from CookMasterLLM import CookMasterLLM
+from rag.CookMasterLLM import CookMasterLLM
+from config import load_config
 
 logger = logging.get_logger(__name__)
 chain_instance = None
 
 
-project_path = "F:/OneDrive/Pythoncode/TheGodOfCookery/"
-model_dir_path = "F:/OneDrive/Pythoncode/TheGodOfCookery/rag/model/"
-
-
-def load_vector_db(vector_db_name="faiss"):
+def load_vector_db():
+    # vector_db config
+    vector_db_config = load_config('rag', 'vector_db')
+    vector_db_name = vector_db_config.get('name')
+    vector_db_path = vector_db_config.get('path')
     # 加载编码模型
-    embedding_model_name = model_dir_path + 'bce-embedding-base_v1'
-    embedding_model_kwargs = {'device': 'cuda:0'}
-    embedding_encode_kwargs = {'batch_size': 32, 'normalize_embeddings': True, 'show_progress_bar': False}
-    embeddings = HuggingFaceEmbeddings(
-        model_name=embedding_model_name,
-        model_kwargs=embedding_model_kwargs,
-        encode_kwargs=embedding_encode_kwargs
-    )
+    hf_emb_config = load_config('rag', 'hf_emb_config')
+    embeddings = HuggingFaceEmbeddings(**hf_emb_config)
     # 加载本地索引，创建向量检索器
     # 除非指定使用chroma，否则默认使用faiss
     if vector_db_name == "chroma":
-        vectordb = Chroma(persist_directory=project_path + '/rag/chroma_db', embedding_function=embeddings)
+        vectordb = Chroma(persist_directory=vector_db_path, embedding_function=embeddings)
     else:
-        vectordb = FAISS.load_local(folder_path=project_path + '/rag/faiss_index', embeddings=embeddings)
+        vectordb = FAISS.load_local(folder_path=vector_db_path, embeddings=embeddings)
     return vectordb
 
 
-def load_retriever(llm, vector_db_name="faiss", verbose=False):
+def load_retriever(llm, verbose=False):
     # 加载本地索引，创建向量检索器
-    vectordb = load_vector_db(vector_db_name)
+    db_retriever_config = load_config('rag', 'retriever').get('db')
+    bm25_retriever_config = load_config('rag', 'retriever').get('bm25')
+    bce_reranker_config = load_config('rag', 'reranker').get('bce')
+
+    vectordb = load_vector_db()
     # 分别创建向量数据库检索器，便于未来为每个检索器设置不同的参数
-    if vector_db_name == "chroma":
-        db_retriever = vectordb.as_retriever(search_type="similarity", search_kwargs={"k": 5})
-    else:
-        db_retriever = vectordb.as_retriever(search_type="similarity", search_kwargs={"k": 5})
+    # if vector_db_name == "chroma":
+    #     db_retriever = vectordb.as_retriever(search_type="similarity", search_kwargs={"k": 5})
+    # else:
+    #     db_retriever = vectordb.as_retriever(search_type="similarity", search_kwargs={"k": 5})
+    db_retriever = vectordb.as_retriever(**db_retriever_config)
 
     # 创建BM25检索器
-    bm25retriever = pickle.load(open(project_path + '/rag/retriever/bm25retriever.pkl', 'rb'))
-    bm25retriever.k = 5
+    pickle_path = bm25_retriever_config.get('pickle_path')
+    bm25_retriever = pickle.load(open(pickle_path, 'rb'))
+    bm25_retriever.k = bm25_retriever_config.get('search_kwargs').get('k')
 
     # 向量检索器与BM25检索器组合为集成检索器
     ensemble_retriever = EnsembleRetriever(retrievers=[bm25retriever, db_retriever], weights=[0.5, 0.5])
@@ -90,15 +90,14 @@ def load_retriever(llm, vector_db_name="faiss", verbose=False):
     #     )
 
     # 创建带reranker的检索器，对大模型过滤器的结果进行再排序
-    reranker_args = {'model': model_dir_path + 'bce-reranker-base_v1', 'top_n': 2, 'device': 'cuda:0'}
-    reranker = BCERerank(**reranker_args)
+    reranker = BCERerank(**bce_reranker_config)
     compression_retriever = ContextualCompressionRetriever(base_compressor=reranker, base_retriever=ensemble_retriever)
     return compression_retriever
 
 
-def load_chain(llm, vector_db_name="faiss", verbose=False):
+def load_chain(llm, verbose=False):
     # 加载检索器
-    retriever = load_retriever(llm=llm, vector_db_name=vector_db_name, verbose=verbose)
+    retriever = load_retriever(llm=llm, verbose=verbose)
 
     # RAG对话模板
     qa_template = """使用以下可参考的上下文来回答用户的问题。
@@ -276,12 +275,11 @@ def generate_interactive_rag_stream(
         llm,
         prompt,
         history,
-        vector_db_name="faiss",
         verbose=False
 ):
     global chain_instance
     if chain_instance is None:
-        chain_instance = load_chain(llm, vector_db_name=vector_db_name, verbose=verbose)
+        chain_instance = load_chain(llm, verbose=verbose)
     # chain = chain | _get_answer
     for cur_response in chain_instance.stream({"question": prompt, "chat_history": history}):
         yield cur_response.get('answer', '')
@@ -292,10 +290,9 @@ def generate_interactive_rag(
         llm,
         prompt,
         history,
-        vector_db_name="faiss",
         verbose=False
 ):
     global chain_instance
     if chain_instance is None:
-        chain_instance = load_chain(llm, vector_db_name=vector_db_name, verbose=verbose)
+        chain_instance = load_chain(llm, verbose=verbose)
     return chain_instance({"question": prompt, "chat_history": history})['answer']

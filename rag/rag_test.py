@@ -33,7 +33,7 @@ def test_vector_db(vector_db_name="faiss"):
 
 
 def run_terminal(llm):
-    qa_chain = load_chain(llm, vector_db_name="faiss", verbose=True)
+    qa_chain = load_chain(llm, verbose=True)
     while True:
         question = input("请输入问题：")
         if question == "exit":

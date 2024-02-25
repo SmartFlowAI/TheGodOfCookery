@@ -9,8 +9,8 @@ class Model_center():
     存储问答 Chain 的对象
     """
 
-    def __init__(self, llm, vector_db_name="faiss", verbose=False):
-        self.chain = load_chain(llm, vector_db_name=vector_db_name, verbose=verbose)
+    def __init__(self, llm, verbose=False):
+        self.chain = load_chain(llm, verbose=verbose)
 
     def qa_chain_self_answer(self, question: str, chat_history: list = []):
         """
@@ -27,7 +27,7 @@ class Model_center():
             return e, chat_history
 
 
-def run_gradio(llm, vector_db_name="faiss", verbose=False):
+def run_gradio(llm, verbose=False):
     model_center = Model_center(llm, vector_db_name, verbose)
 
     block = gr.Blocks()
@@ -71,4 +71,4 @@ if __name__ == "__main__":
 
     # 加载通义千问大语言模型
     llm = Tongyi(dashscope_api_key=TONGYI_API_KEY, temperature=0, model_name="qwen-turbo")
-    run_gradio(llm, vector_db_name="faiss", verbose=verbose)
+    run_gradio(llm, verbose=verbose)

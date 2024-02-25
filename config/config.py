@@ -32,7 +32,32 @@ Config['speech'] = {
 
 # rag
 Config['rag'] = {
-    
+    'vector_db': {
+        'name': "faiss",
+        'local_path': './rag/faiss_index'
+    },
+    'hf_emb_config': {
+        'embedding_model_name ': './rag/model/bce-embedding-base_v1',
+        'embedding_model_kwargs': {'device': 'cuda:0'},
+        'embedding_encode_kwargs': {'batch_size': 32, 'normalize_embeddings': True, 'show_progress_bar': False}
+    },
+    'retriever': {
+        'db': {
+            'search_type': "similarity", 
+            'search_kwargs': {"k": 5}
+        },
+        'bm25':{
+            'pickle_path': './rag/retriever/bm25retriever.pkl',
+            'search_kwargs': {"k": 5}
+        }
+    },
+    'reranker': {
+        'bce' :{
+            'model': './rag/model/bce-reranker-base_v1', 
+            'top_n': 2, 
+            'device': 'cuda:0'
+        }
+    }
 }
 
 # 文生图部分config
