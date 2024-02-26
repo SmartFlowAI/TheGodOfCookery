@@ -274,12 +274,12 @@ Demo 访问地址：https://openxlab.org.cn/apps/detail/zhanghui-china/nlp_shish
 |     |---rag_test.py
 |     |---run_local.py
 |
-|---rag_chroma   # 二代RAG代码目录（主要贡献者 @Charles）
+|---rag_chroma   # 一代RAG代码目录（主要贡献者 @Charles）
 |     |---database                                         #chroma数据库目录
 |     |     |- chroma.sqlite3                              #chroma库文件
-|     |---LLM.py
-|     |---create_db.py
-|     |---interface.py
+|     |---LLM.py                                           #定义Langchain封装的大模型
+|     |---create_db.py                                     #创建并持久化向量数据库脚本
+|     |---interface.py                                     #调用RAG输出的主要接口
 |
 |---src    # 食材图标目录
 |     |---*.png                                            #各类食材图标
