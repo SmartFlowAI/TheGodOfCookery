@@ -322,15 +322,11 @@ Demo 访问地址：https://openxlab.org.cn/apps/detail/zhanghui-china/nlp_shish
 
 8.喵喵咪：数据集准备 [github](https://github.com/miyc1996)
 
-9.陈菠萝：待定
+9.王巍龙：数据集，微调
 
-10.LindSey：待定
+10.轩辕：文档准备，数据集，微调
 
-11.王巍龙：数据集，微调
-
-12.轩辕：文档准备，数据集，微调
-
-13.浦语小助手：提供书生浦语大模型、工具链、训练环境、人才培养等全方面支持 [github](https://github.com/InternLM/InternLM)
+11.浦语小助手：提供书生浦语大模型、工具链、训练环境、人才培养等全方面支持 [github](https://github.com/InternLM/InternLM)
 
 
 ## 开源许可证
