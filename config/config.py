@@ -21,7 +21,7 @@ Config['global']= {
 
 # llm
 Config['llm'] = {
-    'llm_model_path': "zhanghuiATchina/zhangxiaobai_shishen2_full"
+    'llm_model_path': os.environ.get('HOME') + "/models/zhanghuiATchina/zhangxiaobai_shishen2_full"
 }
 
 # speech
