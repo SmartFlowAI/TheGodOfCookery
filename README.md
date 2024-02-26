@@ -265,14 +265,14 @@ Demo 访问地址：https://openxlab.org.cn/apps/detail/zhanghui-china/nlp_shish
 |     |---faiss_index                                      #FAISS数据库目录
 |     |     |- index.faiss   
 |     |     |- index.pkl
-|     |---retrieve                                         #retrieve目录
+|     |---retrieve                                         #BM25retrieve序列化保存目录
 |     |     |- bm25retriever.pkl
-|     |---CookMasterLLM.py
-|     |---convert_txt.py
-|     |---create_db.py
-|     |---interface.py
-|     |---rag_test.py
-|     |---run_local.py
+|     |---CookMasterLLM.py                                 #定义Langchain封装的大模型
+|     |---convert_txt.py                                   #原始菜谱文本清洗与转换脚本               
+|     |---create_db.py                                     #创建并持久化向量数据库脚本
+|     |---interface.py                                     #调用RAG输出的主要接口                          
+|     |---rag_test.py                                      #RAG测试脚本
+|     |---run_local.py                                     #基于gradio前端的本地测试脚本
 |
 |---rag_chroma   # 一代RAG代码目录（主要贡献者 @Charles）
 |     |---database                                         #chroma数据库目录
