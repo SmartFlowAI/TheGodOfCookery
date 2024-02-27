@@ -6,6 +6,31 @@ import jieba.posseg as pseg
 # jieba.suggest_freq('番茄', True)
 
 def split_ingredients(ingredient):
+    #ingredient = ingredient.replace('kg', '千克').replace('g', '克').replace('蒜', '蒜头')
+
+    # 正则表达式模式
+    pattern = r'(?P<quantity>\d+(?:\.\d+)?|半|适量|少许|若干|[零一二两三四五六七八九十百千万亿半整适些少零壹貳贰叁參肆伍陆陸柒捌玖拾佰仟萬億兩]+)?(?P<unit>g|kg|大片|片|克|勺|盒|箱|个|瓣|滴|块|根|把|条]+)?(?P<ingredient>.+)'
+
+    # 提取数据
+    matches = re.finditer(pattern, ingredient)
+
+    # 打印结果
+    for match in matches:
+        quantity = match.group('quantity')
+        unit = match.group('unit')
+        if unit == "kg" or unit == "g":
+            quantity = f"{quantity}{'kg' if unit == 'kg' else 'g'}"
+            unit = None
+        ingredient = match.group('ingredient').strip()
+        print(f"数量: {quantity}, 计量单位: {unit}, 食材名称: {ingredient}")
+        if unit == None:
+            unit = ""
+        if quantity == None:
+            quantity = ""
+    
+    return quantity+unit, ingredient
+
+def split_ingredients_old(ingredient):
     ingredient = ingredient.replace('kg', '千克').replace('g', '克').replace('蒜', '蒜头')
 
     words = pseg.cut(ingredient)  # 使用posseg.cut进行分词和词性标注
@@ -15,6 +40,7 @@ def split_ingredients(ingredient):
     for word, flag in words:
         # 方法一：特殊量词处理
         regex_pattern = r"(\d+|[零一二两三四五六七八九十百千万亿半整适些少零壹貳贰叁參肆伍陆陸柒捌玖拾佰仟萬億兩]+)(勺|盒|箱|个|瓣|滴|克|块|量|许|根|把|条)"
+
         special_flag = bool(re.search(regex_pattern, word))
         # 方法二：词性判断
         if flag in ["m", "q", "x"] or special_flag:
