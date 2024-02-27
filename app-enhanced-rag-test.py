@@ -22,6 +22,7 @@ from rag.interface import (GenerationConfig,
                            generate_interactive,
                            generate_interactive_rag_stream,
                            generate_interactive_rag)
+
 # from whisper_app import run_whisper
 # from download import finetuned
 
@@ -42,7 +43,6 @@ cur_query_prompt = "<|User|>:{user}<eoh>\n<|Bot|>:"
 # speech
 audio_save_path = "/tmp/audio.wav"
 whisper_model_scale = "medium"
-
 
 def on_btn_click():
     """
@@ -66,14 +66,16 @@ def load_model():
         无。
 
     Returns:
-        llm (langchain.llms.base.LLM): 预训练模型,langchain格式。
+        model (Transformers模型): 预训练模型。
+        tokenizer (Transformers分词器): 分词器。
     """
-    # path = os.environ.get('HOME') + ("/zhanghuiATchina/zhangxiaobai_shishen2_full" if finetuned else "/Shanghai_AI_Laboratory/internlm2-chat-7b")
-    # llm = CookMasterLLM(model_path=path)
-    TONGYI_API_KEY = open("./rag/TONGYI_API_KEY.txt", "r").read().strip()
-    # 加载通义千问大语言模型
-    llm = Tongyi(dashscope_api_key=TONGYI_API_KEY, temperature=0, model_name="qwen-turbo")
-    return llm
+    model = (
+        AutoModelForCausalLM.from_pretrained(llm_model_path, trust_remote_code=True)
+        .to(torch.bfloat16)
+        .cuda()
+    )
+    tokenizer = AutoTokenizer.from_pretrained(llm_model_path, trust_remote_code=True)
+    return model, tokenizer
 
 
 def prepare_generation_config():
@@ -144,13 +146,17 @@ def combine_history(prompt):
     return total_prompt
 
 
-def process_user_input(prompt, llm, generation_config):
+def process_user_input(prompt,
+                       model,
+                       tokenizer,
+                       generation_config):
     """
     处理用户输入，根据用户输入内容调用相应的模型生成回复。
 
     Args:
         prompt (str): 用户输入的内容。
-        llm (langchain.llms.base.LLM): 预训练模型,langchain格式。
+        model (str): 使用的模型名称。
+        tokenizer (object): 分词器对象。
         generation_config (dict): 生成配置参数。
 
     """
@@ -184,7 +190,8 @@ def process_user_input(prompt, llm, generation_config):
             if enable_rag:
                 if streaming:
                     generator = generate_interactive_rag_stream(
-                        llm=llm,
+                        model=model,
+                        tokenizer=tokenizer,
                         prompt=prompt,
                         history=real_prompt,
                         verbose=False
@@ -195,7 +202,8 @@ def process_user_input(prompt, llm, generation_config):
                     message_placeholder.markdown(cur_response)
                 else:
                     cur_response = generate_interactive_rag(
-                        llm=llm,
+                        model=model,
+                        tokenizer=tokenizer,
                         prompt=prompt,
                         history=real_prompt,
                         verbose=False
@@ -203,7 +211,8 @@ def process_user_input(prompt, llm, generation_config):
                     message_placeholder.markdown(cur_response)
             else:
                 generator = generate_interactive(
-                    llm=llm,
+                    model=model,
+                    tokenizer=tokenizer,
                     prompt=real_prompt,
                     # additional_eos_token_id=103028,
                     additional_eos_token_id=92542,
@@ -230,7 +239,7 @@ def main():
     print(torch.cuda.is_available())
 
     st.title("食神2——菜谱小助手 by 张小白")
-    llm = load_model()
+    model, tokenizer = load_model()
     generation_config, speech_prompt = prepare_generation_config()
 
     # 1.Initialize chat history
@@ -244,11 +253,11 @@ def main():
 
     # 3.Process text input
     if text_prompt := st.chat_input("What is up?"):
-        process_user_input(text_prompt, llm, generation_config)
+        process_user_input(text_prompt, model, tokenizer, generation_config)
 
     # 4. Process speech input
     if speech_prompt is not None:
-        process_user_input(speech_prompt, llm, generation_config)
+        process_user_input(speech_prompt, model, tokenizer, generation_config)
 
 
 if __name__ == "__main__":

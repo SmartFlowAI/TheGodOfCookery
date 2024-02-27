@@ -8,7 +8,6 @@ import torch
 from torch import nn
 from transformers.generation.utils import LogitsProcessorList, StoppingCriteriaList
 from transformers.utils import logging
-from modelscope import AutoTokenizer
 from langchain.embeddings.huggingface import HuggingFaceEmbeddings
 from BCEmbedding.tools.langchain import BCERerank
 from langchain.chains.question_answering import load_qa_chain
@@ -28,9 +27,6 @@ from config import load_config
 
 logger = logging.get_logger(__name__)
 chain_instance = None
-
-llm_model_path = load_config('llm', 'llm_model_path')
-tokenizer = AutoTokenizer.from_pretrained(llm_model_path , trust_remote_code=True)
 
 
 def load_vector_db():
@@ -80,7 +76,6 @@ def load_retriever(llm, verbose=False):
     # ···
     # 问题: {question}
     # 相关性 (YES / NO):"""
-    #
     #     FILTER_PROMPT_TEMPLATE = PromptTemplate(
     #         template=filter_prompt_template,
     #         input_variables=["question", "context"],
@@ -98,7 +93,11 @@ def load_retriever(llm, verbose=False):
     return compression_retriever
 
 
-def load_chain(llm, verbose=False):
+def load_chain(model, tokenizer, verbose=False, test_llm=None):
+    if test_llm is None:
+        llm = CookMasterLLM(model, tokenizer)
+    else:
+        llm = test_llm
     # 加载检索器
     retriever = load_retriever(llm=llm, verbose=verbose)
 
@@ -141,7 +140,7 @@ def load_chain(llm, verbose=False):
         retriever=retriever,
         combine_docs_chain=doc_chain,
         memory=memory,
-        verbose=True
+        verbose=verbose
     )
     return qa_chain
 
@@ -274,14 +273,15 @@ def generate_interactive(
 
 @torch.inference_mode()
 def generate_interactive_rag_stream(
-        llm,
+        model,
+        tokenizer,
         prompt,
         history,
         verbose=False
 ):
     global chain_instance
     if chain_instance is None:
-        chain_instance = load_chain(llm, verbose=verbose)
+        chain_instance = load_chain(model=model, tokenizer=tokenizer, verbose=verbose)
     # chain = chain | _get_answer
     for cur_response in chain_instance.stream({"question": prompt, "chat_history": history}):
         yield cur_response.get('answer', '')
@@ -289,12 +289,13 @@ def generate_interactive_rag_stream(
 
 @torch.inference_mode()
 def generate_interactive_rag(
-        llm,
+        model,
+        tokenizer,
         prompt,
         history,
         verbose=False
 ):
     global chain_instance
     if chain_instance is None:
-        chain_instance = load_chain(llm, verbose=verbose)
+        chain_instance = load_chain(model=model, tokenizer=tokenizer, verbose=verbose)
     return chain_instance({"question": prompt, "chat_history": history})['answer']
