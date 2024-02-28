@@ -28,8 +28,14 @@ from PIL import Image
 from parse_cur_response import return_final_md
 import opencc
 from convert_t2s import convert_t2s
-
 logger = logging.get_logger(__name__)
+
+xlab_deploy = load_config('global','xlab_deploy')
+
+if xlab_deploy:
+    __import__('pysqlite3')
+    import sys
+    sys.modules['sqlite3']= sys.modules.pop('pysqlite3')
 
 # global variables
 enable_rag = load_config('global', 'enable_rag')
