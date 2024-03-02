@@ -1,17 +1,20 @@
 torch-scatter
 
 #RAG
-langchain==0.0.292
-langchain-core==0.1.23
+langchain==0.1.4
+langchain-core==0.1.16
+langchain_community==0.0.16
+langsmith==0.0.83
+
 chromadb==0.4.15
 sentence-transformers==2.2.2
 unstructured==0.10.30
 markdown==3.3.7
 pysqlite3-binary
 
-modelscope==1.9.5 
-transformers==4.35.2 
-sentencepiece==0.1.99 
+modelscope==1.9.5
+transformers==4.35.2
+sentencepiece==0.1.99
 huggingface_hub
 accelerate==0.24.1
 streamlit==1.25.0
@@ -29,14 +32,21 @@ pyecharts==2.0.4
 google-auth>=1.0.1
 tiktoken==0.6.0
 
-# text2image 
+# text2image
 zhipuai
 diffusers
 
-#speech 
+#speech
 openai-whisper==20231117
 streamlit-audiorecorder==0.0.4
 
+#markdown
+OpenCC==1.1.6
+jieba==0.39
 
-
+#Enhanced RAG
+BCEmbedding==0.1.3
+faiss-gpu==1.7.2
+dashscope
+rank_bm25
 

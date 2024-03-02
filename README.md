@@ -24,12 +24,10 @@
 
 - [2024.1.30] 基于二代150万菜谱微调的模型和APP发布。（使用InternStudio+A100 1/4X2 40G显存微调，1.25 15:46-1.30 12:25，微调历时4天20小时39分钟）
 - [2024.1.28] 基于一代150万菜谱微调的模型和APP发布。（使用WSL+Ubuntu22.04+RTX4090 24G显存微调，1.26 18:40-1.28 13:46历时1天19小时6分钟）。
+- [2024.2.22] 基于团队成员 @房生亮 的文生图模块 以及 @solo fish 的 语音输入模块，整合 text2image分支，发布二阶段第一个基于openxlab A100的应用 [openxlab app](https://openxlab.org.cn/apps/detail/zhanghui-china/nlp_shishen3)
+- [2024.2.24] 基于团队成员 @Charles 的RAG模块(Chroma)，整合 text2image分支，发布二阶段第2个版本应用 [openxlab app](https://openxlab.org.cn/apps/detail/zhanghui-china/nlp_shishen3)
 
-
-
-## 快速上手
-
-
+## 一阶段
 
 ### 一阶段安装
 
@@ -102,7 +100,7 @@ xtuner chat ${SAVE_PATH} [optional arguments]
 - `--repetition-penalty`: 对于二代模型，建议为1.002，对于一代模型可不填。
 - 更多信息，请执行 `xtuner chat -h` 查看。
 
-## 一阶段演示
+### 一阶段演示
 
 Demo 访问地址：https://openxlab.org.cn/apps/detail/zhanghui-china/nlp_shishen
 
@@ -115,7 +113,7 @@ Demo 访问地址：https://openxlab.org.cn/apps/detail/zhanghui-china/nlp_shish
 
 
 
-## 一阶段模型
+### 一阶段模型
 
 [openxlab一代模型](https://openxlab.org.cn/models/detail/zhanghui-china/zhangxiaobai_shishen_full)    <br />
 [openxlab二代模型](https://openxlab.org.cn/models/detail/zhanghui-china/zhangxiaobai_shishen2_full)    <br />
@@ -142,7 +140,7 @@ print(response)
 
 
 
-## 一阶段已知问题
+### 一阶段已知问题
 
 一阶段在书生.浦语实战营期间由张小白独立完成。
 
@@ -155,7 +153,7 @@ print(response)
 4.看看能不能将提示符工程应用到项目里面去。这次虽然写了prompt，但是感觉相关的交互结果并没有严格按照prompt走。 <br />
 
 
-## 一阶段实践文档
+### 一阶段实践文档
 
 [一代实践](https://zhuanlan.zhihu.com/p/678019309)  <br />
 [二代实践](https://zhuanlan.zhihu.com/p/678376843)  <br />
@@ -177,7 +175,27 @@ print(response)
 
 ### 二阶段安装
 
-待添加
+1. 准备 Python 虚拟环境：
+
+   ```bash
+   conda create -n cook python=3.10 -y
+   conda activate cook
+   ```
+
+2. 克隆该仓库：
+
+   ```shell
+   git clone https://github.com/zhanghui-china/TheGodOfCookery.git
+   cd ./TheGodOfCookery
+   ```
+
+3. 安装Pytorch和依赖库：
+
+   ```shell
+   conda install pytorch torchvision torchaudio pytorch-cuda=12.1 -c pytorch -c nvidia
+   pip install -r requirements.txt
+   ```
+这里cuda的版本根据用户自己的cuda版本确定。一般为 11.8或12.1
 
 ### 二阶段数据集
 
@@ -197,8 +215,98 @@ print(response)
 
 ### 二阶段演示
 
-待添加
+Demo 访问地址：https://openxlab.org.cn/apps/detail/zhanghui-china/nlp_shishen3
 
+<div align="center">
+  <img src="https://github.com/zhanghui-china/TheGodOfCookery/blob/main/images/answer101.png" width="600"/>
+  <br />
+  <img src="https://github.com/zhanghui-china/TheGodOfCookery/blob/main/images/answer102.png" width="600"/>
+  <br />
+  <img src="https://github.com/zhanghui-china/TheGodOfCookery/blob/main/images/answer103.png" width="600"/>
+  <br />
+  <img src="https://github.com/zhanghui-china/TheGodOfCookery/blob/main/images/answer104.png" width="600"/>
+  <br />
+</div>
+
+### 二阶段已知问题
+
+1.文生图 部分：目前图片只能显示最新的，无法在对话历史中展示所有图片。
+
+2.语音识别 部分：有时候会识别出同音字，或者繁体字。期待后续AI能够自动识别同音字。
+
+3.格式化输出 部分：食材图片似乎因文件名数据集问题无法显示。解析食材会出现部分偏差。
+
+
+## 代码结构
+
+   ```shell
+项目目录
+|---config   # 配置文件目录（主要贡献者 @房宇亮）
+|     |---__init__.py                                      #初始化脚本
+|     |---config.py                                        #配置脚本
+|
+|---gen_image    # 文生图目录（主要贡献者 @房宇亮）
+|     |---__init__.py                                      #初始化脚本
+|     |---sd_gen_image.py                                  #使用Stabble Disffion的文生图模块
+|     |---zhipu_ai_image.py                                #使用智谱AI的文生图模块
+|
+|---images  # 的图片目录，生成的图片临时也放在这里，今后会考虑迁移到其他目录
+|     |---robot.png                                        #对话机器人图标 
+|     |---user.png                                         #对话用户图标 
+|     |---shishen.png                                      #项目图标 
+|
+|---rag   # 二代RAG代码目录（主要贡献者 @乐正萌）
+|     |---source_data                                      #原始数据集目录
+|     |     |- text.txt                                    #原始菜谱数据集
+|     |---data                                             #处理后的数据集目录
+|     |     |- caipu.txt                                   #处理后的菜谱数据集
+|     |---chroma_db                                        #chroma数据库目录
+|     |     |- chroma.sqlite3                              #chroma库文件
+|     |---faiss_index                                      #FAISS数据库目录
+|     |     |- index.faiss   
+|     |     |- index.pkl
+|     |---retrieve                                         #BM25retrieve序列化保存目录
+|     |     |- bm25retriever.pkl
+|     |---CookMasterLLM.py                                 #定义Langchain封装的大模型
+|     |---convert_txt.py                                   #原始菜谱文本清洗与转换脚本               
+|     |---create_db.py                                     #创建并持久化向量数据库脚本
+|     |---interface.py                                     #调用RAG输出的主要接口                          
+|     |---rag_test.py                                      #RAG测试脚本
+|     |---run_local.py                                     #基于gradio前端的本地测试脚本
+|
+|---rag_chroma   # 一代RAG代码目录（主要贡献者 @Charles）
+|     |---database                                         #chroma数据库目录
+|     |     |- chroma.sqlite3                              #chroma库文件
+|     |---LLM.py                                           #定义Langchain封装的大模型
+|     |---create_db.py                                     #创建并持久化向量数据库脚本
+|     |---interface.py                                     #调用RAG输出的主要接口
+|
+|---src    # 食材图标目录
+|     |---*.png                                            #各类食材图标
+|
+|---tools    # 工具文件目录
+|
+|---whisper_app    # 语音识别目录（主要贡献者 @solo fish）
+|     |---__init__.py                                      #初始化脚本
+|     |---whisper.py                                       #语音识别处理脚本
+|
+|---requirements.txt                                       #系统依赖包（请使用pip install -r requirements.txt安装）
+|---convert_t2s.py                                         #繁体字转简体字工具（主要贡献者 @彬彬）
+|---parse_cur_response.py                                  #输出格式化处理工具 （主要贡献者 @彬彬）
+|---README.md                                              #本文档
+|---cli_demo.py                                            #模型下载脚本
+|---download.py                                            #模型测试脚本
+|---download_rag2_model.py                                 #仅二代RAG所需模型的下载脚本
+|---start.py                                               #Web Demo启动脚本
+|---start2.py                                              #Web Demo启动脚本（支持RAG2）
+|---start_rag_chroma.py                                    #Web Demo启动脚本（支持RAG1）
+|---start_rag2.py                                          #Web Demo启动脚本（仅支持RAG2）
+|---app.py                                                 #Web Demo主脚本（RAG1+void+image+markdown）
+|---app2.py                                                #Web Demo主脚本（RAG2+void+image+markdown）
+|---app-enhanced-rag.py                                    #仅支持RAG2的主脚本
+|---app-rag-with-chroma.py                                 #支持RAG1的主脚本
+
+   ```
 
 ## 项目参与人员（排名不分先后）
 
@@ -206,21 +314,27 @@ print(response)
 
 2.sole fish：语音输入  [github](https://github.com/YanxingLiu)  
 
-3.Charles：RAG [github](https://github.com/SchweitzerGAO)
+3.Charles：一代RAG（基于Chroma） [github](https://github.com/SchweitzerGAO)
 
-4.彬彬：格式化输出 [github](https://github.com/Everfighting)   [知乎](https://www.zhihu.com/people/everfighting)
+4.乐正萌：二代RAG（基于faiss&Chroma）[github](https://github.com/YueZhengMeng)
 
-5.喵喵咪：数据集准备 [github](https://github.com/miyc1996)
+5.彬彬：格式化输出 [github](https://github.com/Everfighting) [知乎](https://www.zhihu.com/people/everfighting)
 
 6.房宇亮：文生图 [github](https://github.com/leonfrank)   
 
-7.陈菠萝：待定
+7.刘光磊：图标设计，前端优化 [github](https://github.com/Mrguanglei)
 
-8.乐正萌：待定
+8.喵喵咪：数据集准备 [github](https://github.com/miyc1996)
 
-9.刘光磊：图标设计，前端优化 [github](https://github.com/Mrguanglei)
+9.陈菠萝：待定
 
-10.浦语小助手：提供书生浦语大模型、工具链、训练环境、人才培养等全方面支持 [github](https://github.com/InternLM/InternLM)
+10.LindSey：待定
+
+11.王巍龙：数据集，微调
+
+12.轩辕：数据集，微调
+
+13.浦语小助手：提供书生浦语大模型、工具链、训练环境、人才培养等全方面支持 [github](https://github.com/InternLM/InternLM)
 
 
 ## 开源许可证

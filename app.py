@@ -15,35 +15,40 @@ from audiorecorder import audiorecorder
 from modelscope import AutoModelForCausalLM, AutoTokenizer
 from transformers.utils import logging
 
-from tools.transformers.interface import (GenerationConfig,
-                                          generate_interactive,
-                                          generate_interactive_rag_stream,
-                                          generate_interactive_rag)
+from rag_chroma.interface import (GenerationConfig,
+                                  generate_interactive,
+                                  generate_interactive_rag_stream,
+                                  generate_interactive_rag)
 from whisper_app import run_whisper
-from gen_image import ZhipuAIImage, SDGenImage
-from gen_image.config import image_model_type, image_model_config
+from gen_image import image_models
+from config import load_config
 import os
 from datetime import datetime
 from PIL import Image
+from parse_cur_response import return_final_md
+import opencc
+from convert_t2s import convert_t2s
 
 logger = logging.get_logger(__name__)
 
 # global variables
-enable_rag = None
-streaming = None
-user_avatar = "images/user.png"
-robot_avatar = "images/robot.png"
-user_prompt = "<|User|>:{user}\n"
-robot_prompt = "<|Bot|>:{robot}<eoa>\n"
-cur_query_prompt = "<|User|>:{user}<eoh>\n<|Bot|>:"
+enable_rag = load_config('global', 'enable_rag')
+# streaming = load_config('global', 'streaming')
+enable_image = load_config('global', 'enable_image')
+enable_markdown = load_config('global', 'enable_markdown')
+user_avatar = load_config('global', 'user_avatar')
+robot_avatar = load_config('global', 'robot_avatar')
+user_prompt = load_config('global', 'user_prompt')
+robot_prompt = load_config('global', 'robot_prompt')
+cur_query_prompt = load_config('global', 'cur_query_prompt')
+error_response = load_config('global', 'error_response')
+
 # speech
-audio_save_path = "/tmp/audio.wav"
-whisper_model_scale = "medium"
+audio_save_path = load_config('speech', 'audio_save_path')
+whisper_model_scale = load_config('speech', 'whisper_model_scale')
 
 # llm
-llm_model_path = "zhanghuiATchina/zhangxiaobai_shishen2_full"
-
-error_response = "我是食神周星星的唯一传人，我什么菜都会做，包括黑暗料理，您可以问我什么菜怎么做———比如酸菜鱼怎么做？我会告诉你具体的做法。"
+llm_model_path = load_config('llm', 'llm_model_path')
 
 
 def on_btn_click():
@@ -72,11 +77,11 @@ def load_model():
         tokenizer (Transformers分词器): 分词器。
     """
     model = (
-        AutoModelForCausalLM.from_pretrained( llm_model_path , trust_remote_code=True)
+        AutoModelForCausalLM.from_pretrained(llm_model_path, trust_remote_code=True)
         .to(torch.bfloat16)
         .cuda()
     )
-    tokenizer = AutoTokenizer.from_pretrained( llm_model_path , trust_remote_code=True)
+    tokenizer = AutoTokenizer.from_pretrained(llm_model_path, trust_remote_code=True)
     return model, tokenizer
 
 
@@ -105,8 +110,16 @@ def prepare_generation_config():
         enable_rag = st.checkbox("Enable RAG")
 
         # 4. Streaming
-        global streaming
-        streaming = st.checkbox("Streaming")
+        # global streaming
+        # streaming = st.checkbox("Streaming")
+
+        # 6. Output markdown
+        global enable_markdown
+        enable_markdown = st.checkbox("Markdown output")
+
+        # 7. Image
+        global enable_image
+        enable_image = st.checkbox("Show Image")
 
         # 5. Speech input
         audio = audiorecorder("Record", "Stop record")
@@ -160,11 +173,15 @@ def process_user_input(prompt,
         model (str): 使用的模型名称。
         tokenizer (object): 分词器对象。
         generation_config (dict): 生成配置参数。
-：1
 
     """
     # Check if the user input contains certain keywords
-    prompt = prompt.replace("怎麼做", "怎么做")
+    print("Origin Prompt:")
+    print(prompt)
+    prompt = convert_t2s(prompt)
+    print("Converted Prompt:")
+    print(prompt)
+
     keywords = ["怎么做", "做法", "菜谱"]
     contains_keywords = any(keyword in prompt for keyword in keywords)
 
@@ -180,7 +197,7 @@ def process_user_input(prompt,
     # If keywords are not present, display a prompt message immediately
     if not contains_keywords:
         with st.chat_message("robot", avatar=robot_avatar):
-            st.markdown( error_response )
+            st.markdown(error_response)
         # Add robot response to chat history
         st.session_state.messages.append(
             {"role": "robot", "content": error_response, "avatar": robot_avatar})
@@ -189,76 +206,85 @@ def process_user_input(prompt,
         with st.chat_message("robot", avatar=robot_avatar):
             message_placeholder = st.empty()
             if enable_rag:
-                if streaming:
-                    generator = generate_interactive_rag_stream(
-                        model=model,
-                        tokenizer=tokenizer,
-                        prompt=prompt,
-                        history=real_prompt
-                    )
-                    for cur_response in generator:
-                        cur_response = cur_response.replace('\\n', '\n')
-                        message_placeholder.markdown(cur_response + "▌")
-                    message_placeholder.markdown(cur_response)
-                else:
-                    cur_response = generate_interactive_rag(
-                        model=model,
-                        tokenizer=tokenizer,
-                        prompt=prompt,
-                        history=real_prompt
-                    )
+                cur_response = generate_interactive_rag(
+                    model=model,
+                    tokenizer=tokenizer,
+                    prompt=prompt,
+                    history=real_prompt
+                )
+                cur_response = cur_response.replace('\\n', '\n')
+
+                print(cur_response)
+
+                if enable_markdown:
+                    cur_response = return_final_md(cur_response)
+                    print('afer markdown')
+                    print(cur_response)
+
+                message_placeholder.markdown(cur_response)
             else:
                 generator = generate_interactive(
                     model=model,
                     tokenizer=tokenizer,
                     prompt=real_prompt,
-                    # additional_eos_token_id=103028,
-                    additional_eos_token_id=92542,
+                    # additional_eos_token_id=103028,  #InternLM-7b-chat
+                    additional_eos_token_id=92542,  # InternLM2-7b-chat
                     **asdict(generation_config),
                 )
                 for cur_response in generator:
                     cur_response = cur_response.replace('\\n', '\n')
                     message_placeholder.markdown(cur_response + "▌")
+
+                print(cur_response)
+                if enable_markdown:
+                    cur_response = return_final_md(cur_response)
+                    print('after markdown')
+                    print(cur_response)
                 message_placeholder.markdown(cur_response)
+
+            if enable_image and prompt:
+                food_image_path = text_to_image(prompt, image_model)
+                # add food image
+                # img = Image.open(food_image_path)
+                st.image(food_image_path, width=230)
             # for cur_response in generator:
             #     cur_response = cur_response.replace('\\n', '\n')
             #     message_placeholder.markdown(cur_response + "▌")
             # message_placeholder.markdown(cur_response)
         # Add robot response to chat history
-        st.session_state.messages.append(
-            {"role": "robot", "content": cur_response, "avatar": robot_avatar})
+        response_message = {"role": "robot", "content": cur_response, "avatar": robot_avatar}
+
+        if enable_image and prompt:
+            response_message.update({'food_image_path': food_image_path})
+
+        st.session_state.messages.append(response_message)
         torch.cuda.empty_cache()
 
 
 @st.cache_resource
-def init_image_model(image_model_type, image_model_config):
-    if image_model_type == 'stable-diffusion':
-        image_model = SDGenImage(**image_model_config[image_model_type])
-
-    elif image_model_type == 'glm-4':
-        image_model = ZhipuAIImage(**image_model_config[image_model_type])
+def init_image_model():
+    image_model_type = load_config('image', 'image_model_type')
+    image_model_config = load_config('image', 'image_model_config').get(image_model_type)
+    image_model = image_models[image_model_type](**image_model_config)
     return image_model
 
 
-def display_image(prompt, image_model):
+# @st.cache_resource
+def text_to_image(prompt, image_model):
     file_dir = os.path.dirname(__file__)
     # generate image
     ok, ret = image_model.create_img(prompt)
     if ok:
         current_datetime = datetime.now().strftime("%Y%m%d_%H%M%S")
         new_file_name = f"food_{current_datetime}.jpg"
-        food_image_path = os.path.join(file_dir, "images/" , new_file_name)
+        food_image_path = os.path.join(file_dir, "images/", new_file_name)
         print("Image file name")
         print(food_image_path)
         ret.save(food_image_path)
     else:
         food_image_path = os.path.join(file_dir, f"images/error.jpg")
 
-    food_path_and_style = f"<img src=\"{food_image_path}\" width = '230' height = '140' align=center />"
-    # add food image
-    #st.markdown(food_path_and_style)
-    img = Image.open(food_image_path)
-    st.image(img,width = 230)
+    return food_image_path
 
 
 def main():
@@ -267,7 +293,8 @@ def main():
 
     st.title("食神2 by 其实你也可以是个厨师队")
     model, tokenizer = load_model()
-    image_model = init_image_model(image_model_type, image_model_config)
+    global image_model
+    image_model = init_image_model()
     generation_config, speech_prompt = prepare_generation_config()
 
     # 1.Initialize chat history
@@ -278,6 +305,8 @@ def main():
     for message in st.session_state.messages:
         with st.chat_message(message["role"], avatar=message.get("avatar")):
             st.markdown(message["content"])
+            if 'food_image_path' in message:
+                st.image(message['food_image_path'], width=230)
 
     # 3.Process text input
     if text_prompt := st.chat_input("What is up?"):
@@ -286,10 +315,6 @@ def main():
     # 4. Process speech input
     if speech_prompt is not None:
         process_user_input(speech_prompt, model, tokenizer, generation_config)
-
-    image_prompt = text_prompt or speech_prompt
-    if image_prompt is not None:
-        display_image(image_prompt, image_model)
 
 
 if __name__ == "__main__":
