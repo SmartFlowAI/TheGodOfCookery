@@ -20,7 +20,6 @@ from rag_chroma.interface import (GenerationConfig,
                                           generate_interactive,
                                           generate_interactive_rag_stream,
                                           generate_interactive_rag)
-from whisper_app import run_whisper
 from gen_image import image_models
 from config import load_config 
 import os
@@ -48,7 +47,6 @@ error_response = load_config('global', 'error_response')
 
 # speech
 audio_save_path = load_config('speech', 'audio_save_path')
-whisper_model_scale = load_config('speech', 'whisper_model_scale')
 
 # llm
 llm_model_path = load_config('llm', 'llm_model_path')
@@ -123,14 +121,6 @@ def prepare_generation_config():
         global enable_image
         enable_image = st.checkbox("Show Image")
 
-        # 5. Speech input
-        audio = audiorecorder("Record", "Stop record")
-        speech_string = None
-        if len(audio) > 0:
-            audio.export(audio_save_path, format="wav")
-            speech_string = run_whisper(
-                whisper_model_scale, "cuda",
-                audio_save_path)
 
     generation_config = GenerationConfig(
         max_length=max_length, top_p=0.8, temperature=0.8, repetition_penalty=1.002)   #InternLM2

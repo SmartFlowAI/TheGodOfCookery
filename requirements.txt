@@ -13,7 +13,7 @@ markdown==3.3.7
 pysqlite3-binary
 
 modelscope==1.9.5
-transformers==4.35.2
+transformers==4.36.0
 sentencepiece==0.1.99
 huggingface_hub
 accelerate==0.24.1
@@ -38,8 +38,8 @@ zhipuai
 diffusers
 
 #speech
-openai-whisper==20231117
 streamlit-audiorecorder==0.0.4
+funasr==1.0.5
 
 #markdown
 OpenCC==1.1.6

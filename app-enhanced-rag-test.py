@@ -23,8 +23,6 @@ from rag.interface import (GenerationConfig,
                            generate_interactive_rag_stream,
                            generate_interactive_rag)
 
-# from whisper_app import run_whisper
-# from download import finetuned
 
 logger = logging.get_logger(__name__)
 
@@ -42,7 +40,6 @@ robot_prompt = "<|Bot|>:{robot}<eoa>\n"
 cur_query_prompt = "<|User|>:{user}<eoh>\n<|Bot|>:"
 # speech
 audio_save_path = "/tmp/audio.wav"
-whisper_model_scale = "medium"
 
 def on_btn_click():
     """
@@ -106,14 +103,6 @@ def prepare_generation_config():
         global streaming
         streaming = st.checkbox("Streaming", value=False)
 
-        # 5. Speech input
-        # audio = audiorecorder("Record", "Stop record")
-        # speech_string = None
-        # if len(audio) > 0:
-        #     audio.export(audio_save_path, format="wav")
-        #     speech_string = run_whisper(
-        #         whisper_model_scale, "cuda",
-        #         audio_save_path)
 
     generation_config = GenerationConfig(
         max_length=max_length, top_p=0.8, temperature=0.8, repetition_penalty=1.002)

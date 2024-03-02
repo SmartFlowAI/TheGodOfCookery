@@ -6,7 +6,6 @@ rag/model/
 /rag/TONGYI_API_KEY.txt
 rag/__pycache__
 tools/transformers/__pycache__
-whisper_app/__pycache__/
 
 __pycache__/convert_t2s.cpython-310.pyc
 __pycache__/parse_cur_response.cpython-310.pyc

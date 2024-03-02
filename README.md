@@ -286,9 +286,9 @@ Demo 访问地址：https://openxlab.org.cn/apps/detail/zhanghui-china/nlp_shish
 |
 |---tools    # 工具文件目录
 |
-|---whisper_app    # 语音识别目录（主要贡献者 @solo fish）
+|---speech    # 语音识别目录（主要贡献者 @solo fish）
 |     |---__init__.py                                      #初始化脚本
-|     |---whisper.py                                       #语音识别处理脚本
+|     |---utils.py                                         #工具
 |
 |---requirements.txt                                       #系统依赖包（请使用pip install -r requirements.txt安装）
 |---convert_t2s.py                                         #繁体字转简体字工具（主要贡献者 @彬彬）

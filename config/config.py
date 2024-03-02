@@ -28,7 +28,7 @@ Config['llm'] = {
 # speech
 Config['speech'] = {
     'audio_save_path': "/tmp/audio.wav", 
-    'whisper_model_scale': "medium"   
+    'speech_model_path': os.environ.get('HOME') + "/models/iic/speech_paraformer-large-vad-punc_asr_nat-zh-cn-16k-common-vocab8404-pytorch"
 }
 
 # rag
