@@ -19,7 +19,6 @@ from rag_chroma.interface import (GenerationConfig,
                                   generate_interactive,
                                   generate_interactive_rag_stream,
                                   generate_interactive_rag)
-from whisper_app import run_whisper
 from gen_image import image_models
 from config import load_config
 import os
@@ -28,6 +27,10 @@ from PIL import Image
 from parse_cur_response import return_final_md
 import opencc
 from convert_t2s import convert_t2s
+
+#from whisper_app import run_whisper
+from funasr import AutoModel
+from speech import get_local_model
 import sys
 
 logger = logging.get_logger(__name__)
@@ -51,7 +54,8 @@ error_response = load_config('global', 'error_response')
 
 # speech
 audio_save_path = load_config('speech', 'audio_save_path')
-whisper_model_scale = load_config('speech', 'whisper_model_scale')
+#whisper_model_scale = load_config('speech', 'whisper_model_scale')
+speech_model_path = load_config('speech', 'speech_model_path')
 
 # llm
 llm_model_path = load_config('llm', 'llm_model_path')
@@ -89,6 +93,22 @@ def load_model():
     )
     tokenizer = AutoTokenizer.from_pretrained(llm_model_path, trust_remote_code=True)
     return model, tokenizer
+
+@st.cache_resource
+def load_speech_model():
+    model_dict = get_local_model(speech_model_path)
+    model = AutoModel(**model_dict)
+    return model
+
+def speech_rec(speech_model):
+    with st.sidebar:
+        # 3. Speech input
+        audio = audiorecorder("Record", "Stop record")
+        speech_string = None
+        if len(audio) > 0:
+            audio.export(audio_save_path, format="wav")
+            speech_string = speech_model.generate(input=audio_save_path)[0]['text']
+        return speech_string
 
 
 def prepare_generation_config():
@@ -128,19 +148,20 @@ def prepare_generation_config():
         enable_image = st.checkbox("Show Image")
 
         # 5. Speech input
-        audio = audiorecorder("Record", "Stop record")
-        speech_string = None
-        if len(audio) > 0:
-            audio.export(audio_save_path, format="wav")
-            speech_string = run_whisper(
-                whisper_model_scale, "cuda",
-                audio_save_path)
+
+        #audio = audiorecorder("Record", "Stop record")
+        #speech_string = None
+        #if len(audio) > 0:
+        #    audio.export(audio_save_path, format="wav")
+        #    speech_string = run_whisper(
+        #        whisper_model_scale, "cuda",
+        #        audio_save_path)
 
     generation_config = GenerationConfig(
         max_length=max_length, top_p=0.8, temperature=0.8, repetition_penalty=1.002)
 
-    return generation_config, speech_string
-
+    #return generation_config, speech_string
+    return generation_config
 
 def combine_history(prompt):
     """
@@ -184,7 +205,7 @@ def process_user_input(prompt,
     # Check if the user input contains certain keywords
     print("Origin Prompt:")
     print(prompt)
-    prompt = convert_t2s(prompt)
+    prompt = convert_t2s(prompt).replace(" ", "")
     print("Converted Prompt:")
     print(prompt)
 
@@ -301,7 +322,11 @@ def main():
     model, tokenizer = load_model()
     global image_model
     image_model = init_image_model()
-    generation_config, speech_prompt = prepare_generation_config()
+
+    #generation_config, speech_prompt = prepare_generation_config()
+    generation_config = prepare_generation_config()
+    speech_model = load_speech_model()
+    speech_prompt = speech_rec(speech_model)
 
     # 1.Initialize chat history
     if "messages" not in st.session_state:

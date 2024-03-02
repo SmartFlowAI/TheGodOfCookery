@@ -2,6 +2,7 @@
 import os
 from modelscope import snapshot_download
 import whisper
+from config import load_config
 
 # download  shishen model
 finetuned = True
@@ -20,12 +21,14 @@ if not os.path.exists(os.environ.get('HOME') + '/models/m3e-base'):
     command_str = 'huggingface-cli download --resume-download moka-ai/m3e-base --local-dir-use-symlinks False --local-dir '+ os.environ.get('HOME') + '/models/m3e-base'
     os.system(command_str)
 
-# download whisper models
-scales = ["tiny", "base", "small", "medium", "large"]
-for scale in scales:
-    whisper.load_model(scale)
-
 # download SD model
 if not os.path.exists(os.environ.get('HOME') +  '/models/Taiyi-Stable-Diffusion-1B-Chinese-v0.1'):
     command_str = 'huggingface-cli download --resume-download IDEA-CCNL/Taiyi-Stable-Diffusion-1B-Chinese-v0.1 --local-dir-use-symlinks False --local-dir '+ os.environ.get('HOME') + '/models/Taiyi-Stable-Diffusion-1B-Chinese-v0.1'
     os.system(command_str)
+
+# download voice recognize model
+speech_model_type = load_config('speech', 'speech_model_type')
+if speech_model_type == "whisper":
+    os.system('python download_whisper.py')
+else :
+    os.system('python download_paraformer.py')
