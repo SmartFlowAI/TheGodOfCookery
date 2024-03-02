@@ -287,19 +287,26 @@ Demo 访问地址：https://openxlab.org.cn/apps/detail/zhanghui-china/nlp_shish
 |     |---__init__.py                                      #初始化脚本
 |     |---whisper.py                                       #语音识别处理脚本
 |
+|---speech    # paraformer语音识别目录（主要贡献者 @solo fish）
+|     |---__init__.py                                      #初始化脚本
+|     |---utils.py                                         #语音识别处理脚本
+|
 |---requirements.txt                                       #系统依赖包（请使用pip install -r requirements.txt安装）
 |---convert_t2s.py                                         #繁体字转简体字工具（主要贡献者 @彬彬）
 |---parse_cur_response.py                                  #输出格式化处理工具 （主要贡献者 @彬彬）
 |---README.md                                              #本文档
-|---cli_demo.py                                            #模型下载脚本
-|---download.py                                            #模型测试脚本
+|---cli_demo.py                                            #模型测试脚本
+|---download.py                                            #模型下载脚本
+|---download_whisper.py                                    #下载whisper模型
+|---download_paraformer.py                                 #下载paraformer模型
 |---download_rag2_model.py                                 #仅二代RAG所需模型的下载脚本
 |---start.py                                               #Web Demo启动脚本
 |---start2.py                                              #Web Demo启动脚本（支持RAG2）
 |---start_rag_chroma.py                                    #Web Demo启动脚本（支持RAG1）
 |---start_rag2.py                                          #Web Demo启动脚本（仅支持RAG2）
-|---app.py                                                 #Web Demo主脚本（RAG1+void+image+markdown）
-|---app2.py                                                #Web Demo主脚本（RAG2+void+image+markdown）
+|---app.py                                                 #Web Demo主脚本（RAG1+whisper+image+markdown）
+|---app_paraformer.py                                      #Web Demo主脚本（RAG1+paraformer+image+markdown）
+|---app2.py                                                #Web Demo主脚本（RAG2+whisper+image+markdown）
 |---app-enhanced-rag.py                                    #仅支持RAG2的主脚本
 |---app-rag-with-chroma.py                                 #支持RAG1的主脚本
    ```
