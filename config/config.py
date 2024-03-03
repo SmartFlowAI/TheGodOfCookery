@@ -15,23 +15,29 @@ Config['global']= {
     'user_prompt': "<|User|>:{user}\n",
     'robot_prompt': "<|Bot|>:{robot}<eoa>\n",
     'cur_query_prompt': "<|User|>:{user}<eoh>\n<|Bot|>:",
-    'error_response': "我是食神周星星的唯一传人，我什么菜都会做，包括黑暗料理，您可以问我什么菜怎么做———比如酸菜鱼怎么做？我会告诉你具体的做法。如果您遇到一些异常，请刷新页面重新提问。"
-
+    'error_response': "我是食神周星星的唯一传人，我什么菜都会做，包括黑暗料理，您可以问我什么菜怎么做———比如酸菜鱼怎么做？我会告诉你具体的做法。如果您遇到一些异常，请刷新页面重新提问。",
+    'xlab_deploy': True
 }
 
 # llm
 Config['llm'] = {
-    'llm_model_path': "zhanghuiATchina/zhangxiaobai_shishen2_full"
+    'llm_model_path': os.environ.get('HOME') + "/models/zhanghuiATchina/zhangxiaobai_shishen2_full"
 }
 
 # speech
 Config['speech'] = {
+    #'speech_model_type':"whisper",
+    'speech_model_type':"paraformer",
     'audio_save_path': "/tmp/audio.wav", 
-    'whisper_model_scale': "medium"   
+    'whisper_model_scale': "medium",
+    #'whisper_model_path': "",
+    'speech_model_path':  os.environ.get('HOME') + "/models/iic/speech_paraformer-large-vad-punc_asr_nat-zh-cn-16k-common-vocab8404-pytorch"
 }
 
 # rag
 Config['rag'] = {
+    'rag_model_type':"chroma",
+    #'rag_model_type':"faiss",
     'vector_db': {
         'name': "faiss",
         'path': './rag/faiss_index'
