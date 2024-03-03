@@ -41,6 +41,8 @@ openai-whisper==20231117
 streamlit-audiorecorder==0.0.4
 funasr==1.0.5  #paraformer
 torchaudio
+streamlit_mic_recorder
+pydub
 
 #markdown
 OpenCC==1.1.6
