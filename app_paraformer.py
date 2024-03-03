@@ -11,7 +11,8 @@ from dataclasses import asdict
 
 import streamlit as st
 import torch
-from audiorecorder import audiorecorder
+from streamlit_mic_recorder import mic_recorder,speech_to_text
+from pydub import AudioSegment
 from modelscope import AutoModelForCausalLM, AutoTokenizer
 from transformers.utils import logging
 
@@ -100,15 +101,18 @@ def load_speech_model():
     model = AutoModel(**model_dict)
     return model
 
-def speech_rec(speech_model):
-    with st.sidebar:
-        # 3. Speech input
-        audio = audiorecorder("Record", "Stop record")
-        speech_string = None
-        if len(audio) > 0:
-            audio.export(audio_save_path, format="wav")
-            speech_string = speech_model.generate(input=audio_save_path)[0]['text']
-        return speech_string
+def speech_rec():
+    speech_prompt = None
+    print('speech rec start')
+    if st.session_state['mic_output'] is not None:
+        audio_bytes=st.session_state['mic_output']['bytes']
+        # st.audio(audio_bytes)
+        audio = AudioSegment(audio_bytes)
+        print(' len(audio)', len(audio))
+        audio.export(audio_save_path, format="wav")
+        speech_prompt = speech_model.generate(input=audio_save_path)[0]['text']
+    print('speech rec end')
+    st.session_state['speech_prompt'] = speech_prompt
 
 
 def prepare_generation_config():
@@ -325,8 +329,10 @@ def main():
 
     #generation_config, speech_prompt = prepare_generation_config()
     generation_config = prepare_generation_config()
+    global speech_model
     speech_model = load_speech_model()
-    speech_prompt = speech_rec(speech_model)
+    # 语音输入先放在顶端
+    voice_input = st.empty()
 
     # 1.Initialize chat history
     if "messages" not in st.session_state:
@@ -344,7 +350,16 @@ def main():
         process_user_input(text_prompt, model, tokenizer, generation_config)
 
     # 4. Process speech input
-    if speech_prompt is not None:
+    st.session_state['speech_prompt'] = None
+    with voice_input.container():
+        mic_output = mic_recorder(
+            start_prompt="Start recording",
+            stop_prompt="Stop recording", 
+            just_once=True,
+            key='mic',
+            callback=speech_rec
+        )
+    if speech_prompt := st.session_state['speech_prompt']:
         process_user_input(speech_prompt, model, tokenizer, generation_config)
 
 
