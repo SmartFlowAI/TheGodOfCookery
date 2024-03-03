@@ -30,12 +30,14 @@ Config['speech'] = {
     'speech_model_type':"paraformer",
     'audio_save_path': "/tmp/audio.wav", 
     'whisper_model_scale': "medium",
-    'whisper_model_path': "",
+    #'whisper_model_path': "",
     'speech_model_path':  os.environ.get('HOME') + "/models/iic/speech_paraformer-large-vad-punc_asr_nat-zh-cn-16k-common-vocab8404-pytorch"
 }
 
 # rag
 Config['rag'] = {
+    'rag_model_type':"chroma",
+    #'rag_model_type':"faiss",
     'vector_db': {
         'name': "faiss",
         'path': './rag/faiss_index'

@@ -19,7 +19,6 @@ from rag_chroma.interface import (GenerationConfig,
                                   generate_interactive,
                                   generate_interactive_rag_stream,
                                   generate_interactive_rag)
-from whisper_app import run_whisper
 from gen_image import image_models
 from config import load_config
 import os
@@ -32,8 +31,11 @@ import sys
 
 logger = logging.get_logger(__name__)
 
+# solve: Your system has an unsupported version of sqlite3. Chroma requires sqlite3 >= 3.35.0
+# but failed!!
 xlab_deploy = load_config('global','xlab_deploy')
 if xlab_deploy:
+    print("load sqllite3 module...")
     __import__('pysqlite3')
     sys.modules['sqlite3']= sys.modules.pop('pysqlite3')
 
@@ -49,12 +51,47 @@ robot_prompt = load_config('global', 'robot_prompt')
 cur_query_prompt = load_config('global', 'cur_query_prompt')
 error_response = load_config('global', 'error_response')
 
-# speech
-audio_save_path = load_config('speech', 'audio_save_path')
-whisper_model_scale = load_config('speech', 'whisper_model_scale')
 
 # llm
 llm_model_path = load_config('llm', 'llm_model_path')
+
+# rag
+rag_model_type = load_config('rag', 'rag_model_type')
+if rag_model_type == "chroma":
+    print("rag model: chroma with sqllite")
+else :
+    print("rag model: faiss")
+
+# speech
+audio_save_path = load_config('speech', 'audio_save_path')
+speech_model_type = load_config('speech', 'speech_model_type')
+if speech_model_type == "whisper":
+    print("speed model: whisper")
+    from whisper_app import run_whisper
+    whisper_model_scale = load_config('speech', 'whisper_model_scale')
+else:
+    print("speed model: paramformer")
+    from funasr import AutoModel
+    from speech import get_local_model
+
+    speech_model_path = load_config('speech', 'speech_model_path')
+
+    @st.cache_resource
+    def load_speech_model():
+        model_dict = get_local_model(speech_model_path)
+        model = AutoModel(**model_dict)
+        return model
+
+    def speech_rec(speech_model):
+        with st.sidebar:
+            # 3. Speech input
+            audio = audiorecorder("Record", "Stop record")
+            speech_string = None
+            if len(audio) > 0:
+                audio.export(audio_save_path, format="wav")
+                speech_string = speech_model.generate(input=audio_save_path)[0]['text']
+            return speech_string
+
 
 
 def on_btn_click():
@@ -128,18 +165,22 @@ def prepare_generation_config():
         enable_image = st.checkbox("Show Image")
 
         # 5. Speech input
-        audio = audiorecorder("Record", "Stop record")
-        speech_string = None
-        if len(audio) > 0:
-            audio.export(audio_save_path, format="wav")
-            speech_string = run_whisper(
-                whisper_model_scale, "cuda",
-                audio_save_path)
+        if speech_model_type == "whisper":
+            audio = audiorecorder("Record", "Stop record")
+            speech_string = None
+            if len(audio) > 0:
+                audio.export(audio_save_path, format="wav")
+                speech_string = run_whisper(
+                    whisper_model_scale, "cuda",
+                    audio_save_path)
 
     generation_config = GenerationConfig(
-        max_length=max_length, top_p=0.8, temperature=0.8, repetition_penalty=1.002)
+        max_length=max_length, top_p=0.8, temperature=0.8, repetition_penalty=1.002)   #InternLM2 need 惩罚参数
 
-    return generation_config, speech_string
+    if speech_model_type == "whisper":
+        return generation_config, speech_string
+    else :
+        return generation_config
 
 
 def combine_history(prompt):
@@ -184,7 +225,7 @@ def process_user_input(prompt,
     # Check if the user input contains certain keywords
     print("Origin Prompt:")
     print(prompt)
-    prompt = convert_t2s(prompt)
+    prompt = convert_t2s(prompt).replace(" ", "")
     print("Converted Prompt:")
     print(prompt)
 
@@ -224,7 +265,7 @@ def process_user_input(prompt,
 
                 if enable_markdown:
                     cur_response = return_final_md(cur_response)
-                    print('afer markdown')
+                    print('after markdown')
                     print(cur_response)
 
                 message_placeholder.markdown(cur_response)
@@ -301,7 +342,13 @@ def main():
     model, tokenizer = load_model()
     global image_model
     image_model = init_image_model()
-    generation_config, speech_prompt = prepare_generation_config()
+
+    if speech_model_type == "whisper":
+        generation_config, speech_prompt = prepare_generation_config()
+    else:
+        generation_config = prepare_generation_config()
+        speech_model = load_speech_model()
+        speech_prompt = speech_rec(speech_model)
 
     # 1.Initialize chat history
     if "messages" not in st.session_state:
