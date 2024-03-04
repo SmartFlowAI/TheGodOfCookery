@@ -5,14 +5,25 @@ import whisper
 from config import load_config
 
 # download shishen LLM model
-finetuned = True
-if finetuned:
-   if not os.path.exists(os.environ.get('HOME') + "/zhanghuiATchina/zhangxiaobai_shishen2_full"):
-       model_dir = snapshot_download('zhanghuiATchina/zhangxiaobai_shishen2_full', cache_dir=os.environ.get('HOME')+'/models')
-       
-else:
-    if not os.path.exists(os.environ.get('HOME') + "/Shanghai_AI_Laboratory/internlm2-chat-7b"):
-        model_dir = snapshot_download('Shanghai_AI_Laboratory/internlm2-chat-7b', cache_dir=os.environ.get('HOME')+'/models')
+base_model_type = load_config('llm', 'base_model_type')
+finetuned = load_config('llm', 'finetuned')
+
+if base_model_type == 'internlm2-chat-7b':
+
+    if finetuned:
+        if not os.path.exists(os.environ.get('HOME') + "/zhanghuiATchina/zhangxiaobai_shishen2_full"):
+            model_dir = snapshot_download('zhanghuiATchina/zhangxiaobai_shishen2_full', cache_dir=os.environ.get('HOME')+'/models')
+    else:
+        if not os.path.exists(os.environ.get('HOME') + "/Shanghai_AI_Laboratory/internlm2-chat-7b"):
+            model_dir = snapshot_download('Shanghai_AI_Laboratory/internlm2-chat-7b', cache_dir=os.environ.get('HOME')+'/models')
+else :
+    if finetuned:
+        if not os.path.exists(os.environ.get('HOME') + "/zhanghuiATchina/zhangxiaobai_shishen_full"):
+            model_dir = snapshot_download('zhanghuiATchina/zhangxiaobai_shishen_full', cache_dir=os.environ.get('HOME')+'/models')
+    else:
+        if not os.path.exists(os.environ.get('HOME') + "/Shanghai_AI_Laboratory/internlm-chat-7b"):
+            model_dir = snapshot_download('Shanghai_AI_Laboratory/internlm-chat-7b', cache_dir=os.environ.get('HOME')+'/models')
+
 
 os.environ['HF_ENDPOINT'] = 'https://hf-mirror.com'
 
