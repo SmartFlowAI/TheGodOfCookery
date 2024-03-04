@@ -344,3 +344,7 @@ Demo 访问地址：https://openxlab.org.cn/apps/detail/zhanghui-china/nlp_shish
 ## 开源许可证
 
 该项目采用 [Apache License 2.0 开源许可证](LICENSE.txt)。
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=SmartFlowAI/TheGodOfCookery&type=Date)](https://star-history.com/#SmartFlowAI/TheGodOfCookery&Date)
