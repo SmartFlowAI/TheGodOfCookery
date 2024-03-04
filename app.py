@@ -54,6 +54,7 @@ error_response = load_config('global', 'error_response')
 
 # llm
 llm_model_path = load_config('llm', 'llm_model_path')
+base_model_type = load_config('llm', 'base_model_type')
 
 # rag
 rag_model_type = load_config('rag', 'rag_model_type')
@@ -174,8 +175,13 @@ def prepare_generation_config():
                     whisper_model_scale, "cuda",
                     audio_save_path)
 
-    generation_config = GenerationConfig(
-        max_length=max_length, top_p=0.8, temperature=0.8, repetition_penalty=1.002)   #InternLM2 need 惩罚参数
+    if base_model_type == 'internlm-chat-7b':
+        generation_config = GenerationConfig(
+            max_length=max_length)   #InternLM1
+    else :
+        generation_config = GenerationConfig(
+            max_length=max_length, top_p=0.8, temperature=0.8, repetition_penalty=1.002)   #InternLM2 need 惩罚参数
+
 
     if speech_model_type == "whisper":
         return generation_config, speech_string
@@ -274,8 +280,12 @@ def process_user_input(prompt,
                     model=model,
                     tokenizer=tokenizer,
                     prompt=real_prompt,
-                    # additional_eos_token_id=103028,  #InternLM-7b-chat
-                    additional_eos_token_id=92542,  # InternLM2-7b-chat
+
+                    if base_model_type == 'internlm-chat-7b':
+                        additional_eos_token_id=103028,  #InternLM-7b-chat
+                    else:
+                        additional_eos_token_id=92542,  # InternLM2-7b-chat
+
                     **asdict(generation_config),
                 )
                 for cur_response in generator:
