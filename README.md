@@ -4,7 +4,7 @@
 
 ![license](https://img.shields.io/github/license/SmartFlowAI/TheGodOfCookery.svg)  [![issue resolution](https://img.shields.io/github/issues-closed-raw/SmartFlowAI/TheGodOfCookery)](https://github.com/SmartFlowAI/TheGodOfCookery/issues)   [![open issues](https://img.shields.io/github/issues-raw/SmartFlowAI/TheGodOfCookery)](https://github.com/SmartFlowAI/TheGodOfCookery/issues)
 
-[中文](https://github.com/zhanghui-china/TheGodOfCookery/blob/main/README.md)|[English](https://github.com/zhanghui-china/TheGodOfCookery/blob/main/README_EN.md)
+[中文](https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/README.md)|[English](https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/README_EN.md)
 
 🔍 探索我们的模型：
 [![Static Badge](https://img.shields.io/badge/-gery?style=social&label=🤖%20ModelScope)](https://www.modelscope.cn/models/zhanghuiATchina/zhangxiaobai_shishen2_full/summary)
@@ -29,6 +29,7 @@
 - [2024.2.22] 基于团队成员 @房生亮 的文生图模块 以及 @solo fish 的 whisper语音输入模块，整合 text2image分支，发布二阶段第1个基于openxlab A100的应用 [openxlab app](https://openxlab.org.cn/apps/detail/zhanghui-china/nlp_shishen3)
 - [2024.2.24] 基于团队成员 @Charles 的RAG模块(Chroma)，整合 text2image分支，发布二阶段第2个基于openxlab A100的应用 [openxlab app](https://openxlab.org.cn/apps/detail/zhanghui-china/nlp_shishen3)
 - [2024.3.3] 基于团队成员 @solo fish 的 paraformer语音输入模块，整合 text2image分支，发布二阶段第3个基于openxlab A100的应用 [openxlab app](https://openxlab.org.cn/apps/detail/zhanghui-china/nlp_shishen3)
+- [2024.3.4] 增加英文readme。
 
 ## 一阶段
 
@@ -331,7 +332,7 @@ Demo 访问地址：https://openxlab.org.cn/apps/detail/zhanghui-china/shishen20
 
 2.sole fish：语音输入  [github](https://github.com/YanxingLiu)  
 
-3.Charles：一代RAG（基于Chroma）本科同济大学，考研中... [github](https://github.com/SchweitzerGAO)
+3.Charles：一代RAG（基于Chroma）现为同济大学本科毕业生，考研中。 [github](https://github.com/SchweitzerGAO)
 
 4.乐正萌：二代RAG（基于faiss&Chroma）[github](https://github.com/YueZhengMeng)
 
@@ -345,7 +346,7 @@ Demo 访问地址：https://openxlab.org.cn/apps/detail/zhanghui-china/shishen20
 
 9.王巍龙：数据集，微调
 
-10.轩辕：文档准备，数据集，微调@南京大学在读硕士
+10.轩辕：文档准备，数据集，微调 现为南京大学在读硕士。[github](https://github.com/zzd2001)
 
 11.浦语小助手：提供书生浦语大模型、工具链、训练环境、人才培养等全方面支持 [github](https://github.com/InternLM/InternLM)
 
