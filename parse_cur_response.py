@@ -6,6 +6,31 @@ import jieba.posseg as pseg
 # jieba.suggest_freq('番茄', True)
 
 def split_ingredients(ingredient):
+    #ingredient = ingredient.replace('kg', '千克').replace('g', '克').replace('蒜', '蒜头')
+
+    # 正则表达式模式
+    pattern = r'(?P<quantity>\d+(?:\.\d+)?|半|适量|少许|若干|[零一二两三四五六七八九十百千万亿半整适些少零壹貳贰叁參肆伍陆陸柒捌玖拾佰仟萬億兩]+)?(?P<unit>g|kg|大片|片|克|勺|盒|箱|个|瓣|滴|块|根|把|条]+)?(?P<ingredient>.+)'
+
+    # 提取数据
+    matches = re.finditer(pattern, ingredient)
+
+    # 打印结果
+    for match in matches:
+        quantity = match.group('quantity')
+        unit = match.group('unit')
+        if unit == "kg" or unit == "g":
+            quantity = f"{quantity}{'kg' if unit == 'kg' else 'g'}"
+            unit = None
+        ingredient = match.group('ingredient').strip()
+        print(f"数量: {quantity}, 计量单位: {unit}, 食材名称: {ingredient}")
+        if unit == None:
+            unit = ""
+        if quantity == None:
+            quantity = ""
+    
+    return quantity+unit, ingredient
+
+def split_ingredients_old(ingredient):
     ingredient = ingredient.replace('kg', '千克').replace('g', '克').replace('蒜', '蒜头')
 
     words = pseg.cut(ingredient)  # 使用posseg.cut进行分词和词性标注
@@ -14,7 +39,8 @@ def split_ingredients(ingredient):
     name = ""
     for word, flag in words:
         # 方法一：特殊量词处理
-        regex_pattern = r"(\d+|[零一二两三四五六七八九十百千万亿半整适些少零壹貳贰叁參肆伍陆陸柒捌玖拾佰仟萬億兩]+)(勺|盒|箱|个|瓣|滴|克|块|量|许|根)"
+        regex_pattern = r"(\d+|[零一二两三四五六七八九十百千万亿半整适些少零壹貳贰叁參肆伍陆陸柒捌玖拾佰仟萬億兩]+)(勺|盒|箱|个|瓣|滴|克|块|量|许|根|把|条)"
+
         special_flag = bool(re.search(regex_pattern, word))
         # 方法二：词性判断
         if flag in ["m", "q", "x"] or special_flag:
@@ -44,14 +70,16 @@ def return_final_md(cur_response):
             print("error message is ...", e)
             return cur_response
 
+        file_dir = os.path.dirname(os.path.abspath(__file__))
         # Generate markdown for ingredients table
         ingredients_md = "| 序号 | 数量 | 食材 ||\n| --- | --- | --- |---|\n"
         for i, item in enumerate(ingredients_list):
             try:
                 quantity, name = split_ingredients(item)
-                image_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), f"src/{name}.png")
+                image_path = os.path.join(file_dir, f"src/{name}.png")
                 if os.path.exists(image_path):
-                    image_path_and_style = f"<img src={image_path} width = '50' height = '50' align=center />"
+                    #image_path_and_style = f"<img src='{image_path}' width = '50' height = '50' align=center />"
+                    image_path_and_style = ""
                 else:
                     image_path_and_style = ""
                 line = f"| {i + 1} | {quantity} | {name} |{image_path_and_style}|"
@@ -68,9 +96,10 @@ def return_final_md(cur_response):
 
         # Combine both markdowns into one final markdown
         # Define the recipe name for the markdown output
-        recipe_name = f'您的菜谱'
-        ingredients_title = f'食材'
-        step_title = f'制作步骤'
+        recipe_name = '您的菜谱'
+        # add ingredients and steps
+        ingredients_title = '食材'
+        step_title = '制作步骤'
         final_md = f"# {recipe_name}\n\n## {ingredients_title}\n{ingredients_md}\n\n## {step_title}\n{steps_md}"
     except Exception as e:
         print("error message is ...", e)

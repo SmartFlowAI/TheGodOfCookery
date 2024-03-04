@@ -328,7 +328,7 @@ Demo 访问地址：https://openxlab.org.cn/apps/detail/zhanghui-china/shishen20
 
 ## 项目参与人员（排名不分先后）
 
-1.张小白，项目策划、测试和打杂。现为某IT公司数据工程师，华为云HCDE（原华为云MVP），2020年华为云社区十佳博主，2022年昇腾社区优秀开发者，2022年华为云社区年度优秀版主，MindSpore布道师，DataWhale优秀学习者， [知乎](https://www.zhihu.com/people/zhanghui_china)
+1.张小白，项目策划、测试和打杂。南京大学本科毕业，现为某IT公司数据工程师，华为云HCDE（原华为云MVP），2020年华为云社区十佳博主，2022年昇腾社区优秀开发者，2022年华为云社区年度优秀版主，MindSpore布道师，DataWhale优秀学习者， [知乎](https://www.zhihu.com/people/zhanghui_china)
 
 2.sole fish：语音输入  [github](https://github.com/YanxingLiu)  
 
@@ -342,7 +342,7 @@ Demo 访问地址：https://openxlab.org.cn/apps/detail/zhanghui-china/shishen20
 
 7.刘光磊：图标设计，前端优化 [github](https://github.com/Mrguanglei)
 
-8.喵喵咪：数据集准备 [github](https://github.com/miyc1996)
+8.喵喵咪：数据集准备，后续本地小模型部署测试，北京航空航天大学硕士，现为上海某国企工程师。 [github](https://github.com/miyc1996)
 
 9.王巍龙：数据集，微调
 
