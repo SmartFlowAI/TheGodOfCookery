@@ -1,10 +1,10 @@
 <div align="center">
-  <img src="https://github.com/zhanghui-china/TheGodOfCookery/blob/main/images/cooker.png" width="1092"/>
+  <img src="https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/images/cooker.png" width="1092"/>
   <br /><br />
 
-![license](https://img.shields.io/github/license/zhanghui-china/TheGodOfCookery.svg)  [![issue resolution](https://img.shields.io/github/issues-closed-raw/zhanghui-china/TheGodOfCookery)](https://github.com/zhanghui-china/TheGodOfCookery/issues)   [![open issues](https://img.shields.io/github/issues-raw/zhanghui-china/TheGodOfCookery)](https://github.com/zhanghui-china/TheGodOfCookery/issues)
+![license](https://img.shields.io/github/license/SmartFlowAI/TheGodOfCookery.svg)  [![issue resolution](https://img.shields.io/github/issues-closed-raw/SmartFlowAI/TheGodOfCookery)](https://github.com/SmartFlowAI/TheGodOfCookery/issues)   [![open issues](https://img.shields.io/github/issues-raw/SmartFlowAI/TheGodOfCookery)](https://github.com/SmartFlowAI/TheGodOfCookery/issues)
 
-[中文](https://github.com/zhanghui-china/TheGodOfCookery/blob/main/README.md)|[English](https://github.com/zhanghui-china/TheGodOfCookery/blob/main/README_EN.md)
+[中文](https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/README.md)|[English](https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/README_EN.md)
 
 🔍 Explore our models：
 [![Static Badge](https://img.shields.io/badge/-gery?style=social&label=🤖%20ModelScope)](https://www.modelscope.cn/models/zhanghuiATchina/zhangxiaobai_shishen2_full/summary)
@@ -25,6 +25,7 @@ The answers provided by this APP are for reference only, and should  not be used
 - [2024.2.22] Based on team member @fangshengliang's text2image module and @solo fish's whisper voice input module, we integrate the text2image branch, and release the first openxlab A100-based application of the second stage . [openxlab app](https://openxlab.org.cn/apps/detail/zhanghui-china/nlp_shishen3)
 - [2024.2.24] Based on team member @Charles' RAG module (Chroma), we integrate the text2image branch, and release the second openxlab A100-based application of the second stage [openxlab app](https://openxlab.org.cn/apps/detail/zhanghui-china/nlp_shishen3)
 - [2024.3.3] Based on team member @solo fish's paraformer voice input module, we integrate the text2image branch, and release the third openxlab A100-based application of the second stage [openxlab app](https://openxlab.org.cn/apps/detail/zhanghui-china/nlp_shishen3)
+- [2024.3.5] Add English README
 
 ## Stage 1
 
@@ -296,13 +297,13 @@ Demo link：https://openxlab.org.cn/apps/detail/zhanghui-china/nlp_shishen3
 
 ### Project participants (in no particular order)
 
-1.Zhang Xiaobai，project planning, testing and miscellaneous work. [知乎](https://www.zhihu.com/people/zhanghui_china)
+1.Zhang Xiaobai，project planning, testing and miscellaneous work. @Nanjing University [知乎](https://www.zhihu.com/people/zhanghui_china)
 
 2.sole fish：speech input  [github](https://github.com/YanxingLiu)  
 
-3.Charles：first generation RAG（Based on Chroma） [github](https://github.com/SchweitzerGAO)
+3.Charles：first generation RAG（Based on Chroma）@Tongji University [github](https://github.com/SchweitzerGAO)
 
-4.Le Zhengmeng：second generation RAG (Based on faiss&Chroma)github](https://github.com/YueZhengMeng)
+4.Le Zhengmeng：second generation RAG (Based on faiss&Chroma) [github](https://github.com/YueZhengMeng)
 
 5.Bin Bin：format the output [github](https://github.com/Everfighting) [知乎](https://www.zhihu.com/people/everfighting)
 
@@ -314,7 +315,7 @@ Demo link：https://openxlab.org.cn/apps/detail/zhanghui-china/nlp_shishen3
 
 9.Wang Weilong：datasets, fine-tuning
 
-10.Xuan Yuan：document preparation, datasets, fine-tuning @Nanjing University
+10.Xuan Yuan：document preparation, datasets, fine-tuning @Nanjing University [github](https://github.com/zzd2001)
 
 11.Puguese Assistant: provide full support for InternIM model, tool chain, training environment, talent training and so on. [github](https://github.com/InternLM/InternLM)
 
