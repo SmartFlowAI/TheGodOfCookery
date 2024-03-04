@@ -318,7 +318,7 @@ Demo 访问地址：https://openxlab.org.cn/apps/detail/zhanghui-china/nlp_shish
 
 ## 项目参与人员（排名不分先后）
 
-1.张小白，项目策划、测试和打杂。现为某IT公司数据工程师，2020年华为云社区十佳博主，2022年昇腾优秀开发者，昇腾CANN明星体验官，2022年华为云社区年度优秀版主，MindSpore布道师，DataWhale优秀学习者， [知乎](https://www.zhihu.com/people/zhanghui_china)
+1.张小白，项目策划、测试和打杂。现为某IT公司数据工程师，华为云HCDE（原华为云MVP），2020年华为云社区十佳博主，2022年昇腾优秀开发者，昇腾CANN明星体验官，2022年华为云社区年度优秀版主，MindSpore布道师，DataWhale优秀学习者， [知乎](https://www.zhihu.com/people/zhanghui_china)
 
 2.sole fish：语音输入  [github](https://github.com/YanxingLiu)  
 
