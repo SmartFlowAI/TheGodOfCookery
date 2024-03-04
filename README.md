@@ -322,7 +322,7 @@ Demo 访问地址：https://openxlab.org.cn/apps/detail/zhanghui-china/nlp_shish
 
 2.sole fish：语音输入  [github](https://github.com/YanxingLiu)  
 
-3.Charles：一代RAG（基于Chroma） [github](https://github.com/SchweitzerGAO)
+3.Charles：一代RAG（基于Chroma）本科同济大学，考研中... [github](https://github.com/SchweitzerGAO)
 
 4.乐正萌：二代RAG（基于faiss&Chroma）[github](https://github.com/YueZhengMeng)
 
