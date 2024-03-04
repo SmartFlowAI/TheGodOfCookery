@@ -223,7 +223,7 @@ print(response)
 
 ### 二阶段演示
 
-Demo 访问地址：https://openxlab.org.cn/apps/detail/zhanghui-china/nlp_shishen3
+Demo 访问地址：https://openxlab.org.cn/apps/detail/zhanghui-china/shishen2024
 
 <div align="center">
   <img src="https://github.com/zhanghui-china/TheGodOfCookery/blob/main/images/answer101.png" width="600"/>
