@@ -1,10 +1,8 @@
 <div align="center">
-  <img src="https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/images/cooker.png" width="1092"/>
+  <img src="https://github.com/zhanghui-china/TheGodOfCookery/blob/main/images/cooker.png" width="1092"/>
   <br /><br />
 
-![license](https://img.shields.io/github/license/SmartFlowAI/TheGodOfCookery.svg)  [![issue resolution](https://img.shields.io/github/issues-closed-raw/SmartFlowAI/TheGodOfCookery)](https://github.com/SmartFlowAI/TheGodOfCookery/issues)   [![open issues](https://img.shields.io/github/issues-raw/SmartFlowAI/TheGodOfCookery)](https://github.com/SmartFlowAI/TheGodOfCookery/issues)
-
-[中文](https://github.com/zhanghui-china/TheGodOfCookery/blob/main/README.md)|[English](https://github.com/zhanghui-china/TheGodOfCookery/blob/main/README_EN.md)
+![license](https://img.shields.io/github/license/zhanghui-china/TheGodOfCookery.svg)  [![issue resolution](https://img.shields.io/github/issues-closed-raw/zhanghui-china/TheGodOfCookery)](https://github.com/zhanghui-china/TheGodOfCookery/issues)   [![open issues](https://img.shields.io/github/issues-raw/zhanghui-china/TheGodOfCookery)](https://github.com/zhanghui-china/TheGodOfCookery/issues)
 
 🔍 探索我们的模型：
 [![Static Badge](https://img.shields.io/badge/-gery?style=social&label=🤖%20ModelScope)](https://www.modelscope.cn/models/zhanghuiATchina/zhangxiaobai_shishen2_full/summary)
@@ -202,30 +200,23 @@ print(response)
 
 ### 二阶段数据集
 
-未完成。
+待添加
 
 ### 二阶段训练
 
-未进行。
+待添加
 
 ### 二阶段对话
 
-   ```bash
-先在 config/config.py文件中设置好 speech_model_type(缺省为paraformer)和 rag_model_type(缺省为chroma）
-
-执行 python start.py
-
-浏览器打开 http://127.0.0.1:7860 即可。
-
-   ```
+待添加
 
 ### 二阶段模型
 
-与一阶段相同
+待添加
 
 ### 二阶段演示
 
-Demo 访问地址：https://openxlab.org.cn/apps/detail/zhanghui-china/shishen2024
+Demo 访问地址：https://openxlab.org.cn/apps/detail/zhanghui-china/nlp_shishen3
 
 <div align="center">
   <img src="https://github.com/zhanghui-china/TheGodOfCookery/blob/main/images/answer101.png" width="600"/>
@@ -244,11 +235,7 @@ Demo 访问地址：https://openxlab.org.cn/apps/detail/zhanghui-china/shishen20
 
 2.格式化输出 部分：食材图片似乎因文件名数据集问题无法显示。解析食材会出现部分偏差。
 
-### 二阶段实践文档
-
-[项目介绍视频](https://www.bilibili.com/video/BV1kr421W7iA)  <br />
-
-## 二阶段项目代码结构
+## 项目代码结构
 
    ```shell
 项目目录
@@ -327,17 +314,17 @@ Demo 访问地址：https://openxlab.org.cn/apps/detail/zhanghui-china/shishen20
 
 ## 项目参与人员（排名不分先后）
 
-1.张小白，项目策划、测试和打杂。现为某IT公司数据工程师，华为云HCDE（原华为云MVP），2020年华为云社区十佳博主，2022年昇腾社区优秀开发者，2022年华为云社区年度优秀版主，MindSpore布道师，DataWhale优秀学习者， [知乎](https://www.zhihu.com/people/zhanghui_china)
+1.张小白，项目策划、测试和打杂。 [知乎](https://www.zhihu.com/people/zhanghui_china)
 
 2.sole fish：语音输入  [github](https://github.com/YanxingLiu)  
 
-3.Charles：一代RAG（基于Chroma）本科同济大学，考研中... [github](https://github.com/SchweitzerGAO)
+3.Charles：一代RAG（基于Chroma） [github](https://github.com/SchweitzerGAO)
 
 4.乐正萌：二代RAG（基于faiss&Chroma）[github](https://github.com/YueZhengMeng)
 
 5.彬彬：格式化输出 [github](https://github.com/Everfighting) [知乎](https://www.zhihu.com/people/everfighting)
 
-6.房宇亮：文生图、配置工具 [github](https://github.com/leonfrank)   
+6.房宇亮：文生图 [github](https://github.com/leonfrank)   
 
 7.刘光磊：图标设计，前端优化 [github](https://github.com/Mrguanglei)
 
@@ -345,7 +332,7 @@ Demo 访问地址：https://openxlab.org.cn/apps/detail/zhanghui-china/shishen20
 
 9.王巍龙：数据集，微调
 
-10.轩辕：文档准备，数据集，微调@南京大学在读硕士
+10.轩辕：文档准备，数据集，微调
 
 11.浦语小助手：提供书生浦语大模型、工具链、训练环境、人才培养等全方面支持 [github](https://github.com/InternLM/InternLM)
 
@@ -353,7 +340,3 @@ Demo 访问地址：https://openxlab.org.cn/apps/detail/zhanghui-china/shishen20
 ## 开源许可证
 
 该项目采用 [Apache License 2.0 开源许可证](LICENSE.txt)。
-
-## Star History
-
-[![Star History Chart](https://api.star-history.com/svg?repos=SmartFlowAI/TheGodOfCookery&type=Date)](https://star-history.com/#SmartFlowAI/TheGodOfCookery&Date)
