@@ -200,19 +200,19 @@ print(response)
 
 ### 二阶段数据集
 
-待添加
+未完成。
 
 ### 二阶段训练
 
-待添加
+未进行。
 
 ### 二阶段对话
 
-待添加
+与一阶段相同
 
 ### 二阶段模型
 
-待添加
+与一阶段相同
 
 ### 二阶段演示
 
@@ -235,7 +235,7 @@ Demo 访问地址：https://openxlab.org.cn/apps/detail/zhanghui-china/nlp_shish
 
 2.格式化输出 部分：食材图片似乎因文件名数据集问题无法显示。解析食材会出现部分偏差。
 
-## 项目代码结构
+## 二阶段项目代码结构
 
    ```shell
 项目目录
@@ -314,7 +314,7 @@ Demo 访问地址：https://openxlab.org.cn/apps/detail/zhanghui-china/nlp_shish
 
 ## 项目参与人员（排名不分先后）
 
-1.张小白，项目策划、测试和打杂。现为IT公司数据工程师，2020年华为云十佳博主，2022年昇腾优秀开发者，昇腾CANN明星体验官，2022年华为云社区年度优秀版主，MindSpore布道师，DataWhale优秀学习者， [知乎](https://www.zhihu.com/people/zhanghui_china)
+1.张小白，项目策划、测试和打杂。现为某IT公司数据工程师，2020年华为云社区十佳博主，2022年昇腾优秀开发者，昇腾CANN明星体验官，2022年华为云社区年度优秀版主，MindSpore布道师，DataWhale优秀学习者， [知乎](https://www.zhihu.com/people/zhanghui_china)
 
 2.sole fish：语音输入  [github](https://github.com/YanxingLiu)  
 
