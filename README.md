@@ -328,7 +328,7 @@ Demo 访问地址：https://openxlab.org.cn/apps/detail/zhanghui-china/nlp_shish
 
 5.彬彬：格式化输出 [github](https://github.com/Everfighting) [知乎](https://www.zhihu.com/people/everfighting)
 
-6.房宇亮：文生图 [github](https://github.com/leonfrank)   
+6.房宇亮：文生图、配置工具 [github](https://github.com/leonfrank)   
 
 7.刘光磊：图标设计，前端优化 [github](https://github.com/Mrguanglei)
 
