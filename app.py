@@ -51,27 +51,23 @@ robot_prompt = load_config('global', 'robot_prompt')
 cur_query_prompt = load_config('global', 'cur_query_prompt')
 error_response = load_config('global', 'error_response')
 
-
 # llm
 llm_model_path = load_config('llm', 'llm_model_path')
 base_model_type = load_config('llm', 'base_model_type')
+print(f"base model type:{base_model_type}")
 
 # rag
 rag_model_type = load_config('rag', 'rag_model_type')
-if rag_model_type == "chroma":
-    print("rag model: chroma with sqllite")
-else :
-    print("rag model: faiss")
+print(f"RAG model type:{rag_model_type}")
 
 # speech
 audio_save_path = load_config('speech', 'audio_save_path')
 speech_model_type = load_config('speech', 'speech_model_type')
+print(f"speech model type:{speech_model_type}")
 if speech_model_type == "whisper":
-    print("speed model: whisper")
     from whisper_app import run_whisper
     whisper_model_scale = load_config('speech', 'whisper_model_scale')
 else:
-    print("speed model: paramformer")
     from funasr import AutoModel
     from speech import get_local_model
 
@@ -92,8 +88,6 @@ else:
                 audio.export(audio_save_path, format="wav")
                 speech_string = speech_model.generate(input=audio_save_path)[0]['text']
             return speech_string
-
-
 
 def on_btn_click():
     """
@@ -229,12 +223,10 @@ def process_user_input(prompt,
 
     """
     # Check if the user input contains certain keywords
-    print("Origin Prompt:")
-    print(prompt)
+    print(f"Origin Prompt:{prompt}")
     prompt = convert_t2s(prompt).replace(" ", "")
-    print("Converted Prompt:")
-    print(prompt)
-
+    print(f"Converted Prompt:{prompt}")
+ 
     keywords = ["怎么做", "做法", "菜谱"]
     contains_keywords = any(keyword in prompt for keyword in keywords)
 
@@ -276,16 +268,18 @@ def process_user_input(prompt,
 
                 message_placeholder.markdown(cur_response)
             else:
+                if base_model_type == 'internlm-chat-7b':
+                    additional_eos_token_id=103028  #InternLM-7b-chat
+                else:
+                    additional_eos_token_id=92542  # InternLM2-7b-chat
+
+                print(f"additional_eos_token_id:{additional_eos_token_id}")
+
                 generator = generate_interactive(
                     model=model,
                     tokenizer=tokenizer,
                     prompt=real_prompt,
-
-                    if base_model_type == 'internlm-chat-7b':
-                        additional_eos_token_id=103028,  #InternLM-7b-chat
-                    else:
-                        additional_eos_token_id=92542,  # InternLM2-7b-chat
-
+                    additional_eos_token_id=additional_eos_token_id,  #InternLM or InternLM2
                     **asdict(generation_config),
                 )
                 for cur_response in generator:
@@ -335,8 +329,7 @@ def text_to_image(prompt, image_model):
         current_datetime = datetime.now().strftime("%Y%m%d_%H%M%S")
         new_file_name = f"food_{current_datetime}.jpg"
         food_image_path = os.path.join(file_dir, "images/", new_file_name)
-        print("Image file name")
-        print(food_image_path)
+        print(f"Image file name:{food_image_path}")
         ret.save(food_image_path)
     else:
         food_image_path = os.path.join(file_dir, f"images/error.jpg")
@@ -345,8 +338,7 @@ def text_to_image(prompt, image_model):
 
 
 def main():
-    print("Torch support GPU: ")
-    print(torch.cuda.is_available())
+    print(f"Torch support GPU: {torch.cuda.is_available()}")
 
     st.title("食神2 by 其实你也可以是个厨师队")
     model, tokenizer = load_model()

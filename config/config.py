@@ -21,10 +21,12 @@ Config['global']= {
 
 # llm
 Config['llm'] = {
-    'base_model_type': "internlm-chat-7b"
-    #'base_model_type': "internlm2-chat-7b"
+    'finetuned': True,
+    'base_model_type': "internlm2-chat-7b",
+    #'base_model_type': "internlm2-chat-7b",
 
     'llm_model_path': os.environ.get('HOME') + "/models/zhanghuiATchina/zhangxiaobai_shishen2_full"
+    #'llm_model_path': os.environ.get('HOME') + "/models/Shanghai_AI_Laboratory/internlm-chat-7b"
     #'llm_model_path': os.environ.get('HOME') + "/models/zhanghuiATchina/zhangxiaobai_shishen_full"
     #'llm_model_path': "/mnt/d//models/zhanghuiATchina/zhangxiaobai_shishen_full",
 
