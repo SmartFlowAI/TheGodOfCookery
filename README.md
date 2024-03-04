@@ -208,7 +208,14 @@ print(response)
 
 ### 二阶段对话
 
-与一阶段相同
+   ```bash
+先在 config/config.py文件中设置好 speech_model_type(缺省为paraformer)和 rag_model_type(缺省为chroma）
+
+执行 python start.py
+
+浏览器打开 http://127.0.0.1:7860 即可。
+
+   ```
 
 ### 二阶段模型
 
