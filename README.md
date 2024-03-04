@@ -1,8 +1,8 @@
 <div align="center">
-  <img src="https://github.com/zhanghui-china/TheGodOfCookery/blob/main/images/cooker.png" width="1092"/>
+  <img src="https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/images/cooker.png" width="1092"/>
   <br /><br />
 
-![license](https://img.shields.io/github/license/zhanghui-china/TheGodOfCookery.svg)  [![issue resolution](https://img.shields.io/github/issues-closed-raw/zhanghui-china/TheGodOfCookery)](https://github.com/zhanghui-china/TheGodOfCookery/issues)   [![open issues](https://img.shields.io/github/issues-raw/zhanghui-china/TheGodOfCookery)](https://github.com/zhanghui-china/TheGodOfCookery/issues)
+![license](https://img.shields.io/github/license/SmartFlowAI/TheGodOfCookery.svg)  [![issue resolution](https://img.shields.io/github/issues-closed-raw/SmartFlowAI/TheGodOfCookery)](https://github.com/SmartFlowAI/TheGodOfCookery/issues)   [![open issues](https://img.shields.io/github/issues-raw/SmartFlowAI/TheGodOfCookery)](https://github.com/SmartFlowAI/TheGodOfCookery/issues)
 
 🔍 探索我们的模型：
 [![Static Badge](https://img.shields.io/badge/-gery?style=social&label=🤖%20ModelScope)](https://www.modelscope.cn/models/zhanghuiATchina/zhangxiaobai_shishen2_full/summary)
