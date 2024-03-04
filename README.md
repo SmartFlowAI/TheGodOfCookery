@@ -235,6 +235,10 @@ Demo 访问地址：https://openxlab.org.cn/apps/detail/zhanghui-china/nlp_shish
 
 2.格式化输出 部分：食材图片似乎因文件名数据集问题无法显示。解析食材会出现部分偏差。
 
+### 二阶段实践文档
+
+[项目介绍视频](https://www.bilibili.com/video/BV1kr421W7iA)  <br />
+
 ## 二阶段项目代码结构
 
    ```shell
