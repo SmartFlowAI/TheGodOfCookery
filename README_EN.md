@@ -311,7 +311,7 @@ Demo link：https://openxlab.org.cn/apps/detail/zhanghui-china/nlp_shishen3
 
 7.Liu Guanglei：iconic design, front-end optimization [github](https://github.com/Mrguanglei)
 
-8.Miao Miaomi：datasets [github](https://github.com/miyc1996)
+8.Miao Miaomi：datasets @Beijing University of Aeronautics and Astronautics [github](https://github.com/miyc1996)
 
 9.Wang Weilong：datasets, fine-tuning
 
@@ -323,3 +323,7 @@ Demo link：https://openxlab.org.cn/apps/detail/zhanghui-china/nlp_shishen3
 ## License
 
 The project follows [Apache License 2.0](LICENSE.txt)。
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=SmartFlowAI/TheGodOfCookery&type=Date)](https://star-history.com/#SmartFlowAI/TheGodOfCookery&Date)
