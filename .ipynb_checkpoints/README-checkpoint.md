@@ -4,8 +4,6 @@
 
 ![license](https://img.shields.io/github/license/zhanghui-china/TheGodOfCookery.svg)  [![issue resolution](https://img.shields.io/github/issues-closed-raw/zhanghui-china/TheGodOfCookery)](https://github.com/zhanghui-china/TheGodOfCookery/issues)   [![open issues](https://img.shields.io/github/issues-raw/zhanghui-china/TheGodOfCookery)](https://github.com/zhanghui-china/TheGodOfCookery/issues)
 
-[中文](https://github.com/zhanghui-china/TheGodOfCookery/blob/main/README.md)|[English](https://github.com/zhanghui-china/TheGodOfCookery/blob/main/README_EN.md)
-
 🔍 探索我们的模型：
 [![Static Badge](https://img.shields.io/badge/-gery?style=social&label=🤖%20ModelScope)](https://www.modelscope.cn/models/zhanghuiATchina/zhangxiaobai_shishen2_full/summary)
 
@@ -334,7 +332,7 @@ Demo 访问地址：https://openxlab.org.cn/apps/detail/zhanghui-china/nlp_shish
 
 9.王巍龙：数据集，微调
 
-10.轩辕：文档准备，数据集，微调@南京大学在读硕士
+10.轩辕：文档准备，数据集，微调
 
 11.浦语小助手：提供书生浦语大模型、工具链、训练环境、人才培养等全方面支持 [github](https://github.com/InternLM/InternLM)
 
