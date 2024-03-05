@@ -305,7 +305,7 @@ Demo link：https://openxlab.org.cn/apps/detail/zhanghui-china/nlp_shishen3
 
 4.Le Zhengmeng：second generation RAG (Based on faiss&Chroma) [github](https://github.com/YueZhengMeng)
 
-5.Bin Bin：format the output [github](https://github.com/Everfighting) [知乎](https://www.zhihu.com/people/everfighting)
+5.Bin Bin：format the output, @Beihang University [github](https://github.com/Everfighting) [知乎](https://www.zhihu.com/people/everfighting)
 
 6.Fang Yuliang：text-generated image [github](https://github.com/leonfrank)   
 
