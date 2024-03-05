@@ -355,6 +355,20 @@ Demo 访问地址：https://openxlab.org.cn/apps/detail/zhanghui-china/shishen20
 
 该项目采用 [Apache License 2.0 开源许可证](LICENSE.txt)。
 
+## 特别感谢
+
+感谢上海人工智能实验室组织的 书生·浦语实战营 学习活动~~~<br />
+<img src="https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/images/shanghaiailab.png" width="150"/>
+  <br />
+
+感谢 OpenXLab 对项目部署的算力支持~  <br />
+<img src="https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/images/openxlab.png" width="150"/>
+  
+
+感谢 浦语小助手 对项目的支持~<br />
+<img src="https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/images/internlm.jpg" width="150"/>
+  
+
 ## Star History
 
 [![Star History Chart](https://api.star-history.com/svg?repos=SmartFlowAI/TheGodOfCookery&type=Date)](https://star-history.com/#SmartFlowAI/TheGodOfCookery&Date)
