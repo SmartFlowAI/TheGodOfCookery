@@ -336,7 +336,7 @@ Demo 访问地址：https://openxlab.org.cn/apps/detail/zhanghui-china/shishen20
 
 4.乐正萌：二代RAG（基于faiss&Chroma）[github](https://github.com/YueZhengMeng)
 
-5.彬彬：格式化输出 [github](https://github.com/Everfighting) [知乎](https://www.zhihu.com/people/everfighting)
+5.彬彬：格式化输出。华东师范大学本科毕业，现为算法开发工程师 [github](https://github.com/Everfighting) [知乎](https://www.zhihu.com/people/everfighting)
 
 6.房宇亮：文生图、配置工具 [github](https://github.com/leonfrank)   
 
