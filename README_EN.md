@@ -297,25 +297,25 @@ Demo link：https://openxlab.org.cn/apps/detail/zhanghui-china/nlp_shishen3
 
 ### Project participants (in no particular order)
 
-1.Zhang Xiaobai，project planning, testing and miscellaneous work. @Nanjing University [知乎](https://www.zhihu.com/people/zhanghui_china)
+1.Zhang Xiaobai，project planning, testing and miscellaneous work. Graduated from Nanjing University, Data engineer. [zhihu](https://www.zhihu.com/people/zhanghui_china)
 
-2.sole fish：speech input  [github](https://github.com/YanxingLiu)  
+2.sole fish：speech input. PhD student@University of Chinese Academy of Sciences.  [github](https://github.com/YanxingLiu)  
 
-3.Charles：first generation RAG（Based on Chroma）@Tongji University [github](https://github.com/SchweitzerGAO)
+3.Charles：first generation RAG（Based on Chroma）. Graduated from Tongji University. [github](https://github.com/SchweitzerGAO)
 
-4.Le Zhengmeng：second generation RAG (Based on faiss&Chroma) [github](https://github.com/YueZhengMeng)
+4.Le Zhengmeng：second generation RAG (Based on faiss&Chroma).  Graduated from Shanghai Ocean University. [github](https://github.com/YueZhengMeng)
 
-5.Bin Bin：format the output, @Beihang University [github](https://github.com/Everfighting) [知乎](https://www.zhihu.com/people/everfighting)
+5.Bin Bin：format the output, Graduated from East China Normal University, Algorithm development engineer. [github](https://github.com/Everfighting) [zhihu](https://www.zhihu.com/people/everfighting)
 
-6.Fang Yuliang：text-generated image [github](https://github.com/leonfrank)   
+6.Fang Yuliang：text-generated image. Graduated from Nanjing University, Algorithm development engineer. [github](https://github.com/leonfrank)   
 
-7.Liu Guanglei：iconic design, front-end optimization [github](https://github.com/Mrguanglei)
+7.Liu Guanglei：iconic design, front-end optimization. [github](https://github.com/Mrguanglei)
 
-8.Miao Miaomi：datasets @Beijing University of Aeronautics and Astronautics [github](https://github.com/miyc1996)
+8.Miao Miaomi：datasets. Master from Beijing University of Aeronautics and Astronautics, Engineer. [github](https://github.com/miyc1996)
 
 9.Wang Weilong：datasets, fine-tuning
 
-10.Xuan Yuan：document preparation, datasets, fine-tuning @Nanjing University [github](https://github.com/zzd2001)
+10.Xuan Yuan：document preparation, datasets, fine-tuning. Master student@Nanjing University. [github](https://github.com/zzd2001)
 
 11.Puguese Assistant: provide full support for InternIM model, tool chain, training environment, talent training and so on. [github](https://github.com/InternLM/InternLM)
 
