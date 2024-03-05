@@ -328,17 +328,17 @@ Demo 访问地址：https://openxlab.org.cn/apps/detail/zhanghui-china/shishen20
 
 ## 项目参与人员（排名不分先后）
 
-1.张小白，项目策划、测试和打杂。南京大学本科毕业，现为某IT公司数据工程师，华为云HCDE（原华为云MVP），2020年华为云社区十佳博主，2022年昇腾社区优秀开发者，2022年华为云社区年度优秀版主，MindSpore布道师，DataWhale优秀学习者， [知乎](https://www.zhihu.com/people/zhanghui_china)
+1.张小白，项目策划、测试和打杂。南京大学本科毕业，现为某公司数据工程师，华为云HCDE（原华为云MVP），2020年华为云社区十佳博主，2022年昇腾社区优秀开发者，2022年华为云社区年度优秀版主，MindSpore布道师，DataWhale优秀学习者。 [知乎](https://www.zhihu.com/people/zhanghui_china)
 
-2.sole fish：语音输入  [github](https://github.com/YanxingLiu)  
+2.sole fish：语音输入。现为中国科学院大学在读博士研究生。 [github](https://github.com/YanxingLiu)  
 
 3.Charles：一代RAG（基于Chroma）现为同济大学本科毕业生，考研中。 [github](https://github.com/SchweitzerGAO)
 
-4.乐正萌：二代RAG（基于faiss&Chroma）[github](https://github.com/YueZhengMeng)
+4.乐正萌：二代RAG（基于faiss&Chroma）现为上海海洋大学本科毕业生，考研中。[github](https://github.com/YueZhengMeng)
 
-5.彬彬：格式化输出。华东师范大学本科毕业，现为算法开发工程师 [github](https://github.com/Everfighting) [知乎](https://www.zhihu.com/people/everfighting)
+5.彬彬：格式化输出。华东师范大学本科毕业，现为算法开发工程师。 [github](https://github.com/Everfighting) [知乎](https://www.zhihu.com/people/everfighting)
 
-6.房宇亮：文生图、配置工具 [github](https://github.com/leonfrank)   
+6.房宇亮：文生图、配置工具。南京大学本科毕业，现为某公司算法工程师。 [github](https://github.com/leonfrank)   
 
 7.刘光磊：图标设计，前端优化 [github](https://github.com/Mrguanglei)
 
