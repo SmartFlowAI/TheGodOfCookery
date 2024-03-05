@@ -142,6 +142,9 @@ response, history = model.chat(tokenizer, "酸菜鱼怎么做", history=history)
 print(response)
 ```
 
+### 一阶段数据集
+
+[150万下厨房微调数据集:提取密码8489](https://pan.baidu.com/s/1TyqDWRI5jOs621VXr-uMoQ)
 
 
 ### 一阶段已知问题
