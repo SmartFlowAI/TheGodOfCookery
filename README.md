@@ -358,15 +358,15 @@ Demo 访问地址：https://openxlab.org.cn/apps/detail/zhanghui-china/shishen20
 ## 特别感谢
 
 感谢上海人工智能实验室组织的 书生·浦语实战营 学习活动~~~
-<img src="https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/images/shanghaiailab.png" width="600"/>
+<img src="https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/images/shanghaiailab.png" width="150"/>
   <br />
 
 感谢 OpenXLab 对项目部署的算力支持~  
-<img src="https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/images/openxlab.png" width="600"/>
+<img src="https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/images/openxlab.png" width="150"/>
   <br />
 
 感谢 浦语小助手 对项目的支持~
-<img src="https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/images/internlm.jpg" width="600"/>
+<img src="https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/images/internlm.jpg" width="150"/>
   <br />
 
 ## Star History
