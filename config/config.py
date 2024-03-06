@@ -28,7 +28,8 @@ Config['llm'] = {
 
    #'llm_model_path': os.environ.get('HOME') + "/models/zhanghuiATchina/zhangxiaobai_shishen2_full"
 
-    'llm_model_path': "/home/zhanghui/shishen18/merged"
+    #'llm_model_path': "/home/zhanghui/shishen18/merged"
+    'llm_model_path': os.environ.get('HOME') + "/models/zhanghuiATchina/zhangxiaobai_shishen2_1_8b"
 
     
     #'llm_model_path': os.environ.get('HOME') + "/models/Shanghai_AI_Laboratory/internlm-chat-7b"
