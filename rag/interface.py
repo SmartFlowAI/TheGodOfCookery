@@ -24,6 +24,7 @@ from langchain.chains import ConversationalRetrievalChain, LLMChain, RetrievalQA
 from langchain_community.llms.tongyi import Tongyi
 from rag.CookMasterLLM import CookMasterLLM
 from config import load_config
+from rag.HyQEContextualCompressionRetriever import HyQEContextualCompressionRetriever
 
 logger = logging.get_logger(__name__)
 chain_instance = None
@@ -89,7 +90,9 @@ def load_retriever(llm, verbose=False):
     # 创建带reranker的检索器，对大模型过滤器的结果进行再排序
     bce_reranker_config = load_config('rag', 'reranker').get('bce')
     reranker = BCERerank(**bce_reranker_config)
-    compression_retriever = ContextualCompressionRetriever(base_compressor=reranker, base_retriever=ensemble_retriever)
+    # 可以替换假设问题为原始菜谱的Retriever
+    compression_retriever = HyQEContextualCompressionRetriever(base_compressor=reranker,
+                                                               base_retriever=ensemble_retriever)
     return compression_retriever
 
 
