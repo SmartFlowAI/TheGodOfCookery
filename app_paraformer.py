@@ -31,6 +31,7 @@ from convert_t2s import convert_t2s
 #from whisper_app import run_whisper
 from funasr import AutoModel
 from speech import get_local_model
+import base64
 import sys
 
 logger = logging.get_logger(__name__)
@@ -101,14 +102,18 @@ def load_speech_model():
     return model
 
 def speech_rec(speech_model):
-    with st.sidebar:
-        # 3. Speech input
-        audio = audiorecorder("Record", "Stop record")
-        speech_string = None
-        if len(audio) > 0:
+    # 3. Speech input
+    audio = audiorecorder("Record", "Stop record")
+    audio_b64 = base64.b64encode(audio.raw_data)
+    speech_string = None
+    if len(audio) > 0 and ('last_audio_b64' not in st.session_state or st.session_state['last_audio_b64'] != audio_b64):
+        st.session_state['last_audio_b64'] = audio_b64
+        try:
             audio.export(audio_save_path, format="wav")
             speech_string = speech_model.generate(input=audio_save_path)[0]['text']
-        return speech_string
+        except Exception as e:
+            logger.warning('speech rec warning, exception is', e )
+    return speech_string
 
 
 def prepare_generation_config():
@@ -156,6 +161,9 @@ def prepare_generation_config():
         #    speech_string = run_whisper(
         #        whisper_model_scale, "cuda",
         #        audio_save_path)
+        speech_prompt = speech_rec(speech_model)
+        st.session_state['speech_prompt'] = speech_prompt
+
 
     generation_config = GenerationConfig(
         max_length=max_length, top_p=0.8, temperature=0.8, repetition_penalty=1.002)
@@ -323,10 +331,10 @@ def main():
     global image_model
     image_model = init_image_model()
 
+    global speech_model
+    speech_model = load_speech_model()
     #generation_config, speech_prompt = prepare_generation_config()
     generation_config = prepare_generation_config()
-    speech_model = load_speech_model()
-    speech_prompt = speech_rec(speech_model)
 
     # 1.Initialize chat history
     if "messages" not in st.session_state:
@@ -344,7 +352,7 @@ def main():
         process_user_input(text_prompt, model, tokenizer, generation_config)
 
     # 4. Process speech input
-    if speech_prompt is not None:
+    if speech_prompt := st.session_state['speech_prompt']:
         process_user_input(speech_prompt, model, tokenizer, generation_config)
 
 
