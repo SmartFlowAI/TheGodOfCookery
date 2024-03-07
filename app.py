@@ -28,6 +28,7 @@ from parse_cur_response import return_final_md
 import opencc
 from convert_t2s import convert_t2s
 import sys
+import base64
 
 logger = logging.get_logger(__name__)
 
@@ -61,13 +62,16 @@ rag_model_type = load_config('rag', 'rag_model_type')
 print(f"RAG model type:{rag_model_type}")
 
 # speech
+
+
+
 audio_save_path = load_config('speech', 'audio_save_path')
 speech_model_type = load_config('speech', 'speech_model_type')
 print(f"speech model type:{speech_model_type}")
 if speech_model_type == "whisper":
     from whisper_app import run_whisper
     whisper_model_scale = load_config('speech', 'whisper_model_scale')
-else:
+else: #paraformer
     from funasr import AutoModel
     from speech import get_local_model
 
@@ -78,16 +82,20 @@ else:
         model_dict = get_local_model(speech_model_path)
         model = AutoModel(**model_dict)
         return model
-
+         
     def speech_rec(speech_model):
-        with st.sidebar:
-            # 3. Speech input
-            audio = audiorecorder("Record", "Stop record")
-            speech_string = None
-            if len(audio) > 0:
+        # 3. Speech input
+        audio = audiorecorder("Record", "Stop record")
+        audio_b64 = base64.b64encode(audio.raw_data)
+        speech_string = None
+        if len(audio) > 0 and ('last_audio_b64' not in st.session_state or st.session_state['last_audio_b64'] != audio_b64):
+            st.session_state['last_audio_b64'] = audio_b64
+            try:
                 audio.export(audio_save_path, format="wav")
                 speech_string = speech_model.generate(input=audio_save_path)[0]['text']
-            return speech_string
+            except Exception as e:
+                logger.warning('speech rec warning, exception is', e )
+        return speech_string
 
 def on_btn_click():
     """
@@ -169,6 +177,9 @@ def prepare_generation_config():
                 speech_string = run_whisper(
                     whisper_model_scale, "cuda",
                     audio_save_path)
+        else: #paraformer
+            speech_prompt = speech_rec(speech_model)
+            st.session_state['speech_prompt'] = speech_prompt
 
     if base_model_type == 'internlm-chat-7b':
         generation_config = GenerationConfig(
@@ -183,7 +194,7 @@ def prepare_generation_config():
 
     if speech_model_type == "whisper":
         return generation_config, speech_string
-    else :
+    else : #paraformer
         return generation_config
 
 
@@ -353,10 +364,10 @@ def main():
 
     if speech_model_type == "whisper":
         generation_config, speech_prompt = prepare_generation_config()
-    else:
-        generation_config = prepare_generation_config()
+    else:  #paraformer
+        global speech_model
         speech_model = load_speech_model()
-        speech_prompt = speech_rec(speech_model)
+        generation_config = prepare_generation_config()
 
     # 1.Initialize chat history
     if "messages" not in st.session_state:
@@ -374,9 +385,12 @@ def main():
         process_user_input(text_prompt, model, tokenizer, generation_config)
 
     # 4. Process speech input
-    if speech_prompt is not None:
-        process_user_input(speech_prompt, model, tokenizer, generation_config)
-
+    if speech_model_type == "whisper":
+        if speech_prompt is not None:
+            process_user_input(speech_prompt, model, tokenizer, generation_config)
+    else:  #paraformer
+        if speech_prompt := st.session_state['speech_prompt']:
+            process_user_input(speech_prompt, model, tokenizer, generation_config)
 
 if __name__ == "__main__":
     main()

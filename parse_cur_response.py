@@ -9,7 +9,7 @@ def split_ingredients(ingredient):
     #ingredient = ingredient.replace('kg', '千克').replace('g', '克').replace('蒜', '蒜头')
 
     # 正则表达式模式
-    pattern = r'(?P<quantity>\d+(?:\.\d+)?|半|适量|少许|若干|[零一二两三四五六七八九十百千万亿半整适些少零壹貳贰叁參肆伍陆陸柒捌玖拾佰仟萬億兩]+)?(?P<unit>g|kg|大片|片|克|勺|盒|箱|个|瓣|滴|块|根|把|条]+)?(?P<ingredient>.+)'
+    pattern = r'(?P<quantity>\d+(?:\.\d+)?|半|适量|少许|若干|[零一二两三四五六七八九十百千万亿半整适些少零壹貳贰叁參肆伍陆陸柒捌玖拾佰仟萬億兩]+)?(?P<unit>g|kg|大片|片|克|勺|张|盒|箱|个|瓣|滴|块|根|把|条]+)?(?P<ingredient>.+)'
 
     # 提取数据
     matches = re.finditer(pattern, ingredient)
