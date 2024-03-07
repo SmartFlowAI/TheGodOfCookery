@@ -11,8 +11,7 @@ from dataclasses import asdict
 
 import streamlit as st
 import torch
-from streamlit_mic_recorder import mic_recorder,speech_to_text
-from pydub import AudioSegment
+from audiorecorder import audiorecorder
 from modelscope import AutoModelForCausalLM, AutoTokenizer
 from transformers.utils import logging
 
@@ -32,6 +31,7 @@ from convert_t2s import convert_t2s
 #from whisper_app import run_whisper
 from funasr import AutoModel
 from speech import get_local_model
+import base64
 import sys
 
 logger = logging.get_logger(__name__)
@@ -101,18 +101,19 @@ def load_speech_model():
     model = AutoModel(**model_dict)
     return model
 
-def speech_rec():
-    speech_prompt = None
-    print('speech rec start')
-    if st.session_state['mic_output'] is not None:
-        audio_bytes=st.session_state['mic_output']['bytes']
-        # st.audio(audio_bytes)
-        audio = AudioSegment(audio_bytes)
-        print(' len(audio)', len(audio))
-        audio.export(audio_save_path, format="wav")
-        speech_prompt = speech_model.generate(input=audio_save_path)[0]['text']
-    print('speech rec end')
-    st.session_state['speech_prompt'] = speech_prompt
+def speech_rec(speech_model):
+    # 3. Speech input
+    audio = audiorecorder("Record", "Stop record")
+    audio_b64 = base64.b64encode(audio.raw_data)
+    speech_string = None
+    if len(audio) > 0 and ('last_audio_b64' not in st.session_state or st.session_state['last_audio_b64'] != audio_b64):
+        st.session_state['last_audio_b64'] = audio_b64
+        try:
+            audio.export(audio_save_path, format="wav")
+            speech_string = speech_model.generate(input=audio_save_path)[0]['text']
+        except Exception as e:
+            logger.warning('speech rec warning, exception is', e )
+    return speech_string
 
 
 def prepare_generation_config():
@@ -160,6 +161,9 @@ def prepare_generation_config():
         #    speech_string = run_whisper(
         #        whisper_model_scale, "cuda",
         #        audio_save_path)
+        speech_prompt = speech_rec(speech_model)
+        st.session_state['speech_prompt'] = speech_prompt
+
 
     generation_config = GenerationConfig(
         max_length=max_length, top_p=0.8, temperature=0.8, repetition_penalty=1.002)
@@ -327,12 +331,10 @@ def main():
     global image_model
     image_model = init_image_model()
 
-    #generation_config, speech_prompt = prepare_generation_config()
-    generation_config = prepare_generation_config()
     global speech_model
     speech_model = load_speech_model()
-    # 语音输入先放在顶端
-    voice_input = st.empty()
+    #generation_config, speech_prompt = prepare_generation_config()
+    generation_config = prepare_generation_config()
 
     # 1.Initialize chat history
     if "messages" not in st.session_state:
@@ -350,15 +352,6 @@ def main():
         process_user_input(text_prompt, model, tokenizer, generation_config)
 
     # 4. Process speech input
-    st.session_state['speech_prompt'] = None
-    with voice_input.container():
-        mic_output = mic_recorder(
-            start_prompt="Start recording",
-            stop_prompt="Stop recording", 
-            just_once=True,
-            key='mic',
-            callback=speech_rec
-        )
     if speech_prompt := st.session_state['speech_prompt']:
         process_user_input(speech_prompt, model, tokenizer, generation_config)
 
