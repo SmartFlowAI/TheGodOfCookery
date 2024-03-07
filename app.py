@@ -137,9 +137,10 @@ def prepare_generation_config():
     """
     with st.sidebar:
         # 1. Max length of the generated text
+        #max_length = st.slider("Max Length", min_value=32,
+        #                       max_value=2048, value=2048)
         max_length = st.slider("Max Length", min_value=32,
-                               max_value=2048, value=2048)
-
+                               max_value=32768, value=32768)
         # 2. Clear history.
         st.button("Clear Chat History", on_click=on_btn_click)
 
@@ -172,9 +173,12 @@ def prepare_generation_config():
     if base_model_type == 'internlm-chat-7b':
         generation_config = GenerationConfig(
             max_length=max_length)   #InternLM1
-    else :
+    elif base_model_type == 'internlm2-chat-1.8b':
         generation_config = GenerationConfig(
-            max_length=max_length, top_p=0.8, temperature=0.8, repetition_penalty=1.002)   #InternLM2 need 惩罚参数
+            max_length=max_length, top_p=0.8, temperature=0.8, repetition_penalty=1.17)   #InternLM2 1.8b need 惩罚参数
+    else:
+        generation_config = GenerationConfig(
+            max_length=max_length, top_p=0.8, temperature=0.8, repetition_penalty=1.002)   #InternLM2 2 need 惩罚参数
 
 
     if speech_model_type == "whisper":
@@ -270,6 +274,8 @@ def process_user_input(prompt,
             else:
                 if base_model_type == 'internlm-chat-7b':
                     additional_eos_token_id=103028  #InternLM-7b-chat
+                elif base_model_type == 'internlm2-chat-1.8b':
+                    additional_eos_token_id=92542  # InternLM2-1.8b-chat
                 else:
                     additional_eos_token_id=92542  # InternLM2-7b-chat
 
