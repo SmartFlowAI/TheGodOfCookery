@@ -24,6 +24,7 @@ from langchain.chains import ConversationalRetrievalChain, LLMChain, RetrievalQA
 from langchain_community.llms.tongyi import Tongyi
 from rag.CookMasterLLM import CookMasterLLM
 from config import load_config
+# from config_test.config_test import load_config
 from rag.HyQEContextualCompressionRetriever import HyQEContextualCompressionRetriever
 
 logger = logging.get_logger(__name__)
@@ -47,17 +48,13 @@ def load_vector_db():
     return vectordb
 
 
-def load_retriever(llm, verbose=False):
-    # 加载本地索引，创建向量检索器
+def load_retriever():
+
     db_retriever_config = load_config('rag', 'retriever').get('db')
     bm25_retriever_config = load_config('rag', 'retriever').get('bm25')
 
+    # 加载本地索引，创建向量检索器
     vectordb = load_vector_db()
-    # 分别创建向量数据库检索器，便于未来为每个检索器设置不同的参数
-    # if vector_db_name == "chroma":
-    #     db_retriever = vectordb.as_retriever(search_type="similarity", search_kwargs={"k": 5})
-    # else:
-    #     db_retriever = vectordb.as_retriever(search_type="similarity", search_kwargs={"k": 5})
     db_retriever = vectordb.as_retriever(**db_retriever_config)
 
     # 创建BM25检索器
@@ -68,25 +65,6 @@ def load_retriever(llm, verbose=False):
     # 向量检索器与BM25检索器组合为集成检索器
     ensemble_retriever = EnsembleRetriever(retrievers=[bm25retriever, db_retriever], weights=[0.5, 0.5])
 
-    #     # 创建带大模型过滤器的检索器，对集成检索器的结果进行过滤
-    #     # TongYi api拒绝该请求，可能是禁止将大模型用于数据标注任务
-    #     filter_prompt_template = """以下是一段可参考的上下文和一个问题, 如果可参看上下文和问题相关请输出 YES , 否则输出 NO .
-    # 可参考的上下文：
-    # ···
-    # {context}
-    # ···
-    # 问题: {question}
-    # 相关性 (YES / NO):"""
-    #     FILTER_PROMPT_TEMPLATE = PromptTemplate(
-    #         template=filter_prompt_template,
-    #         input_variables=["question", "context"],
-    #         output_parser=BooleanOutputParser(),
-    #     )
-    #     llm_filter = LLMChainFilter.from_llm(llm, prompt=FILTER_PROMPT_TEMPLATE, verbose=verbose)
-    #     filter_retriever = ContextualCompressionRetriever(
-    #         base_compressor=llm_filter, base_retriever=ensemble_retriever
-    #     )
-
     # 创建带reranker的检索器，对大模型过滤器的结果进行再排序
     bce_reranker_config = load_config('rag', 'reranker').get('bce')
     reranker = BCERerank(**bce_reranker_config)
@@ -96,13 +74,9 @@ def load_retriever(llm, verbose=False):
     return compression_retriever
 
 
-def load_chain(model, tokenizer, verbose=False, test_llm=None):
-    if test_llm is None:
-        llm = CookMasterLLM(model, tokenizer)
-    else:
-        llm = test_llm
+def load_chain(llm, verbose=False):
     # 加载检索器
-    retriever = load_retriever(llm=llm, verbose=verbose)
+    retriever = load_retriever()
 
     # RAG对话模板
     qa_template = """使用以下可参考的上下文来回答用户的问题。
@@ -164,6 +138,7 @@ class GenerationConfig:
 @torch.inference_mode()
 def generate_interactive(
         model,
+        tokenizer,
         prompt,
         generation_config: Optional[GenerationConfig] = None,
         logits_processor: Optional[LogitsProcessorList] = None,
@@ -276,29 +251,25 @@ def generate_interactive(
 
 @torch.inference_mode()
 def generate_interactive_rag_stream(
-        model,
-        tokenizer,
-        prompt,
-        history,
+        llm,
+        question,
         verbose=False
 ):
     global chain_instance
     if chain_instance is None:
-        chain_instance = load_chain(model=model, tokenizer=tokenizer, verbose=verbose)
+        chain_instance = load_chain(llm, verbose=verbose)
     # chain = chain | _get_answer
-    for cur_response in chain_instance.stream({"question": prompt, "chat_history": history}):
+    for cur_response in chain_instance.stream({"question": question}):
         yield cur_response.get('answer', '')
 
 
 @torch.inference_mode()
 def generate_interactive_rag(
-        model,
-        tokenizer,
-        prompt,
-        history,
+        llm,
+        question,
         verbose=False
 ):
     global chain_instance
     if chain_instance is None:
-        chain_instance = load_chain(model=model, tokenizer=tokenizer, verbose=verbose)
-    return chain_instance({"question": prompt, "chat_history": history})['answer']
+        chain_instance = load_chain(llm, verbose=verbose)
+    return chain_instance({"question": question})['answer']

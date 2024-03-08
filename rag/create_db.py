@@ -83,7 +83,7 @@ for line in lines:
         split_docs.append(Document(page_content=caipu_name+"怎么做", metadata={"caipu": line}))
 
 # 构建向量数据库
-embedding_model_name = './model/bce-embedding-base_v1'
+embedding_model_name = 'F:/OneDrive/Pythoncode/BCE_model/bce-embedding-base_v1'
 embedding_model_kwargs = {'device': 'cuda:0'}
 embedding_encode_kwargs = {'batch_size': 32, 'normalize_embeddings': True, 'show_progress_bar': True}
 embeddings = HuggingFaceEmbeddings(

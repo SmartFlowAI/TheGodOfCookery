@@ -5,7 +5,7 @@ from collections import defaultdict
 Config = defaultdict(dict)
 
 # global variables
-Config['global']= {
+Config['global'] = {
     'enable_rag': None,
     'streaming': None,
     'enable_markdown': None,
@@ -24,34 +24,34 @@ Config['llm'] = {
     'finetuned': True,
     'base_model_type': "internlm2-chat-1.8b",
     # 'base_model_type': "internlm2-chat-7b",
-    #'base_model_type': "internlm2-chat-7b",
+    # 'base_model_type': "internlm2-chat-7b",
 
-   #'llm_model_path': os.environ.get('HOME') + "/models/zhanghuiATchina/zhangxiaobai_shishen2_full"
+    # 'llm_model_path': os.environ.get('HOME') + "/models/zhanghuiATchina/zhangxiaobai_shishen2_full"
 
-    #'llm_model_path': "/home/zhanghui/shishen18/merged"
+    # 'llm_model_path': "/home/zhanghui/shishen18/merged"
     'llm_model_path': os.environ.get('HOME') + "/models/zhanghuiATchina/zhangxiaobai_shishen2_1_8b"
 
-    
-    #'llm_model_path': os.environ.get('HOME') + "/models/Shanghai_AI_Laboratory/internlm-chat-7b"
-    #'llm_model_path': os.environ.get('HOME') + "/models/zhanghuiATchina/zhangxiaobai_shishen_full"
-    #'llm_model_path': "/mnt/d//models/zhanghuiATchina/zhangxiaobai_shishen_full",
+    # 'llm_model_path': os.environ.get('HOME') + "/models/Shanghai_AI_Laboratory/internlm-chat-7b"
+    # 'llm_model_path': os.environ.get('HOME') + "/models/zhanghuiATchina/zhangxiaobai_shishen_full"
+    # 'llm_model_path': "/mnt/d//models/zhanghuiATchina/zhangxiaobai_shishen_full",
 
 }
 
 # speech
 Config['speech'] = {
-    #'speech_model_type':"whisper",
-    'speech_model_type':"paraformer",
-    'audio_save_path': "/tmp/audio.wav", 
+    # 'speech_model_type':"whisper",
+    'speech_model_type': "paraformer",
+    'audio_save_path': "/tmp/audio.wav",
     'whisper_model_scale': "medium",
-    #'whisper_model_path': "",
-    'speech_model_path':  os.environ.get('HOME') + "/models/iic/speech_paraformer-large-vad-punc_asr_nat-zh-cn-16k-common-vocab8404-pytorch"
+    # 'whisper_model_path': "",
+    'speech_model_path': os.environ.get(
+        'HOME') + "/models/iic/speech_paraformer-large-vad-punc_asr_nat-zh-cn-16k-common-vocab8404-pytorch"
 }
 
 # rag
 Config['rag'] = {
-    'rag_model_type':"chroma",
-    #'rag_model_type':"faiss",
+    'rag_model_type': "chroma",
+    # 'rag_model_type':"faiss",
     'vector_db': {
         'name': "faiss",
         'path': './rag/faiss_index'
@@ -59,23 +59,24 @@ Config['rag'] = {
     'hf_emb_config': {
         'model_name': os.environ.get('HOME') + "/models/bce-embedding-base_v1",
         'model_kwargs': {'device': 'cuda:0'},
-        'encode_kwargs': {'batch_size': 32, 'normalize_embeddings': True, 'show_progress_bar': False}
+        'encode_kwargs': {'batch_size': 32, 'normalize_embeddings': True, 'show_progress_bar': True}
     },
     'retriever': {
         'db': {
-            'search_type': "similarity", 
+            'search_type': "similarity",
             'search_kwargs': {"k": 3}
         },
-        'bm25':{
+        'bm25': {
             'pickle_path': './rag/retriever/bm25retriever.pkl',
             'search_kwargs': {"k": 5}
         }
     },
     'reranker': {
-        'bce' :{
-            'model': os.environ.get('HOME') + '/models/bce-reranker-base_v1', 
-            'top_n': 2, 
-            'device': 'cuda:0'
+        'bce': {
+            'model': os.environ.get('HOME') + '/models/bce-reranker-base_v1',
+            'top_n': 2,
+            'device': 'cuda:0',
+            'use_fp16': True
         }
     }
 }
@@ -85,13 +86,12 @@ Config['image'] = {
     'image_model_type': 'stable-diffusion',  # stable-diffusion or glm-4
     'image_model_config': {
         'stable-diffusion': {
-            "model_path": os.environ.get('HOME') +"/models/Taiyi-Stable-Diffusion-1B-Chinese-v0.1",
+            "model_path": os.environ.get('HOME') + "/models/Taiyi-Stable-Diffusion-1B-Chinese-v0.1",
             "lora_path": 'gen_image/lora_weights/meishi.safetensors',
-            "lora_scale": 0.75  #range[0.,1.]
+            "lora_scale": 0.75  # range[0.,1.]
         },
         'glm-4': {
             "api_key": "*****"
         }
     }
 }
-

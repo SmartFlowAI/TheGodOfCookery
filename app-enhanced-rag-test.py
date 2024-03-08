@@ -6,43 +6,58 @@ Please refer to these links below for more information:
     2. chatglm2: https://github.com/THUDM/ChatGLM2-6B
     3. transformers: https://github.com/huggingface/transformers
 """
-import os
-import sys
+
 from dataclasses import asdict
 
 import streamlit as st
 import torch
 from langchain_community.llms.tongyi import Tongyi
-# from audiorecorder import audiorecorder
-# from modelscope import AutoModelForCausalLM, AutoTokenizer
+from modelscope import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
 from transformers.utils import logging
 
-from rag.CookMasterLLM import CookMasterLLM
 from rag.interface import (GenerationConfig,
                            generate_interactive,
-                           generate_interactive_rag_stream,
                            generate_interactive_rag)
-
-# from whisper_app import run_whisper
-# from download import finetuned
+from config import load_config
+# from config_test.config_test import load_config
+from rag.CookMasterLLM import CookMasterLLM
+import os
+from datetime import datetime
+import sys
 
 logger = logging.get_logger(__name__)
 
-# __import__('pysqlite3')
-
-# sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
+# solve: Your system has an unsupported version of sqlite3. Chroma requires sqlite3 >= 3.35.0
+# but failed!!
+xlab_deploy = load_config('global', 'xlab_deploy')
+if xlab_deploy:
+    print("load sqllite3 module...")
+    __import__('pysqlite3')
+    sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
 
 # global variables
-enable_rag = True
-streaming = False
-user_avatar = "images/user.png"
-robot_avatar = "images/robot.png"
-user_prompt = "<|User|>:{user}\n"
-robot_prompt = "<|Bot|>:{robot}<eoa>\n"
-cur_query_prompt = "<|User|>:{user}<eoh>\n<|Bot|>:"
-# speech
-audio_save_path = "/tmp/audio.wav"
-whisper_model_scale = "medium"
+enable_rag = load_config('global', 'enable_rag')
+# streaming = load_config('global', 'streaming')
+enable_image = load_config('global', 'enable_image')
+enable_markdown = load_config('global', 'enable_markdown')
+user_avatar = load_config('global', 'user_avatar')
+robot_avatar = load_config('global', 'robot_avatar')
+user_prompt = load_config('global', 'user_prompt')
+robot_prompt = load_config('global', 'robot_prompt')
+cur_query_prompt = load_config('global', 'cur_query_prompt')
+error_response = load_config('global', 'error_response')
+
+# llm
+llm_model_path = load_config('llm', 'llm_model_path')
+base_model_type = load_config('llm', 'base_model_type')
+print(f"base model type:{base_model_type}")
+
+# rag
+rag_model_type = load_config('rag', 'rag_model_type')
+print(f"RAG model type:{rag_model_type}")
+
+verbose = True
+
 
 def on_btn_click():
     """
@@ -69,13 +84,21 @@ def load_model():
         model (Transformers模型): 预训练模型。
         tokenizer (Transformers分词器): 分词器。
     """
-    model = (
-        AutoModelForCausalLM.from_pretrained(llm_model_path, trust_remote_code=True)
-        .to(torch.bfloat16)
-        .cuda()
+    # int4 量化加载
+    quantization_config = BitsAndBytesConfig(
+        load_in_4bit=True,
+        bnb_4bit_compute_dtype=torch.float16,
+        bnb_4bit_quant_type="nf4",
+        bnb_4bit_use_double_quant=True,
     )
+    print("正在从本地加载模型...")
+    model = AutoModelForCausalLM.from_pretrained(llm_model_path, trust_remote_code=True, torch_dtype=torch.float16,
+                                                 device_map="auto",
+                                                 quantization_config=quantization_config).eval()
     tokenizer = AutoTokenizer.from_pretrained(llm_model_path, trust_remote_code=True)
-    return model, tokenizer
+    llm = CookMasterLLM(model, tokenizer)
+    print("完成本地模型的加载")
+    return model, tokenizer, llm
 
 
 def prepare_generation_config():
@@ -92,9 +115,10 @@ def prepare_generation_config():
     """
     with st.sidebar:
         # 1. Max length of the generated text
+        # max_length = st.slider("Max Length", min_value=32,
+        #                       max_value=2048, value=2048)
         max_length = st.slider("Max Length", min_value=32,
-                               max_value=2048, value=2048)
-
+                               max_value=32768, value=32768)
         # 2. Clear history.
         st.button("Clear Chat History", on_click=on_btn_click)
 
@@ -102,23 +126,17 @@ def prepare_generation_config():
         global enable_rag
         enable_rag = st.checkbox("Enable RAG", value=True)
 
-        # 4. Streaming
-        global streaming
-        streaming = st.checkbox("Streaming", value=False)
+    if base_model_type == 'internlm-chat-7b':
+        generation_config = GenerationConfig(
+            max_length=max_length)  # InternLM1
+    elif base_model_type == 'internlm2-chat-1.8b':
+        generation_config = GenerationConfig(
+            max_length=max_length, top_p=0.8, temperature=0.8, repetition_penalty=1.17)  # InternLM2 1.8b need 惩罚参数
+    else:
+        generation_config = GenerationConfig(
+            max_length=max_length, top_p=0.8, temperature=0.8, repetition_penalty=1.002)  # InternLM2 2 need 惩罚参数
 
-        # 5. Speech input
-        # audio = audiorecorder("Record", "Stop record")
-        # speech_string = None
-        # if len(audio) > 0:
-        #     audio.export(audio_save_path, format="wav")
-        #     speech_string = run_whisper(
-        #         whisper_model_scale, "cuda",
-        #         audio_save_path)
-
-    generation_config = GenerationConfig(
-        max_length=max_length, top_p=0.8, temperature=0.8, repetition_penalty=1.002)
-
-    return generation_config, None
+    return generation_config
 
 
 def combine_history(prompt):
@@ -149,6 +167,7 @@ def combine_history(prompt):
 def process_user_input(prompt,
                        model,
                        tokenizer,
+                       llm,
                        generation_config):
     """
     处理用户输入，根据用户输入内容调用相应的模型生成回复。
@@ -161,6 +180,10 @@ def process_user_input(prompt,
 
     """
     # Check if the user input contains certain keywords
+    # print(f"Origin Prompt:{prompt}")
+    # prompt = convert_t2s(prompt).replace(" ", "")
+    # print(f"Converted Prompt:{prompt}")
+
     keywords = ["怎么做", "做法", "菜谱"]
     contains_keywords = any(keyword in prompt for keyword in keywords)
 
@@ -176,71 +199,64 @@ def process_user_input(prompt,
     # If keywords are not present, display a prompt message immediately
     if not contains_keywords:
         with st.chat_message("robot", avatar=robot_avatar):
-            st.markdown(
-                "我是食神周星星的唯一传人张小白，我什么菜都会做，包括黑暗料理，您可以问我什么菜怎么做———比如酸菜鱼怎么做？，我会告诉你具体的做法。")
+            st.markdown(error_response)
         # Add robot response to chat history
         st.session_state.messages.append(
-            {"role": "robot",
-             "content": "我是食神周星星的唯一传人张小白，我什么菜都会做，包括黑暗料理，您可以问我什么菜怎么做———比如酸菜鱼怎么做？，我会告诉你具体的做法。",
-             "avatar": robot_avatar})
+            {"role": "robot", "content": error_response, "avatar": robot_avatar})
     else:
         # Generate robot response
         with st.chat_message("robot", avatar=robot_avatar):
             message_placeholder = st.empty()
             if enable_rag:
-                if streaming:
-                    generator = generate_interactive_rag_stream(
-                        model=model,
-                        tokenizer=tokenizer,
-                        prompt=prompt,
-                        history=real_prompt,
-                        verbose=False
-                    )
-                    for cur_response in generator:
-                        cur_response = cur_response.replace('\\n', '\n')
-                        message_placeholder.markdown(cur_response + "▌")
-                    message_placeholder.markdown(cur_response)
-                else:
-                    cur_response = generate_interactive_rag(
-                        model=model,
-                        tokenizer=tokenizer,
-                        prompt=prompt,
-                        history=real_prompt,
-                        verbose=False
-                    )
-                    message_placeholder.markdown(cur_response)
+                cur_response = generate_interactive_rag(
+                    llm=llm,
+                    question=prompt,
+                    verbose=verbose,
+                )
+                cur_response = cur_response.replace('\\n', '\n')
+
+                message_placeholder.markdown(cur_response)
             else:
+                if base_model_type == 'internlm-chat-7b':
+                    additional_eos_token_id = 103028  # InternLM-7b-chat
+                elif base_model_type == 'internlm2-chat-1.8b':
+                    additional_eos_token_id = 92542  # InternLM2-1.8b-chat
+                else:
+                    additional_eos_token_id = 92542  # InternLM2-7b-chat
+
+                print(f"additional_eos_token_id:{additional_eos_token_id}")
+
                 generator = generate_interactive(
                     model=model,
                     tokenizer=tokenizer,
                     prompt=real_prompt,
-                    # additional_eos_token_id=103028,
-                    additional_eos_token_id=92542,
+                    additional_eos_token_id=additional_eos_token_id,  # InternLM or InternLM2
                     **asdict(generation_config),
                 )
                 for cur_response in generator:
                     cur_response = cur_response.replace('\\n', '\n')
                     message_placeholder.markdown(cur_response + "▌")
+
                 message_placeholder.markdown(cur_response)
-            # for cur_response in generator:
-            #     cur_response = cur_response.replace('\\n', '\n')
-            #     message_placeholder.markdown(cur_response + "▌")
-            # message_placeholder.markdown(cur_response)
+
         # Add robot response to chat history
-        st.session_state.messages.append(
-            {"role": "robot", "content": cur_response, "avatar": robot_avatar})
+        response_message = {"role": "robot", "content": cur_response, "avatar": robot_avatar}
+
+        st.session_state.messages.append(response_message)
         torch.cuda.empty_cache()
 
 
 def main():
-    print("Torch version:")
-    print(torch.__version__)
-    print("Torch support GPU: ")
-    print(torch.cuda.is_available())
+    print(f"Torch support GPU: {torch.cuda.is_available()}")
 
-    st.title("食神2——菜谱小助手 by 张小白")
-    model, tokenizer = load_model()
-    generation_config, speech_prompt = prepare_generation_config()
+    st.title("食神2 by 其实你也可以是个厨师队")
+    model, tokenizer, llm = load_model()
+    # 加载通义千问大语言模型
+    # TONGYI_API_KEY = open("F:/OneDrive/Pythoncode/BCE_model/TONGYI_API_KEY.txt", "r").read().strip()
+    # llm = Tongyi(dashscope_api_key=TONGYI_API_KEY, temperature=0, model_name="qwen-turbo")
+    # model, tokenizer = None, None
+
+    generation_config = prepare_generation_config()
 
     # 1.Initialize chat history
     if "messages" not in st.session_state:
@@ -250,14 +266,12 @@ def main():
     for message in st.session_state.messages:
         with st.chat_message(message["role"], avatar=message.get("avatar")):
             st.markdown(message["content"])
+            if 'food_image_path' in message:
+                st.image(message['food_image_path'], width=230)
 
     # 3.Process text input
     if text_prompt := st.chat_input("What is up?"):
-        process_user_input(text_prompt, model, tokenizer, generation_config)
-
-    # 4. Process speech input
-    if speech_prompt is not None:
-        process_user_input(speech_prompt, model, tokenizer, generation_config)
+        process_user_input(text_prompt, model, tokenizer, llm, generation_config)
 
 
 if __name__ == "__main__":
