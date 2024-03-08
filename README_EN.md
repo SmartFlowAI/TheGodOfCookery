@@ -291,7 +291,7 @@ Demo link：https://openxlab.org.cn/apps/detail/zhanghui-china/nlp_shishen3
 |---app.py                                                 #Web Demo main Script (RAG1+whisper+image+markdown)
 |---app_paraformer.py                                      #Web Demo main script (RAG1+paraformer+image+markdown)
 |---app2.py                                                #Web Demo main script (RAG2+whisper+image+markdown)
-|---app-enhanced-rag.py                                    #main script only the RAG2 supported
+|---app-enhanced-rag-test.py                                    #main script only the RAG2 supported
 |---app-rag-with-chroma.py                                 #main script only the RAG1 supported
    ```
 
