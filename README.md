@@ -325,7 +325,7 @@ Demo 访问地址：https://openxlab.org.cn/apps/detail/zhanghui-china/shishen20
 |---app.py                                                 #Web Demo主脚本（RAG1+whisper+image+markdown）
 |---app_paraformer.py                                      #Web Demo主脚本（RAG1+paraformer+image+markdown）
 |---app2.py                                                #Web Demo主脚本（RAG2+whisper+image+markdown）
-|---app-enhanced-rag.py                                    #仅支持RAG2的主脚本
+|---app-enhanced-rag-test.py                                    #仅支持RAG2的主脚本
 |---app-rag-with-chroma.py                                 #支持RAG1的主脚本
    ```
 
