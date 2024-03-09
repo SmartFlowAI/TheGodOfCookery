@@ -122,12 +122,12 @@ def on_btn_click():
 
 
 @st.cache_resource
-def load_model():
+def load_model(generation_config):
     """
     加载预训练模型和分词器。
 
     Args:
-        无。
+        generation_config：模型配置参数。
 
     Returns:
         model (Transformers模型): 预训练模型。
@@ -159,6 +159,11 @@ def load_model():
 
     if rag_model_type == "faiss":
         llm = CookMasterLLM(model, tokenizer)
+        model.generation_config.max_length = generation_config.max_length
+        model.generation_config.top_p = generation_config.top_p
+        model.generation_config.temperature = generation_config.temperature
+        model.generation_config.repetition_penalty = generation_config.repetition_penalty
+
     else:
         llm = None
 
@@ -405,17 +410,17 @@ def main():
 
     st.title("食神2 by 其实你也可以是个厨师队")
 
-    model, tokenizer, llm = load_model()
-    
-    global image_model
-    image_model = init_image_model()
-
     if speech_model_type == "whisper":
         generation_config, speech_prompt = prepare_generation_config()
     else:  #paraformer
         global speech_model
         speech_model = load_speech_model()
         generation_config = prepare_generation_config()
+
+    model, tokenizer, llm = load_model(generation_config)
+    
+    global image_model
+    image_model = init_image_model()
 
     # 1.Initialize chat history
     if "messages" not in st.session_state:
