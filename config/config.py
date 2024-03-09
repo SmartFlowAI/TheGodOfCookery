@@ -22,7 +22,7 @@ Config['global']= {
 # llm
 Config['llm'] = {
     'finetuned': True,
-    'load_4bit': False,
+    'load_4bit': True,
     #'load_4bit': True,
 
     # 1.8b 二代

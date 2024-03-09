@@ -163,6 +163,7 @@ def load_model():
         llm = None
 
     print("完成本地模型的加载")
+    print(model.generation_config)
     return model, tokenizer, llm
     
 def prepare_generation_config():
