@@ -73,7 +73,7 @@ def on_btn_click():
 
 
 @st.cache_resource
-def load_model():
+def load_model(generation_config):
     """
     加载预训练模型和分词器。
 
@@ -97,6 +97,11 @@ def load_model():
                                                  quantization_config=quantization_config).eval()
     tokenizer = AutoTokenizer.from_pretrained(llm_model_path, trust_remote_code=True)
     llm = CookMasterLLM(model, tokenizer)
+    model.generation_config.max_length = generation_config.max_length
+    model.generation_config.top_p = generation_config.top_p
+    model.generation_config.temperature = generation_config.temperature
+    model.generation_config.repetition_penalty = generation_config.repetition_penalty
+    print(model.generation_config)
     print("完成本地模型的加载")
     return model, tokenizer, llm
 
@@ -249,14 +254,14 @@ def process_user_input(prompt,
 def main():
     print(f"Torch support GPU: {torch.cuda.is_available()}")
 
+    generation_config = prepare_generation_config()
+
     st.title("食神2 by 其实你也可以是个厨师队")
-    model, tokenizer, llm = load_model()
+    model, tokenizer, llm = load_model(generation_config)
     # 加载通义千问大语言模型
     # TONGYI_API_KEY = open("F:/OneDrive/Pythoncode/BCE_model/TONGYI_API_KEY.txt", "r").read().strip()
     # llm = Tongyi(dashscope_api_key=TONGYI_API_KEY, temperature=0, model_name="qwen-turbo")
     # model, tokenizer = None, None
-
-    generation_config = prepare_generation_config()
 
     # 1.Initialize chat history
     if "messages" not in st.session_state:
