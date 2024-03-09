@@ -55,18 +55,18 @@ Config['rag'] = {
     },
     'retriever': {
         'db': {
-            'search_type': "similarity",
-            'search_kwargs': {"k": 5}
+            'search_type': "similarity_score_threshold",
+            'search_kwargs': {"k": 3, "score_threshold": 0.6}
         },
         'bm25': {
             'pickle_path': './rag/retriever/bm25retriever.pkl',
-            'search_kwargs': {"k": 5}
+            'search_kwargs': {"k": 3}
         }
     },
     'reranker': {
         'bce': {
             'model': 'F:/OneDrive/Pythoncode/BCE_model/bce-reranker-base_v1',
-            'top_n': 3,
+            'top_n': 1,
             'device': 'cuda:0',
             'use_fp16': True
         }

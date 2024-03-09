@@ -49,7 +49,6 @@ def load_vector_db():
 
 
 def load_retriever():
-
     db_retriever_config = load_config('rag', 'retriever').get('db')
     bm25_retriever_config = load_config('rag', 'retriever').get('bm25')
 
@@ -65,6 +64,26 @@ def load_retriever():
     # 向量检索器与BM25检索器组合为集成检索器
     ensemble_retriever = EnsembleRetriever(retrievers=[bm25retriever, db_retriever], weights=[0.5, 0.5])
 
+    #     # 创建带大模型过滤器的检索器，对集成检索器的结果进行过滤
+    #     # TongYi api拒绝该请求，可能是禁止将大模型用于数据标注任务
+    #     filter_prompt_template = """以下是一段可参考的上下文和一个问题, 如果可参看上下文和问题相关请输出 YES , 否则输出 NO .
+    # 可参考的上下文：
+    # ···
+    # {context}
+    # ···
+    # 问题: {question}
+    # 相关性 (YES / NO):"""
+    #
+    #     FILTER_PROMPT_TEMPLATE = PromptTemplate(
+    #         template=filter_prompt_template,
+    #         input_variables=["question", "context"],
+    #         output_parser=BooleanOutputParser(),
+    #     )
+    #     llm_filter = LLMChainFilter.from_llm(llm, prompt=FILTER_PROMPT_TEMPLATE, verbose=verbose)
+    #     filter_retriever = ContextualCompressionRetriever(
+    #         base_compressor=llm_filter, base_retriever=ensemble_retriever
+    #     )
+
     # 创建带reranker的检索器，对大模型过滤器的结果进行再排序
     bce_reranker_config = load_config('rag', 'reranker').get('bce')
     reranker = BCERerank(**bce_reranker_config)
@@ -75,6 +94,31 @@ def load_retriever():
 
 
 def load_chain(llm, verbose=False):
+    # 加载检索器
+    retriever = load_retriever()
+
+    # RAG对话模板
+    qa_template = """使用以下可参考的上下文来回答用户的问题。
+可参考的上下文：
+···
+{context}
+···
+问题: {question}
+如果给定的上下文没有有效的参考信息，请根据你自己所掌握的知识进行回答。
+有用的回答:"""
+    QA_CHAIN_PROMPT = PromptTemplate(input_variables=["context", "question"],
+                                     template=qa_template)
+
+    # 单轮对话RAG问答链
+    qa_chain = RetrievalQA.from_chain_type(llm=llm,
+                                           chain_type="stuff",
+                                           chain_type_kwargs={"prompt": QA_CHAIN_PROMPT, "verbose": verbose},
+                                           retriever=retriever)
+
+    return qa_chain
+
+
+def load_chain_with_memory(llm, verbose=False):
     # 加载检索器
     retriever = load_retriever()
 
@@ -120,10 +164,6 @@ def load_chain(llm, verbose=False):
         verbose=verbose
     )
     return qa_chain
-
-
-# def _get_answer(raw: Iterator[dict]) -> Iterator[str]:
-#     pass
 
 
 @dataclass
@@ -259,8 +299,8 @@ def generate_interactive_rag_stream(
     if chain_instance is None:
         chain_instance = load_chain(llm, verbose=verbose)
     # chain = chain | _get_answer
-    for cur_response in chain_instance.stream({"question": question}):
-        yield cur_response.get('answer', '')
+    for cur_response in chain_instance.stream({"query": question}):
+        yield cur_response.get('result', '')
 
 
 @torch.inference_mode()
@@ -272,4 +312,4 @@ def generate_interactive_rag(
     global chain_instance
     if chain_instance is None:
         chain_instance = load_chain(llm, verbose=verbose)
-    return chain_instance({"question": question})['answer']
+    return chain_instance({"query": question})['result']

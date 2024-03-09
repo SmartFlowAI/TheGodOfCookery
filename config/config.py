@@ -50,8 +50,8 @@ Config['speech'] = {
 
 # rag
 Config['rag'] = {
-    'rag_model_type': "chroma",
-    # 'rag_model_type':"faiss",
+    # 'rag_model_type': "chroma",
+    'rag_model_type':"faiss",
     'vector_db': {
         'name': "faiss",
         'path': './rag/faiss_index'
@@ -63,18 +63,18 @@ Config['rag'] = {
     },
     'retriever': {
         'db': {
-            'search_type': "similarity",
-            'search_kwargs': {"k": 3}
+            'search_type': "similarity_score_threshold",
+            'search_kwargs': {"k": 3, "score_threshold": 0.6}
         },
         'bm25': {
             'pickle_path': './rag/retriever/bm25retriever.pkl',
-            'search_kwargs': {"k": 5}
+            'search_kwargs': {"k": 3}
         }
     },
     'reranker': {
         'bce': {
             'model': os.environ.get('HOME') + '/models/bce-reranker-base_v1',
-            'top_n': 2,
+            'top_n': 1,
             'device': 'cuda:0',
             'use_fp16': True
         }
