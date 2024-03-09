@@ -22,20 +22,31 @@ Config['global']= {
 # llm
 Config['llm'] = {
     'finetuned': True,
+    'load_4bit': False,
+    #'load_4bit': True,
 
-
-    'base_model_type': "internlm2-chat-7b",
+    # 1.8b 二代
     #'base_model_type': "internlm2-chat-1.8b",
-    # 'base_model_type': "internlm-chat-7b",
-    'llm_model_path': os.environ.get('HOME') + "/models/zhanghuiATchina/zhangxiaobai_shishen2_full"
+    # finetuned = True
+    #'llm_model_path': os.environ.get('HOME') + "/models/zhanghuiATchina/zhangxiaobai_shishen2_1_8b",
+    # finetuned = False
+    #'llm_model_path': os.environ.get('HOME') + "/models/Shanghai_AI_Laboratory/internlm2-chat-1_8b",
 
-    #'llm_model_path': "/home/zhanghui/shishen18/merged"
-    #'llm_model_path': os.environ.get('HOME') + "/models/zhanghuiATchina/zhangxiaobai_shishen2_1_8b"
+    # 7b 二代
+    'base_model_type': "internlm2-chat-7b",
+    # finetuned = True
+    'llm_model_path': os.environ.get('HOME') + "/models/zhanghuiATchina/zhangxiaobai_shishen2_full",
+    # finetuned = False
+    #'llm_model_path': os.environ.get('HOME') + "/models/Shanghai_AI_Laboratory/internlm2-chat-7b",
+    #'llm_model_path': "/mnt/d/models/internlm/internlm2-chat-7b",
     
-    #'llm_model_path': os.environ.get('HOME') + "/models/Shanghai_AI_Laboratory/internlm-chat-7b"
+    # 7b 一代
+    #'base_model_type': "internlm-chat-7b",
+    # finetuned = True
     #'llm_model_path': os.environ.get('HOME') + "/models/zhanghuiATchina/zhangxiaobai_shishen_full"
     #'llm_model_path': "/mnt/d//models/zhanghuiATchina/zhangxiaobai_shishen_full",
-
+    # finetuned = False
+    #'llm_model_path': os.environ.get('HOME') + "/models/Shanghai_AI_Laboratory/internlm-chat-7b"
 }
 
 # speech
@@ -50,8 +61,9 @@ Config['speech'] = {
 
 # rag
 Config['rag'] = {
-    'rag_model_type':"chroma",
-    #'rag_model_type':"faiss",
+    'rag_model_type':"faiss",
+    #'rag_model_type':"chroma",
+    'verbose': True,
     'vector_db': {
         'name': "faiss",
         'path': './rag/faiss_index'

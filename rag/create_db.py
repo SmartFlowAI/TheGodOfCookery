@@ -75,12 +75,17 @@ caipu_txt = open('data/caipu.txt', 'r', encoding='utf-8')
 lines = caipu_txt.readlines()
 for line in lines:
     if len(line) > 2:
-        split_docs.append(Document(page_content=line))
+        # 加入原始菜谱
+        # split_docs.append(Document(page_content=line))
+        # 假设问题为“菜谱名+怎么做”
+        # 加入假设问题，原始菜谱存放入metadata
+        caipu_name = line.split('  ')[0]
+        split_docs.append(Document(page_content=caipu_name+"怎么做", metadata={"caipu": line}))
 
 # 构建向量数据库
-embedding_model_name = './model/bce-embedding-base_v1'
+embedding_model_name = 'F:/OneDrive/Pythoncode/BCE_model/bce-embedding-base_v1'
 embedding_model_kwargs = {'device': 'cuda:0'}
-embedding_encode_kwargs = {'batch_size': 32, 'normalize_embeddings': True, 'show_progress_bar': False}
+embedding_encode_kwargs = {'batch_size': 32, 'normalize_embeddings': True, 'show_progress_bar': True}
 embeddings = HuggingFaceEmbeddings(
     model_name=embedding_model_name,
     model_kwargs=embedding_model_kwargs,
