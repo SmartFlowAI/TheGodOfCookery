@@ -32,34 +32,36 @@ chain_instance = None
 
 
 def load_vector_db():
-    # vector_db config
-    vector_db_config = load_config('rag', 'vector_db')
-    vector_db_name = vector_db_config.get('name')
-    vector_db_path = vector_db_config.get('path')
     # 加载编码模型
-    hf_emb_config = load_config('rag', 'hf_emb_config')
-    embeddings = HuggingFaceEmbeddings(**hf_emb_config)
+    bce_emb_config = load_config('rag', 'bce_emb_config')
+    embeddings = HuggingFaceEmbeddings(**bce_emb_config)
     # 加载本地索引，创建向量检索器
     # 除非指定使用chroma，否则默认使用faiss
-    if vector_db_name == "chroma":
+    rag_model_type = load_config('rag', 'rag_model_type')
+    if rag_model_type == "chroma":
+        vector_db_path = load_config('rag', 'chroma_config')['load_path']
         vectordb = Chroma(persist_directory=vector_db_path, embedding_function=embeddings)
     else:
+        vector_db_path = load_config('rag', 'faiss_config')['load_path']
         vectordb = FAISS.load_local(folder_path=vector_db_path, embeddings=embeddings)
     return vectordb
 
 
 def load_retriever():
-    db_retriever_config = load_config('rag', 'retriever').get('db')
-    bm25_retriever_config = load_config('rag', 'retriever').get('bm25')
-
     # 加载本地索引，创建向量检索器
     vectordb = load_vector_db()
+    rag_model_type = load_config('rag', 'rag_model_type')
+    if rag_model_type == "chroma":
+        db_retriever_config = load_config('rag', 'chroma_config')
+    else:
+        db_retriever_config = load_config('rag', 'faiss_config')
     db_retriever = vectordb.as_retriever(**db_retriever_config)
 
-    # 创建BM25检索器
-    pickle_path = bm25_retriever_config.get('pickle_path')
+    # 加载BM25检索器
+    bm25_config = load_config('rag', 'bm25_config')
+    pickle_path = bm25_config['pickle_path']
     bm25retriever = pickle.load(open(pickle_path, 'rb'))
-    bm25retriever.k = bm25_retriever_config.get('search_kwargs').get('k')
+    bm25retriever.k = bm25_config['search_kwargs']['k']
 
     # 向量检索器与BM25检索器组合为集成检索器
     ensemble_retriever = EnsembleRetriever(retrievers=[bm25retriever, db_retriever], weights=[0.5, 0.5])
@@ -85,7 +87,7 @@ def load_retriever():
     #     )
 
     # 创建带reranker的检索器，对大模型过滤器的结果进行再排序
-    bce_reranker_config = load_config('rag', 'reranker').get('bce')
+    bce_reranker_config = load_config('rag', 'bce_reranker_config')
     reranker = BCERerank(**bce_reranker_config)
     # 可以替换假设问题为原始菜谱的Retriever
     compression_retriever = HyQEContextualCompressionRetriever(base_compressor=reranker,

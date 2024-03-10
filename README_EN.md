@@ -248,11 +248,9 @@ Demo link：https://openxlab.org.cn/apps/detail/zhanghui-china/nlp_shishen3
 |     |---retrieve                                         #retrieve directory
 |     |     |- bm25retriever.pkl
 |     |---CookMasterLLM.py
-|     |---convert_txt.py
-|     |---create_db.py
+|     |---create_db_json.py
+|     |---HyQEContextualCompressionRetriever.py
 |     |---interface.py
-|     |---rag_test.py
-|     |---run_local.py
 |
 |---rag_chroma   # Second Generation RAG Code Catalog (major contributor @Charles)
 |     |---database                                         #chroma database directory
