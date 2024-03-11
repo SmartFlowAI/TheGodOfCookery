@@ -50,8 +50,8 @@ Config['speech'] = {
 
 # rag
 Config['rag'] = {
-    # 'rag_model_type': "chroma",
-    'rag_model_type': "faiss",
+    # 'rag_model_type': "chroma", # 使用chroma数据库
+    'rag_model_type': "faiss",  # 使用faiss数据库
     'dataset_config': {
         'data_path': "./data/tran_dataset_1000.json",  # 这里更换为完整的数据集路径
         'test_count': 1000  # 测试数据量，填入-1表示使用全部数据

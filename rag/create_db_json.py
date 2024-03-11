@@ -9,7 +9,8 @@ from langchain_community.vectorstores import Chroma
 from langchain.embeddings import HuggingFaceEmbeddings
 from langchain_community.vectorstores.utils import DistanceStrategy
 from langchain_core.documents import Document
-from config_test.config_test import load_config
+from config import load_config
+# from config_test.config_test import load_config
 
 dataset_config = load_config('rag', 'dataset_config')
 data_path = dataset_config['data_path']
@@ -66,6 +67,6 @@ if rag_model_type == "chroma":
     vectordb.persist()
 else:
     faiss_index = FAISS.from_documents(documents=split_docs, embedding=embeddings,
-                                       distance_strategy=DistanceStrategy.MAX_INNER_PRODUCT)
+                                       distance_strategy=DistanceStrategy.EUCLIDEAN_DISTANCE)
     # 保存索引到磁盘
     faiss_index.save_local(load_config('rag', 'faiss_config')['save_path'])

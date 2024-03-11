@@ -33,8 +33,8 @@ Config['llm'] = {
 
 # rag
 Config['rag'] = {
-    # 'rag_model_type': "chroma",
-    'rag_model_type': "faiss",
+    # 'rag_model_type': "chroma", # 使用chroma数据库
+    'rag_model_type': "faiss",  # 使用faiss数据库
     'dataset_config': {
         'data_path': "./data/tran_dataset_1000.json",  # 这里更换为完整的数据集路径
         'test_count': 1000  # 测试数据量，填入-1表示使用全部数据
@@ -43,22 +43,23 @@ Config['rag'] = {
         "source_caipu": False,  # 是否编码原始菜谱
         "HyQE": True,  # 是否使用HyQE
     },
+    # streamlit加载使用的相对路径格式和直接运行python文件使用的相对路径格式不同
     'faiss_config': {
-        'save_path': './faiss_index',
-        'load_path': './rag/faiss_index',
+        'save_path': './faiss_index',  # 保存faiss索引的路径
+        'load_path': './rag/faiss_index',  # streamlit加载faiss索引的路径
         'search_type': "similarity_score_threshold",
         'search_kwargs': {"k": 3, "score_threshold": 0.6}
     },
     'chroma_config': {
-        'save_path': './chroma_db',
-        'load_path': './rag/chroma_db',
+        'save_path': './chroma_db',  # 保存chroma索引的路径
+        'load_path': './rag/chroma_db',  # streamlit加载chroma索引的路径
         'search_type': "similarity",
         'search_kwargs': {"k": 3}
     },
     'bm25_config': {
-        'dir_path': './retriever',
-        'save_path': './retriever/bm25retriever.pkl',
-        'pickle_path': './rag/retriever/bm25retriever.pkl',
+        'dir_path': './retriever',  # 保存bm25检索器的文件夹的路径
+        'save_path': './retriever/bm25retriever.pkl',  # 保存bm25检索器的路径
+        'pickle_path': './rag/retriever/bm25retriever.pkl',  # streamlit加载bm25检索器的路径
         'search_kwargs': {"k": 3}
     },
     'bce_emb_config': {
