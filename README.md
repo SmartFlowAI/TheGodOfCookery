@@ -283,11 +283,9 @@ Demo 访问地址：https://openxlab.org.cn/apps/detail/zhanghui-china/shishen20
 |     |---retrieve                                         #retrieve目录
 |     |     |- bm25retriever.pkl
 |     |---CookMasterLLM.py
-|     |---convert_txt.py
-|     |---create_db.py
+|     |---create_db_json.py
+|     |---HyQEContextualCompressionRetriever.py
 |     |---interface.py
-|     |---rag_test.py
-|     |---run_local.py
 |
 |---rag_chroma   # 二代RAG代码目录（主要贡献者 @Charles）
 |     |---database                                         #chroma数据库目录

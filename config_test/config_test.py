@@ -29,46 +29,47 @@ Config['llm'] = {
     'finetuned': True,
     'base_model_type': "internlm2-chat-1.8b",
     'llm_model_path': "F:/OneDrive/Pythoncode/BCE_model/internlm2-chat-1_8b"
-    # 'base_model_type': "internlm2-chat-7b",
-    # 'llm_model_path': os.environ.get('HOME') + "/models/zhanghuiATchina/zhangxiaobai_shishen2_full"
-    # 'llm_model_path': os.environ.get('HOME') + "/models/Shanghai_AI_Laboratory/internlm-chat-7b"
-    # 'llm_model_path': os.environ.get('HOME') + "/models/zhanghuiATchina/zhangxiaobai_shishen_full"
-    # 'llm_model_path': "/mnt/d//models/zhanghuiATchina/zhangxiaobai_shishen_full",
 }
 
 # rag
 Config['rag'] = {
     # 'rag_model_type': "chroma",
     'rag_model_type': "faiss",
-    'vector_db': {
-        'name': "faiss",
-        'path': './rag/faiss_index'
+    'dataset_config': {
+        'data_path': "./data/tran_dataset_1000.json",  # 这里更换为完整的数据集路径
+        'test_count': 1000  # 测试数据量，填入-1表示使用全部数据
     },
-    'hf_emb_config': {
+    'emb_strategy': {
+        "source_caipu": False,  # 是否编码原始菜谱
+        "HyQE": True,  # 是否使用HyQE
+    },
+    'faiss_config': {
+        'save_path': './faiss_index',
+        'load_path': './rag/faiss_index',
+        'search_type': "similarity_score_threshold",
+        'search_kwargs': {"k": 3, "score_threshold": 0.6}
+    },
+    'chroma_config': {
+        'save_path': './chroma_db',
+        'load_path': './rag/chroma_db',
+        'search_type': "similarity",
+        'search_kwargs': {"k": 3}
+    },
+    'bm25_config': {
+        'dir_path': './retriever',
+        'save_path': './retriever/bm25retriever.pkl',
+        'pickle_path': './rag/retriever/bm25retriever.pkl',
+        'search_kwargs': {"k": 3}
+    },
+    'bce_emb_config': {
         'model_name': "F:/OneDrive/Pythoncode/BCE_model/bce-embedding-base_v1",
         'model_kwargs': {'device': 'cuda:0'},
-        'encode_kwargs': {
-            'batch_size': 32,
-            'normalize_embeddings': True,
-            'show_progress_bar': True,
-            }
+        'encode_kwargs': {'batch_size': 32, 'normalize_embeddings': True, 'show_progress_bar': True}
     },
-    'retriever': {
-        'db': {
-            'search_type': "similarity_score_threshold",
-            'search_kwargs': {"k": 3, "score_threshold": 0.6}
-        },
-        'bm25': {
-            'pickle_path': './rag/retriever/bm25retriever.pkl',
-            'search_kwargs': {"k": 3}
-        }
-    },
-    'reranker': {
-        'bce': {
-            'model': 'F:/OneDrive/Pythoncode/BCE_model/bce-reranker-base_v1',
-            'top_n': 1,
-            'device': 'cuda:0',
-            'use_fp16': True
-        }
+    'bce_reranker_config': {
+        'model': 'F:/OneDrive/Pythoncode/BCE_model/bce-reranker-base_v1',
+        'top_n': 1,
+        'device': 'cuda:0',
+        'use_fp16': True
     }
 }

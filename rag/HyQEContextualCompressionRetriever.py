@@ -1,3 +1,5 @@
+# copy from langchain.retrievers.ContextualCompressionRetriever
+
 from typing import Any, List
 
 from langchain_core.callbacks import (
@@ -11,8 +13,7 @@ from langchain.retrievers.document_compressors.base import (
     BaseDocumentCompressor,
 )
 
-# copy from langchain.retrievers.ContextualCompressionRetriever
-# 可以替换假设问题为原始菜谱的Retriever
+
 class HyQEContextualCompressionRetriever(BaseRetriever):
     """Retriever that wraps a base retriever and compresses the results."""
 
@@ -46,15 +47,16 @@ class HyQEContextualCompressionRetriever(BaseRetriever):
             query, callbacks=run_manager.get_child(), **kwargs
         )
         if docs:
-            for i in range(len(docs)):
-                # 取出metadata里存放的菜谱，并用菜谱替换掉page_content里保存的假设问题
-                if "caipu" in docs[i].metadata:
-                    docs[i].page_content = docs[i].metadata["caipu"]
-                    docs[i].metadata = {}
             compressed_docs = self.base_compressor.compress_documents(
                 docs, query, callbacks=run_manager.get_child()
             )
-            return list(compressed_docs)
+            compressed_docs = list(compressed_docs)
+            for i in range(len(compressed_docs)):
+                if "caipu" in compressed_docs[i].metadata:
+                    # 取出metadata中的caipu字段，放入page_content中
+                    compressed_docs[i].page_content = compressed_docs[i].metadata["caipu"]
+                    compressed_docs[i].metadata = {}
+            return compressed_docs
         else:
             return []
 
@@ -77,14 +79,15 @@ class HyQEContextualCompressionRetriever(BaseRetriever):
             query, callbacks=run_manager.get_child(), **kwargs
         )
         if docs:
-            for i in range(len(docs)):
-                # 取出metadata里存放的菜谱，并用菜谱替换掉page_content里保存的假设问题
-                if "caipu" in docs[i].metadata:
-                    docs[i].page_content = docs[i].metadata["caipu"]
-                    docs[i].metadata = {}
             compressed_docs = await self.base_compressor.acompress_documents(
                 docs, query, callbacks=run_manager.get_child()
             )
-            return list(compressed_docs)
+            compressed_docs = list(compressed_docs)
+            for i in range(len(compressed_docs)):
+                if "caipu" in compressed_docs[i].metadata:
+                    # 取出metadata中的caipu字段，放入page_content中
+                    compressed_docs[i].page_content = compressed_docs[i].metadata["caipu"]
+                    compressed_docs[i].metadata = {}
+            return compressed_docs
         else:
             return []
