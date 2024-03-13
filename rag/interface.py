@@ -1,4 +1,3 @@
-import os
 import copy
 import warnings
 from dataclasses import dataclass
@@ -21,8 +20,6 @@ from langchain.retrievers.document_compressors import LLMChainFilter
 from langchain.retrievers import BM25Retriever
 from langchain.memory import ConversationBufferMemory
 from langchain.chains import ConversationalRetrievalChain, LLMChain, RetrievalQA
-from langchain_community.llms.tongyi import Tongyi
-from rag.CookMasterLLM import CookMasterLLM
 from config import load_config
 # from config_test.config_test import load_config
 from rag.HyQEContextualCompressionRetriever import HyQEContextualCompressionRetriever

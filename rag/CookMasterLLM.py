@@ -1,7 +1,9 @@
+from functools import partial
 from langchain.llms.base import LLM
-from typing import Any, List, Optional
+from typing import Any, List, Optional, Iterator
 from langchain.callbacks.manager import CallbackManagerForLLMRun
-from transformers import AutoTokenizer, AutoModelForCausalLM
+from langchain_core.outputs import GenerationChunk
+from modelscope import AutoModelForCausalLM, AutoTokenizer
 
 
 class CookMasterLLM(LLM):
@@ -21,7 +23,28 @@ class CookMasterLLM(LLM):
         response, history = self.model.chat(self.tokenizer, prompt, history=[])
         return response
 
+    def _stream(self,
+                prompt: str,
+                stop: List[str] = None,
+                run_manager: CallbackManagerForLLMRun = None,
+                **kwargs: Any) -> Iterator[GenerationChunk]:
+        event_obj = self.get_custom_event_object(**kwargs)
+        text_callback = partial(event_obj.on_llm_new_token)
+        index = 0
+
+        for i, (resp, _) in enumerate(self.model.stream_chat(self.tokenizer, prompt, history=[])):
+            text_callback(resp[index:])
+            generation = GenerationChunk(text=resp[index:])
+            index = len(resp)
+            yield generation
+
+    def stream_chat(self, query):
+        index = 0
+        for i, (resp, _) in enumerate(
+                self.model.stream_chat(self.tokenizer, query, history=[])):
+            print(resp[index:], end='')
+            index = len(resp)
+
     @property
     def _llm_type(self) -> str:
         return "InternLM2"
-
