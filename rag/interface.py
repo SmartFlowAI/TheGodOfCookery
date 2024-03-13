@@ -100,13 +100,13 @@ def load_chain(llm, verbose=False):
     retriever = load_retriever()
 
     # RAG对话模板
-    qa_template = """使用以下可参考的上下文来回答用户的问题。
+    qa_template = """先对上下文进行内容总结,再使上下文来回答用户的问题。总是使用中文回答。
 可参考的上下文：
 ···
 {context}
 ···
 问题: {question}
-如果给定的上下文没有有效的参考信息，请根据你自己所掌握的知识进行回答。
+如果给定的上下文无法让你做出回答，请根据你自己所掌握的知识进行回答。
 有用的回答:"""
     QA_CHAIN_PROMPT = PromptTemplate(input_variables=["context", "question"],
                                      template=qa_template)
@@ -125,13 +125,13 @@ def load_chain_with_memory(llm, verbose=False):
     retriever = load_retriever()
 
     # RAG对话模板
-    qa_template = """使用以下可参考的上下文来回答用户的问题。
+    qa_template = """先对上下文进行内容总结,再使上下文来回答用户的问题。总是使用中文回答。
 可参考的上下文：
 ···
 {context}
 ···
 问题: {question}
-如果给定的上下文没有有效的参考信息，请根据你自己所掌握的知识进行回答。
+如果给定的上下文无法让你做出回答，请根据你自己所掌握的知识进行回答。
 有用的回答:"""
     QA_CHAIN_PROMPT = PromptTemplate(input_variables=["context", "question"],
                                      template=qa_template)
