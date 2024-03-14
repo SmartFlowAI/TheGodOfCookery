@@ -163,12 +163,12 @@ print(response)
 ```
 
 
-### 一阶段实践文档
+### 实践文档
 
-[一代实践](https://zhuanlan.zhihu.com/p/678019309)  <br />
-[二代实践](https://zhuanlan.zhihu.com/p/678376843)  <br />
+[一阶段一代实践](https://zhuanlan.zhihu.com/p/678019309)  <br />
+[一阶段二代实践](https://zhuanlan.zhihu.com/p/678376843)  <br />
+[一阶段实践视频](https://www.bilibili.com/video/BV1Ut421W7Qg)  <br />
 
-[实践视频](https://www.bilibili.com/video/BV1Ut421W7Qg)  <br />
 [参赛视频](https://www.bilibili.com/video/BV1u6421F7Zw)  <br />
 
 ## 项目代码结构（二阶段）
