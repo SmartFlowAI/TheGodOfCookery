@@ -120,7 +120,7 @@ xtuner chat ${SAVE_PATH} [optional arguments]
 
 一阶段：
 
-Demo 访问地址：https://openxlab.org.cn/apps/detail/zhanghui-china/nlp_shishen（已失效）
+Demo 样例
 
 ![](README.assets/answer001.png)
 
@@ -128,7 +128,7 @@ Demo 访问地址：https://openxlab.org.cn/apps/detail/zhanghui-china/nlp_shish
 
 二阶段：
 
-Demo 访问地址：<https://openxlab.org.cn/apps/detail/zhanghui-china/shishen2024>  <https://openxlab.org.cn/apps/detail/zhanghui-china/shishen2024_1.8b>
+Demo 访问地址：[A100](https://openxlab.org.cn/apps/detail/zhanghui-china/shishen2024)  [A10](https://openxlab.org.cn/apps/detail/zhanghui-china/shishen2024_1.8b)
 
 ![1710422208862](README.assets/1710422208862.png)
 
