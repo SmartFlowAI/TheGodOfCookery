@@ -128,7 +128,7 @@ Demo 访问地址：https://openxlab.org.cn/apps/detail/zhanghui-china/nlp_shish
 
 二阶段：
 
-Demo 访问地址：<https://openxlab.org.cn/apps/detail/zhanghui-china/shishen2024>
+Demo 访问地址：<https://openxlab.org.cn/apps/detail/zhanghui-china/shishen2024>  <https://openxlab.org.cn/apps/detail/zhanghui-china/shishen2024_1.8b>
 
 ![1710422208862](README.assets/1710422208862.png)
 
