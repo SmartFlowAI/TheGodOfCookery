@@ -120,17 +120,21 @@ xtuner chat ${SAVE_PATH} [optional arguments]
 
 ### 演示
 
+一阶段：
+
 Demo 访问地址：https://openxlab.org.cn/apps/detail/zhanghui-china/nlp_shishen
 
-<div align="center">
-  <img src="https://github.com/zhanghui-china/TheGodOfCookery/blob/main/images/answer001.png" width="600"/>
-  <br />
-  <img src="https://github.com/zhanghui-china/TheGodOfCookery/blob/main/images/answer002.png" width="600"/>
-  <br />
-</div>
+![](README.assets/answer001.png)
 
+![](README.assets/answer002.png)
 
-演示视频：
+二阶段：
+
+Demo 访问地址：<https://openxlab.org.cn/apps/detail/zhanghui-china/shishen2024>
+
+![1710422208862](README.assets/1710422208862.png)
+
+![1710422224731](README.assets/1710422224731.png)
 
 ### 模型地址
 
