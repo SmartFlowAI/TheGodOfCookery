@@ -53,15 +53,15 @@
 1. 准备 Python 虚拟环境：
 
    ```bash
-   conda create -n xtunernew python=3.10 -y
-   conda activate xtunernew
+   conda create -n cook python=3.10 -y
+   conda activate cook
    ```
 
 2. 克隆该仓库：
 
    ```shell
-   git clone https://github.com/zhanghui-china/intro_myself.git
-   cd ./intro_myself
+   git clone https://github.com/zhanghui-china/TheGodOfCookery.git
+   cd ./TheGodOfCookery
    ```
 
 3. 安装Pytorch和依赖库：
@@ -70,12 +70,15 @@
    conda install pytorch torchvision torchaudio pytorch-cuda=12.1 -c pytorch -c nvidia
    pip install -r requirements.txt
    ```
+这里cuda的版本根据用户自己的cuda版本确定。一般为 11.8或12.1
 
 ### 训练
 
-​		一阶段一代模型 使用 xtuner0.1.9 训练，在 internlm-chat-7b 上进行微调，[模型地址](https://www.modelscope.cn/models/zhanghuiATchina/zhangxiaobai_shishen_full/summary)
+​		一阶段一代模型 使用 xtuner 0.1.9 训练，在 internlm-chat-7b 上进行微调，[模型地址](https://www.modelscope.cn/models/zhanghuiATchina/zhangxiaobai_shishen_full/summary)
 
-​		一阶段二代模型 使用 xtuner0.1.13 训练，在 internlm2-chat-7b 上进行微调，[模型地址](https://www.modelscope.cn/models/zhanghuiATchina/zhangxiaobai_shishen2_full/summary)
+​		一阶段二代模型 使用 xtuner 0.1.13 训练，在 internlm2-chat-7b 上进行微调，[模型地址](https://www.modelscope.cn/models/zhanghuiATchina/zhangxiaobai_shishen2_full/summary)
+
+    二阶段二代模型 使用 xtuner 0.1.15.dev0 训练，在 internlm2-chat-1.8b 上进行微调，[模型地址](https://www.modelscope.cn/models/zhanghuiATchina/zhangxiaobai_shishen2_1_8b/summary)
 
 1. 微调方法如下
 
@@ -112,7 +115,7 @@ xtuner chat ${SAVE_PATH} [optional arguments]
 - `--no-streamer`: 是否移除 streamer。
 - `--top`: 对于二代模型，建议为0.8。
 - `--temperature`: 对于二代模型，建议为0.8。
-- `--repetition-penalty`: 对于二代模型，建议为1.002，对于一代模型可不填。
+- `--repetition-penalty`: 对于二代7b模型，建议为1.002，对于二代1.8b模型，建议为1.17，对于一代模型可不填。
 - 更多信息，请执行 `xtuner chat -h` 查看。
 
 ### 演示
@@ -143,7 +146,7 @@ import torch
 from modelscope import AutoTokenizer, AutoModelForCausalLM
 from tools.transformers.interface import GenerationConfig, generate_interactive
 
-model_name_or_path = "zhanghuiATchina/zhangxiaobai_shishen_full" #对于二代模型改为 zhangxiaobai_shishen2_full
+model_name_or_path = "zhanghuiATchina/zhangxiaobai_shishen_full" #对于二代模型改为 zhanghuiATchina/zhangxiaobai_shishen2_full
 
 tokenizer = AutoTokenizer.from_pretrained(model_name_or_path, trust_remote_code=True)
 model = AutoModelForCausalLM.from_pretrained(model_name_or_path, trust_remote_code=True, torch_dtype=torch.bfloat16, device_map='auto')
