@@ -4,7 +4,7 @@
 
 ![license](https://img.shields.io/github/license/SmartFlowAI/TheGodOfCookery.svg)  [![issue resolution](https://img.shields.io/github/issues-closed-raw/SmartFlowAI/TheGodOfCookery)](https://github.com/SmartFlowAI/TheGodOfCookery/issues)   [![open issues](https://img.shields.io/github/issues-raw/SmartFlowAI/TheGodOfCookery)](https://github.com/SmartFlowAI/TheGodOfCookery/issues)
 
-[中文](https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/README.md)|[English](https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/README_EN.md)
+[中文 ](https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/README.md)| [English](https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/README_EN.md)
 
 🔍 探索我们的模型：
 [![Static Badge](https://img.shields.io/badge/-gery?style=social&label=🤖%20ModelScope)](https://www.modelscope.cn/models/zhanghuiATchina/zhangxiaobai_shishen2_full/summary)
