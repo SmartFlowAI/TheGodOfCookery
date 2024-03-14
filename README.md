@@ -74,9 +74,9 @@
 
 ### 训练
 
-​		一阶段一代模型 使用 xtuner 0.1.9 训练，在 internlm-chat-7b 上进行微调 <br />
-​		一阶段二代模型 使用 xtuner 0.1.13 训练，在 internlm2-chat-7b 上进行微调 <br />
-    二阶段二代模型 使用 xtuner 0.1.15.dev0 训练，在 internlm2-chat-1.8b 上进行微调 <br />
+- 一阶段一代7b模型 使用 xtuner 0.1.9 训练，在 internlm-chat-7b 上进行微调 <br />
+- 一阶段二代7b模型 使用 xtuner 0.1.13 训练，在 internlm2-chat-7b 上进行微调 <br />
+- 二阶段二代1.8b模型 使用 xtuner 0.1.15.dev0 训练，在 internlm2-chat-1.8b 上进行微调 <br />
 
 1. 微调方法如下
 
@@ -120,7 +120,7 @@ xtuner chat ${SAVE_PATH} [optional arguments]
 
 一阶段：
 
-Demo 访问地址：https://openxlab.org.cn/apps/detail/zhanghui-china/nlp_shishen
+Demo 访问地址：https://openxlab.org.cn/apps/detail/zhanghui-china/nlp_shishen（已失效）
 
 ![](README.assets/answer001.png)
 
