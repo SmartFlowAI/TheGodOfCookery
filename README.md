@@ -74,9 +74,9 @@
 
 ### 训练
 
-​		一阶段一代模型 使用 xtuner 0.1.9 训练，在 internlm-chat-7b 上进行微调
-​		一阶段二代模型 使用 xtuner 0.1.13 训练，在 internlm2-chat-7b 上进行微调
-    二阶段二代模型 使用 xtuner 0.1.15.dev0 训练，在 internlm2-chat-1.8b 上进行微调
+​		一阶段一代模型 使用 xtuner 0.1.9 训练，在 internlm-chat-7b 上进行微调 <br />
+​		一阶段二代模型 使用 xtuner 0.1.13 训练，在 internlm2-chat-7b 上进行微调 <br />
+    二阶段二代模型 使用 xtuner 0.1.15.dev0 训练，在 internlm2-chat-1.8b 上进行微调 <br />
 
 1. 微调方法如下
 
@@ -186,7 +186,7 @@ print(response)
 |---images  # 的图片目录，生成的图片临时也放在这里，今后会考虑迁移到其他目录
 |     |---robot.png                                        #对话机器人图标 
 |     |---user.png                                         #对话用户图标 
-|     |---shishen.png                                      #项目图标 
+|     |---shishen.png                                      #项目图标 （主要贡献者 @刘光磊）
 |
 |---rag   # 二代RAG代码目录（主要贡献者 @乐正萌）
 |     |---source_data                                      #原始数据集目录
