@@ -60,7 +60,7 @@
 2. 克隆该仓库：
 
    ```shell
-   git clone https://github.com/zhanghui-china/TheGodOfCookery.git
+   git clone https://github.com/SmartFlowAI/TheGodOfCookery.git
    cd ./TheGodOfCookery
    ```
 
@@ -74,11 +74,9 @@
 
 ### 训练
 
-​		一阶段一代模型 使用 xtuner 0.1.9 训练，在 internlm-chat-7b 上进行微调，[模型地址](https://www.modelscope.cn/models/zhanghuiATchina/zhangxiaobai_shishen_full/summary)
-
-​		一阶段二代模型 使用 xtuner 0.1.13 训练，在 internlm2-chat-7b 上进行微调，[模型地址](https://www.modelscope.cn/models/zhanghuiATchina/zhangxiaobai_shishen2_full/summary)
-
-    二阶段二代模型 使用 xtuner 0.1.15.dev0 训练，在 internlm2-chat-1.8b 上进行微调，[模型地址](https://www.modelscope.cn/models/zhanghuiATchina/zhangxiaobai_shishen2_1_8b/summary)
+​		一阶段一代模型 使用 xtuner 0.1.9 训练，在 internlm-chat-7b 上进行微调
+​		一阶段二代模型 使用 xtuner 0.1.13 训练，在 internlm2-chat-7b 上进行微调
+    二阶段二代模型 使用 xtuner 0.1.15.dev0 训练，在 internlm2-chat-1.8b 上进行微调
 
 1. 微调方法如下
 
@@ -138,8 +136,11 @@ Demo 访问地址：<https://openxlab.org.cn/apps/detail/zhanghui-china/shishen2
 
 ### 模型地址
 
-[openxlab一代模型](https://openxlab.org.cn/models/detail/zhanghui-china/zhangxiaobai_shishen_full)    <br />
-[openxlab二代模型](https://openxlab.org.cn/models/detail/zhanghui-china/zhangxiaobai_shishen2_full)    <br />
+​[modelscope一代7b模型](https://www.modelscope.cn/models/zhanghuiATchina/zhangxiaobai_shishen_full/summary)    <br />
+[modelscope二代7b模型](https://www.modelscope.cn/models/zhanghuiATchina/zhangxiaobai_shishen2_full/summary)    <br />
+[modelscope二代1.8b模型](https://www.modelscope.cn/models/zhanghuiATchina/zhangxiaobai_shishen2_1_8b/summary)    <br />
+[openxlab一代7b模型](https://openxlab.org.cn/models/detail/zhanghui-china/zhangxiaobai_shishen_full)    <br />
+[openxlab二代7b模型](https://openxlab.org.cn/models/detail/zhanghui-china/zhangxiaobai_shishen2_full)    <br />
 
 ```shell
 import torch
@@ -232,18 +233,9 @@ print(response)
 |---README.md                                              #本文档
 |---cli_demo.py                                            #模型测试脚本
 |---download.py                                            #模型下载脚本
-|---download_whisper.py                                    #下载whisper模型
-|---download_paraformer.py                                 #下载paraformer模型
-|---download_rag2_model.py                                 #仅二代RAG所需模型的下载脚本
 |---start.py                                               #Web Demo启动脚本
-|---start2.py                                              #Web Demo启动脚本（支持RAG2）
-|---start_rag_chroma.py                                    #Web Demo启动脚本（支持RAG1）
-|---start_rag2.py                                          #Web Demo启动脚本（仅支持RAG2）
-|---app.py                                                 #Web Demo主脚本（RAG1+whisper+image+markdown）
-|---app_paraformer.py                                      #Web Demo主脚本（RAG1+paraformer+image+markdown）
-|---app2.py                                                #Web Demo主脚本（RAG2+whisper+image+markdown）
-|---app-enhanced-rag.py                                    #仅支持RAG2的主脚本
-|---app-rag-with-chroma.py                                 #支持RAG1的主脚本
+|---app.py                                                 #Web Demo主脚本
+
    ```
 
 ## 项目参与人员（排名不分先后）
