@@ -1,12 +1,3 @@
-"""
-This script refers to the dialogue example of streamlit, the interactive generation code of chatglm2 and transformers.
-We mainly modified part of the code logic to adapt to the generation of our model.
-Please refer to these links below for more information:
-    1. streamlit chat example: https://docs.streamlit.io/knowledge-base/tutorials/build-conversational-apps
-    2. chatglm2: https://github.com/THUDM/ChatGLM2-6B
-    3. transformers: https://github.com/huggingface/transformers
-"""
-
 from dataclasses import asdict
 
 import streamlit as st
@@ -21,8 +12,6 @@ from rag.interface import (GenerationConfig,
 from config import load_config
 # from config_test.config_test import load_config
 from rag.CookMasterLLM import CookMasterLLM
-import os
-from datetime import datetime
 import sys
 
 logger = logging.get_logger(__name__)
@@ -37,9 +26,6 @@ if xlab_deploy:
 
 # global variables
 enable_rag = load_config('global', 'enable_rag')
-# streaming = load_config('global', 'streaming')
-enable_image = load_config('global', 'enable_image')
-enable_markdown = load_config('global', 'enable_markdown')
 user_avatar = load_config('global', 'user_avatar')
 robot_avatar = load_config('global', 'robot_avatar')
 user_prompt = load_config('global', 'user_prompt')
