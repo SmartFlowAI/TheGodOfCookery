@@ -6,25 +6,25 @@
 
 **应用DEMO地址：**
 
-openxlab A100：12CPU 48G内存 40G显存 internlm2-chat-7b微调模型
+InternLM2-chat-7b微调模型 (OpenXlab A100：12CPU 48G内存 40G显存 )
 
 https://openxlab.org.cn/apps/detail/zhanghui-china/shishen2024
 
-openxlab A10：8CPU 32G内存 24G显存 internlm2-chat-1_8b 微调模型
+InternLM2-chat-1_8b 微调模型 (OpenXlab A10：8CPU 32G内存 24G显存 )
 
 https://openxlab.org.cn/apps/detail/zhanghui-china/shishen2024_1.8b
 
 **模型地址：**
 
-基于 Shanghai_AI_Laboratory/internlm2-chat-7b 微调
+基于 InternLM2-chat-7b 微调
 
 https://www.modelscope.cn/models/zhanghuiATchina/zhangxiaobai_shishen2_full/summary
 
-基于 Shanghai_AI_Laboratory/internlm-chat-7b 微调
+基于 InternLM-chat-7b 微调
 
 https://www.modelscope.cn/models/zhanghuiATchina/zhangxiaobai_shishen_full/summary
 
-基于 Shanghai_AI_Laboratory/internlm2-chat-1_8b 微调https://www.modelscope.cn/models/zhanghuiATchina/zhangxiaobai_shishen2_1_8b/summary
+基于 InternLM2-chat-1_8b 微调https://www.modelscope.cn/models/zhanghuiATchina/zhangxiaobai_shishen2_1_8b/summary
 
 **GitHub 项目链接：**
 
@@ -162,7 +162,9 @@ bce-reranker-base_v1模型同样是一款基于XLMRoberta的句子向量编码�
 
 结合本项目实际情况考虑，我们微调使用的数据集格式为{"input": "xxx菜怎么做", "output": "完整的菜谱"}。显然，我们可以将input部分作为编码与检索的对象，与用户输入的“xx菜怎么做”类型的问题进行相似度匹配，实现【问题&问题】检索。在langchain中实现该方案，只需要将output部分的菜谱保存在content为input部分的Document对象的metadata中。在检索器完成检索后，将结果文档输入大模型前，从Document对象的metadata中取出菜谱，并用其替换掉该对象的content部分的内容即可。
 
-​      同时考虑到本项目完整数据集有150万份菜谱，我们最终采用了高性能的Faiss作为RAG模块的默认向量数据库。但也保留了对轻量级的Chroma向量数据库的支持。两个向量数据库的互相切换可以在项目启动前通过修改配置文件实现。
+同时考虑到本项目完整数据集有150万份菜谱，我们最终采用了高性能的Faiss作为RAG模块的默认向量数据库。但也保留了对轻量级的Chroma向量数据库的支持。两个向量数据库的互相切换可以在项目启动前通过修改配置文件实现。
+
+![image](./images/pic17.png)
 
 采用HyQE方案后，本项目RAG系统达到了近乎100%的召回率。同时，编码和保存短问题的资源消耗也远少于长菜谱。但是，该方案也存在两个明显缺陷：第一，仅适用于拥有现成的一问一答格式的数据集的项目，如果是常见的连续长文档格式的RAG数据集，就要考虑合适的文档分块与假设问题生成策略，建议参考FastGPT项目的方案。第二，用户输入仅限于“xx菜怎么做”类型的问题这一假设太强，尤其不符合多轮对话场景的后续问题。解决该问题可以考虑使用基于大模型的上下文压缩器，将对话历史和用户当前问题重写为一个新的问题。langchain框架在多轮对话RAG链的实现中就采用了这一方案。但是压缩过程中的信息损失比较严重，生成的新问题质量也难以保证。更合适的解决方法，我们也仍在探索当中。
 
