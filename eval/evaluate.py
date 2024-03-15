@@ -94,6 +94,7 @@ def test_retriever(retriever, query) -> str:
 
 
 def evaluate(retriever):
+    # 正式评估请手动替换下一行的路径
     with open('./eval_dataset_test.json', 'r', encoding='utf-8') as f:
         data = json.load(f)
     f1_sum = 0
