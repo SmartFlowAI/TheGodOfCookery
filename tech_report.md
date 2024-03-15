@@ -1,6 +1,6 @@
 # 食神项目技术报告 V1.4
 
-![img](https://hjjmcgs24u.feishu.cn/space/api/box/stream/download/asynccode/?code=Mzc4ZDRjNjI1Y2NlNmFmZGRlNGZmNDNlY2JiYmZiNGVfZmttTE9NWkF0Z1NOeGhEOFB3VnhqVlRlaGlpWGlkSU9fVG9rZW46WHFJa2J0T3BHb09jVzV4TW5vS2NmNHdybjhkXzE3MTA0NTk3Mjg6MTcxMDQ2MzMyOF9WNA)
+![img](https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/images/cooker.png)
 
 # 0、项目基础信息
 
@@ -49,7 +49,7 @@ https://www.bilibili.com/video/BV1kr421W7iA
 
 ​     项目主要依赖上海人工智能实验室开源模型internlm-chat-7b（包含1代和2代），在[XiaChuFang Recipe Corpus](https://opendatalab.org.cn/XiaChuFang_Recipe_Corpus) 提供的1,520,327种中国食谱数据集上借助Xtuner进行LoRA微调，形成shishen2_full模型。使用langchain将微调后的模型与chroma或faiss向量数据库整合，实现RAG检索增强的效果。并且可以进行多模态（语音、文字、图片）问答对话。前端基于streamlit实现与用户的交互。
 
-![img](https://hjjmcgs24u.feishu.cn/space/api/box/stream/download/asynccode/?code=MjIyOGU2NDY5OWZjNjU2ZTM3ZWVjZDk5ODU5NWJjYmRfTjRTVG5LeG5OM214enBFeW5JU2dJTXpWU042alVlOE9fVG9rZW46U3NFdmJvajI4b3FjZGp4RlRnbWNWS2thblFnXzE3MTA0NTk3Mjg6MTcxMDQ2MzMyOF9WNA)
+![img](https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/images/pic01.PNG)
 
 <div align = "center">图1 整体技术架构</div>
 
@@ -57,7 +57,7 @@ https://www.bilibili.com/video/BV1kr421W7iA
 
 ​     用户发出请求后，应用加载各模型（语音模型，文生图模型，微调后的对话模型），并根据用户的输入类型（文字输入或者语音输入），分别进行预处理。如果未启用RAG模块，则直接调用微调后的对话模型生成回复；如果启用RAG模块，则调用langchain检索向量数据库，并将检索结果与用户输入一起输入微调后的对话模型生成回复。之后对模型回复进行格式化输出，并调用stable diffusion (SD) 模型生成图片，最后将全部结果返回用户。
 
-![img](https://hjjmcgs24u.feishu.cn/space/api/box/stream/download/asynccode/?code=ODEzMDlkMzYxNTI5OTE4MjlhYjIyZjJlODkwYjVkYmFfaHFweW1xTEdYUFJZZnVKRUgwTjhNUW93aDYwUjdGcGlfVG9rZW46VFdTUGJCRmNYb01kUkF4ZkNBRWM3WE10blhnXzE3MTA0NTk3Mjg6MTcxMDQ2MzMyOF9WNA)
+![img](https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/images/pic02.PNG)
 
 <div align = "center">图2 应用整体流程</div>
 
@@ -100,7 +100,7 @@ LangChain 框架由以下部分组成。
 
 下图展示了 LangChain 框架的层次组织结构，显示了跨多个层次的部分之间的相互连接。
 
-![img](https://hjjmcgs24u.feishu.cn/space/api/box/stream/download/asynccode/?code=ZDM5OGE0NzkzMTAzNjJjNTVmZWNhZWY4Y2E3NWViNDdfSElxZkl5bDJBV3A3anJzYkg0eHc4UEdJYVhzRkRhR21fVG9rZW46QTZjVWJBek55b3EwaFF4YzU5M2NvUVgybldnXzE3MTA0NTk3Mjg6MTcxMDQ2MzMyOF9WNA)
+![img](https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/images/pic03.png)
 
 <div align = "center">图 3 LangChain 框架层次组织结构</div>
 
@@ -140,7 +140,7 @@ BCEmbedding以其出色的双语和跨语种能力而著称，在语义检索中
 - **强大的双语和跨语种语义表征能力【****[基于MTEB的语义表征评测指标](https://github.com/netease-youdao/BCEmbedding/blob/master/README_zh.md#基于mteb的语义表征评测指标)****】。**
 - **基于LlamaIndex的RAG评测，表现SOTA【****[基于LlamaIndex的RAG评测指标](https://github.com/netease-youdao/BCEmbedding/blob/master/README_zh.md#基于llamaindex的rag评测指标)****】。**
 
-![img](https://hjjmcgs24u.feishu.cn/space/api/box/stream/download/asynccode/?code=OWU4MzdlNGNkYTA5Y2EyODQxYmM2NzdiZTEyM2QxZmFfanIzamxPcjcyWmprbTZBcVpWNlFLY3NEQm9FbDBSV2hfVG9rZW46RlJCZ2JFd3Zib0NhRDJ4dE5uN2NDSm1IbmxnXzE3MTA0NTk3Mjg6MTcxMDQ2MzMyOF9WNA)
+![img](https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/images/pic04.png)
 
 <div align = "center">图4 BCEmbedding评测表现</div>
 
@@ -212,7 +212,7 @@ SD模型的主体结构如下图所示，主要包括三个模型：
 - CLIP text encoder：提取输入text的text embeddings，通过cross attention方式送入扩散模型的UNet中作为condition；
 - UNet：扩散模型的主体，用来实现文本引导下的latent生成。
 
-![img](https://hjjmcgs24u.feishu.cn/space/api/box/stream/download/asynccode/?code=NWIzZWU2NzJhYmE2MDM2ZmNlYzY0MDNlODk1ZTg3MjNfd0tmc2NBRVp0U1JxQWNDZUFicUhzeUU1M0dvZXlON1hfVG9rZW46S2VkN2IwMHYxb3cwclF4ak42bGNHZHc5bjV1XzE3MTA0NTk3Mjg6MTcxMDQ2MzMyOF9WNA)
+![img](https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/images/pic05.png)
 
 <div align = "center">图5 StableDiffusion模型架构</div>
 
@@ -272,19 +272,19 @@ SD模型的主体结构如下图所示，主要包括三个模型：
 - 鲁棒性：主要还是源于海量的训练数据，并在语音数据上进行了常见的增强操作，例如变速、加噪、谱增强等。
 - 多模型：提供了从tiny到large，从小到大的五种规格模型，适合不同场景。如下图所示：
 
-![img](https://hjjmcgs24u.feishu.cn/space/api/box/stream/download/asynccode/?code=NDRiYThlNjI5ZmUyZjlkNjY4YjVmZTZjNThjMjRjMjZfcVR0M25ZZlF2ZXZyWVpqbUN5OTdYb010YWNzVDRrR21fVG9rZW46SlA4YWJPT1lwb1l2VVB4ekExMGNjMmJTbnNmXzE3MTA0NTk3Mjg6MTcxMDQ2MzMyOF9WNA)
+![img](https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/images/pic06.png)
 
-图3 Whisper多规格模型
+<div align = "center">图6 Whisper多规格模型</div>
 
 ​     如下图所示，Whisper的架构是一个简单的端到端（end to end）方法，采用了编码器-解码器的[Transformer](https://arxiv.org/abs/1706.03762)模型实现。在工作过程中，输入的音频首先被分成30秒的块，并转换成log-Mel频谱图，然后传递到编码器。解码器则负责预测相应的文本标题，并与特殊token标记混合，这些标记指导单个模型执行诸如语言识别（language identification）、短语级时间戳（phrase-level timestamps）、多语言语音转录（multilingual speech transcription）和英语语音翻译（to-English speech translation）等任务。
 
-![img](https://hjjmcgs24u.feishu.cn/space/api/box/stream/download/asynccode/?code=MGY0M2EyMTFlOGMxNDg0ZTdjYjQzZGVjY2IyZDdjZTRfNnppRzZkWGxqNnZObFJDYXJJbXlmU2lkTzJPSlJLeUJfVG9rZW46RWJORGJobmQ0b0p1Wkl4bVBXY2NrRnlqbmtkXzE3MTA0NTk3Mjg6MTcxMDQ2MzMyOF9WNA)
+![img](https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/images/pic07.png)
 
-<div align = "center">图6 Whisper模型架构</div>
+<div align = "center">图7 Whisper模型架构</div>
 
-![img](https://hjjmcgs24u.feishu.cn/space/api/box/stream/download/asynccode/?code=NmU3ZDUzNWE2N2VjMjJiMDZjZjRiMjcxNTQwZWMyNWVfNGRmOUt2YzlZSGtob1F1MDJFemg0c1doRHZ4TUtQd1dfVG9rZW46UnAwRGJCemwybzh1clB4czdFUWNyVFJLbmNoXzE3MTA0NTk3Mjg6MTcxMDQ2MzMyOF9WNA)
+![img](https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/images/pic08.png)
 
-<div align = "center">图7 Whisper训练过程</div>
+<div align = "center">图8 Whisper训练过程</div>
 
 ## 4.3 paraformer语音技术简介
 
@@ -296,9 +296,9 @@ SD模型的主体结构如下图所示，主要包括三个模型：
 - Sampler：通过采样，将声学特征向量与目标文字向量变换成含有语义信息的特征向量，配合双向的 Decoder 来增强模型对于上下文的建模能力
 - 基于负样本采样的 MWER 训练准则
 
-![img](https://hjjmcgs24u.feishu.cn/space/api/box/stream/download/asynccode/?code=ZmZjODhjM2VkYmI0YWQ3NWQ1ZDg3N2JhZmVjMDM3YTBfMmpMSHI0QTVhNWVQa2NpYTJvZlM2UmdRWjZHNDhoOEdfVG9rZW46REI0RGJoWDNpb0VUV1d4d2k0eWNLakRwbkJkXzE3MTA0NTk3Mjg6MTcxMDQ2MzMyOF9WNA)
+![img](https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/images/pic09.png)
 
-<div align = "center">图8 Paraformer模型结构</div>
+<div align = "center">图9 Paraformer模型结构</div>
 
 ​     Paraformer语音技术的应用场景十分广泛，包括语音输入法、智能客服、车载导航、会议纪要等。无论是需要快速准确地识别语音输入的场景，还是需要处理复杂语音交互的场合，Paraformer都能提供出色的性能表现。具体而言，Paraformer可应用于：
 
@@ -335,15 +335,15 @@ SD模型的主体结构如下图所示，主要包括三个模型：
 
 ​       大模型微调是一种迁移学习技术，通过在预训练模型的基础上进行额外训练，使其适应特定任务或领域。这一过程包括选择预训练模型，准备目标任务的数据，调整模型结构，进行微调训练，以及评估和部署。微调的优点在于节省时间和资源，提高性能，但也存在过拟合风险和模型选择与调整的复杂性。总体而言，它是一种强大的技术，特别适用于数据受限或计算资源有限的情况。在 OpenAI 发布的 ChatGPT 中，就主要应用了大模型微调技术，从而获得了惊艳全世界的效果。
 
-![img](https://hjjmcgs24u.feishu.cn/space/api/box/stream/download/asynccode/?code=MDU5YjJhMWJmMDBmYWZhOTE0ZDJiNzQ3MDdkYzkwZDFfVkI0a0V6U21WeTJ6SVVqZFFmekJNTE9GVzNOZlRsQUJfVG9rZW46U0VoZGJPa1RJb2ZhV3B4SWpvd2N5Q1ZObkZlXzE3MTA0NTk3Mjg6MTcxMDQ2MzMyOF9WNA)
+![img](https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/images/pic10.png)
 
-<div align = "center">图9 ChatGPT模型微调</div>
+<div align = "center">图10 ChatGPT模型微调</div>
 
 如下图所示，微调由以下4步构成。
 
-![img](https://hjjmcgs24u.feishu.cn/space/api/box/stream/download/asynccode/?code=ODlhNWM3NzgzNDM0NmUxMmM1OGE0ODE1ZTQ1NTg1OTBfbXVTeE40b1NjMUQ5YXg2V0J2MVlzODNTTFlTYlFWazFfVG9rZW46QTg5N2JOODV5b2lXekp4cTNNMGM4Y3V3bjRmXzE3MTA0NTk3Mjg6MTcxMDQ2MzMyOF9WNA)
+![img](https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/images/pic11.png)
 
-<div align = "center">图10  模型微调步骤</div>
+<div align = "center">图11  模型微调步骤</div>
 
 1. 在源数据集上预训练一个神经网络模型，即源模型。
 2. 创建一个新的神经网络模型，即目标模型。它复制了源模型上除了输出层外的所有模型设计及其参数。我们假设这些模型参数包含了源数据集上学习到的知识，且这些知识同样适用于目标数据集。我们还假设源模型的输出层与源数据集的标签紧密相关，因此在目标模型中不予采用。
@@ -410,9 +410,9 @@ XTuner 是一个高效、灵活、全能的轻量化大模型微调工具库。
 
 生成的微调数据集如下所示：
 
-![img](https://hjjmcgs24u.feishu.cn/space/api/box/stream/download/asynccode/?code=MTQ1MGI1OGE5NDZiMGU3OWIyZmYyODI2YjFkZjYxNjNfa0V4ZG9iVEhHNXUwTUdJaGRrZ1B3NTBjS2g5azdSRzVfVG9rZW46RjRBSmI2S0Nab1hCWFd4a2JTcmNWdVpIbkhiXzE3MTA0NTk3Mjg6MTcxMDQ2MzMyOF9WNA)
+![img](https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/images/pic12.png)
 
-<div align = "center">图11 微调数据集</div>
+<div align = "center">图12 微调数据集</div>
 
 ## 5.4 微调方法及其产出物
 
@@ -540,9 +540,9 @@ Streamlit 的工作流程如下：
 
 如果没有使用with st.sidebar: 开头，那么st的组件默认放到正文区域内。如下图，title，history和text_input都放在正文区域。除了text_input组件固定在正文区域最底部，其他组件在正文区域内的布局顺序和代码里的顺序也保持一致。
 
-![img](https://hjjmcgs24u.feishu.cn/space/api/box/stream/download/asynccode/?code=ZDdiOGMxMjc0YTVlYzI4OTc5MjIyZGM3ZjM0ODQwNDBfeHUycXhsV1ZtU0xxb3dyd3kzQkp4dWVETVh3N1RsSmFfVG9rZW46VkdkVGJJSjF0bzIxOXV4dVBPNmNJajBYblpkXzE3MTA0NTk3Mjg6MTcxMDQ2MzMyOF9WNA)
+![img](https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/images/pic13.png)
 
-图 12 streamlit页面
+<div align = "center">图 13 streamlit页面</div>
 
 ### 6.3.2 streamlit刷新机制和session_state
 
