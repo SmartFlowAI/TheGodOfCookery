@@ -70,4 +70,3 @@ caipu_txt = open('data/caipu.txt', 'w', encoding='utf-8')
 for i in range(len(result_caipu_list)):
     caipu_txt.write(result_caipu_list[i])
 caipu_txt.close()
-
