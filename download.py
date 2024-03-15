@@ -16,7 +16,16 @@ if base_model_type == 'internlm2-chat-7b':
     else:
         if not os.path.exists(os.environ.get('HOME') + "/Shanghai_AI_Laboratory/internlm2-chat-7b"):
             model_dir = snapshot_download('Shanghai_AI_Laboratory/internlm2-chat-7b', cache_dir=os.environ.get('HOME')+'/models')
-else :
+            
+elif  base_model_type == 'internlm2-chat-1.8b':
+    if finetuned:
+        if not os.path.exists(os.environ.get('HOME') + "/zhanghuiATchina/zhangxiaobai_shishen2_1_8b"):
+            model_dir = snapshot_download('zhanghuiATchina/zhangxiaobai_shishen2_1_8b', cache_dir=os.environ.get('HOME')+'/models')
+    else:
+        if not os.path.exists(os.environ.get('HOME') + "/Shanghai_AI_Laboratory/internlm2-chat-1_8b"):
+            model_dir = snapshot_download('Shanghai_AI_Laboratory/internlm2-chat-1_8b', cache_dir=os.environ.get('HOME')+'/models')
+
+else:
     if finetuned:
         if not os.path.exists(os.environ.get('HOME') + "/zhanghuiATchina/zhangxiaobai_shishen_full"):
             model_dir = snapshot_download('zhanghuiATchina/zhangxiaobai_shishen_full', cache_dir=os.environ.get('HOME')+'/models')
@@ -24,9 +33,7 @@ else :
         if not os.path.exists(os.environ.get('HOME') + "/Shanghai_AI_Laboratory/internlm-chat-7b"):
             model_dir = snapshot_download('Shanghai_AI_Laboratory/internlm-chat-7b', cache_dir=os.environ.get('HOME')+'/models')
 
-
 os.environ['HF_ENDPOINT'] = 'https://hf-mirror.com'
-
 
 # download RAG model
 rag_model_type = load_config('rag', 'rag_model_type')
