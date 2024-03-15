@@ -24,7 +24,9 @@ https://www.modelscope.cn/models/zhanghuiATchina/zhangxiaobai_shishen2_full/summ
 
 https://www.modelscope.cn/models/zhanghuiATchina/zhangxiaobai_shishen_full/summary
 
-基于 InternLM2-chat-1_8b 微调https://www.modelscope.cn/models/zhanghuiATchina/zhangxiaobai_shishen2_1_8b/summary
+基于 InternLM2-chat-1_8b 微调
+
+https://www.modelscope.cn/models/zhanghuiATchina/zhangxiaobai_shishen2_1_8b/summary
 
 **GitHub 项目链接：**
 
