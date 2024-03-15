@@ -24,13 +24,13 @@
 
 ​		项目主要依赖上海人工智能实验室开源模型internlm-chat-7b（包含1代和2代），在XiaChuFang Recipe Corpus 提供的1,520,327种中国食谱数据集上借助Xtuner进行LoRA微调，形成shishen2_full模型，并将微调后模型与向量数据库整合入langchain，实现RAG检索增强的效果，并可进行多模态（语音、文字、图片）问答对话，前端基于streamlit实现与用户的交互。
 
-![](README.assets/ddeeaf42-097f-4e70-b265-314fa7309685.png)
+![](images/整体技术架构.png)
 
 ### 应用整体流程说明
 
 ​		用户发出请求后，应用加载模型（语音模型，文生图模型，微调后的对话模型），并处理用户的文字输入或者语音输入，如果未打开RAG开关，则直接调用微调后的对话模型生成回复，对结果进行格式化输出，并调用stable diffusion模型生成图片，最后将相应结果返回用户；如果打开RAG开关，则利用langchain检索向量数据库，并将检索结果输入微调后的对话模型生成回复，对结果进行格式化输出，并调用stable diffusion模型生成图片，最后将相应结果返回用户。
 
-![](README.assets/output-1710423526789.png)
+![](images/处理流程.png)
 
 ## 更新说明
 
@@ -140,7 +140,7 @@ Demo 访问地址：[A100](https://openxlab.org.cn/apps/detail/zhanghui-china/sh
 
 ### 模型地址
 
-​[modelscope一代7b模型](https://www.modelscope.cn/models/zhanghuiATchina/zhangxiaobai_shishen_full/summary)    <br />
+[modelscope一代7b模型](https://www.modelscope.cn/models/zhanghuiATchina/zhangxiaobai_shishen_full/summary)    <br />
 [modelscope二代7b模型](https://www.modelscope.cn/models/zhanghuiATchina/zhangxiaobai_shishen2_full/summary)    <br />
 [modelscope二代1.8b模型](https://www.modelscope.cn/models/zhanghuiATchina/zhangxiaobai_shishen2_1_8b/summary)    <br />
 [openxlab一代7b模型](https://openxlab.org.cn/models/detail/zhanghui-china/zhangxiaobai_shishen_full)    <br />
