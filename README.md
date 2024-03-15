@@ -126,17 +126,17 @@ xtuner chat ${SAVE_PATH} [optional arguments]
 
 Demo 样例
 
-![](README.assets/answer001.png)
+![answer001](images/answer001.png)
 
-![](README.assets/answer002.png)
+![answer002](images/answer002.png)
 
 二阶段：
 
 Demo 访问地址：[A100](https://openxlab.org.cn/apps/detail/zhanghui-china/shishen2024)  [A10](https://openxlab.org.cn/apps/detail/zhanghui-china/shishen2024_1.8b)
 
-![1710422208862](README.assets/1710422208862.png)
+![1710422208862](images/1710422208862.png)
 
-![1710422224731](README.assets/1710422224731.png)
+![1710422224731](images/1710422224731.png)
 
 ### 模型地址
 
