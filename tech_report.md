@@ -575,7 +575,7 @@ streamlit 刷新机制是基于事件驱动的，它使得应用程序能够在�
 
 在加载文生图模型的函数前面加一条@st.cache_resource 装饰器，streamlit会把该函数的返回结果保存到缓存里，当这个函数的参数不变时，就会直接返回缓存里的返回结果。
 
-![img](https://hjjmcgs24u.feishu.cn/space/api/box/stream/download/asynccode/?code=NTE4ODRhNTA5ZjMxNjFlYjNmZDA5MDYwZTI1OTgxZDBfMnlJVnF4ejJjYmtjQzFDcUNKa1liZUhGeXFoZklUY1JfVG9rZW46UEwyRmJFSFVFbzZaOXJ4MERnQmNvZ0I0bkdlXzE3MTA0NTk3Mjg6MTcxMDQ2MzMyOF9WNA)
+![img](https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/images/pic14.png)
 
 **问题描述：**
 
@@ -589,11 +589,11 @@ streamlit 刷新机制是基于事件驱动的，它使得应用程序能够在�
 
 如果开启了文生图功能，在st.session_state.messages里加入生成图片的文件位置。
 
-![img](https://hjjmcgs24u.feishu.cn/space/api/box/stream/download/asynccode/?code=NjRjZWU3MjlkZjc3NjljYTkzN2JlNmRiYThmNTU2MDhfYnRFZTRuQm9qNlQxbHdRUFpBY1N5WnJ1MXhuUlJ3RFFfVG9rZW46UWwzVWJSZmxRb0xJUEt4TWttd2NTUnBmbnRkXzE3MTA0NTk3Mjg6MTcxMDQ2MzMyOF9WNA)
+![img](https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/images/pic15.png)
 
 然后，在展示对话历史时，如果历史信息里有图片路径，在输出文字回复后，使用st.image展示图片。
 
-![img](https://hjjmcgs24u.feishu.cn/space/api/box/stream/download/asynccode/?code=OWIwYTJjMjA0Mjc3MjJkNmRhMDNkM2U3ODg3OTc0NmVfQTdST01oNlRoNFRsR3pxemIyM3luMmhxNjI5RFM4b3VfVG9rZW46SXNyZ2J1SGs3b2NsVHR4QzNOVWN5WTBFbjZkXzE3MTA0NTk3Mjg6MTcxMDQ2MzMyOF9WNA)
+![img](https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/images/pic16.png)
 
 **问题描述：**
 
@@ -605,7 +605,7 @@ streamlit 刷新机制是基于事件驱动的，它使得应用程序能够在�
 
 **解决方案：**
 
-要修复这一问题，需要记录当前录音缓存是否已经被识别过，但是项目里用的录音模块audiorecorder没有这个功能。后来参考https://github.com/B4PT0R/streamlit-mic-recorder这个库的做法，将上次录音音频数据的base64编码保存到session_state里，每次streamlit刷新后读取音频时先检查该音频的base64编码是否和上次录音音频数据一致，如果一致则不进行处理，这样就不会重复识别音频了。
+要修复这一问题，需要记录当前录音缓存是否已经被识别过，但是项目里用的录音模块audiorecorder没有这个功能。后来参考 [LINK](https://github.com/B4PT0R/streamlit-mic-recorder) 这个库的做法，将上次录音音频数据的base64编码保存到session_state里，每次streamlit刷新后读取音频时先检查该音频的base64编码是否和上次录音音频数据一致，如果一致则不进行处理，这样就不会重复识别音频了。
 
 ## 6.4 参考
 
