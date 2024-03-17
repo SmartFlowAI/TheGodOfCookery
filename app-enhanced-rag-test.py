@@ -182,7 +182,6 @@ def process_user_input(prompt,
     with st.chat_message("user", avatar=user_avatar):
         st.markdown(prompt)
     real_prompt = combine_history(prompt)
-
     # Add user message to chat history
     st.session_state.messages.append(
         {"role": "user", "content": prompt, "avatar": user_avatar})
@@ -199,6 +198,8 @@ def process_user_input(prompt,
         with st.chat_message("robot", avatar=robot_avatar):
             message_placeholder = st.empty()
             if enable_rag:
+                print("prompt:", prompt)
+                print("real_prompt:", real_prompt)
                 cur_response = generate_interactive_rag(
                     llm=llm,
                     question=prompt,
