@@ -24,6 +24,8 @@ from langchain.chains import ConversationalRetrievalChain, LLMChain, RetrievalQA
 from langchain_community.llms.tongyi import Tongyi
 from rag.CookMasterLLM import CookMasterLLM
 from config import load_config
+# from config_test.config_test import load_config
+from rag.HyQEContextualCompressionRetriever import HyQEContextualCompressionRetriever
 
 logger = logging.get_logger(__name__)
 chain_instance = None
@@ -46,17 +48,12 @@ def load_vector_db():
     return vectordb
 
 
-def load_retriever(llm, verbose=False):
-    # 加载本地索引，创建向量检索器
+def load_retriever():
     db_retriever_config = load_config('rag', 'retriever').get('db')
     bm25_retriever_config = load_config('rag', 'retriever').get('bm25')
 
+    # 加载本地索引，创建向量检索器
     vectordb = load_vector_db()
-    # 分别创建向量数据库检索器，便于未来为每个检索器设置不同的参数
-    # if vector_db_name == "chroma":
-    #     db_retriever = vectordb.as_retriever(search_type="similarity", search_kwargs={"k": 5})
-    # else:
-    #     db_retriever = vectordb.as_retriever(search_type="similarity", search_kwargs={"k": 5})
     db_retriever = vectordb.as_retriever(**db_retriever_config)
 
     # 创建BM25检索器
@@ -76,6 +73,7 @@ def load_retriever(llm, verbose=False):
     # ···
     # 问题: {question}
     # 相关性 (YES / NO):"""
+    #
     #     FILTER_PROMPT_TEMPLATE = PromptTemplate(
     #         template=filter_prompt_template,
     #         input_variables=["question", "context"],
@@ -89,17 +87,40 @@ def load_retriever(llm, verbose=False):
     # 创建带reranker的检索器，对大模型过滤器的结果进行再排序
     bce_reranker_config = load_config('rag', 'reranker').get('bce')
     reranker = BCERerank(**bce_reranker_config)
-    compression_retriever = ContextualCompressionRetriever(base_compressor=reranker, base_retriever=ensemble_retriever)
+    # 可以替换假设问题为原始菜谱的Retriever
+    compression_retriever = HyQEContextualCompressionRetriever(base_compressor=reranker,
+                                                               base_retriever=ensemble_retriever)
     return compression_retriever
 
 
-def load_chain(model, tokenizer, verbose=False, test_llm=None):
-    if test_llm is None:
-        llm = CookMasterLLM(model, tokenizer)
-    else:
-        llm = test_llm
+def load_chain(llm, verbose=False):
     # 加载检索器
-    retriever = load_retriever(llm=llm, verbose=verbose)
+    retriever = load_retriever()
+
+    # RAG对话模板
+    qa_template = """使用以下可参考的上下文来回答用户的问题。
+可参考的上下文：
+···
+{context}
+···
+问题: {question}
+如果给定的上下文没有有效的参考信息，请根据你自己所掌握的知识进行回答。
+有用的回答:"""
+    QA_CHAIN_PROMPT = PromptTemplate(input_variables=["context", "question"],
+                                     template=qa_template)
+
+    # 单轮对话RAG问答链
+    qa_chain = RetrievalQA.from_chain_type(llm=llm,
+                                           chain_type="stuff",
+                                           chain_type_kwargs={"prompt": QA_CHAIN_PROMPT, "verbose": verbose},
+                                           retriever=retriever)
+
+    return qa_chain
+
+
+def load_chain_with_memory(llm, verbose=False):
+    # 加载检索器
+    retriever = load_retriever()
 
     # RAG对话模板
     qa_template = """使用以下可参考的上下文来回答用户的问题。
@@ -145,10 +166,6 @@ def load_chain(model, tokenizer, verbose=False, test_llm=None):
     return qa_chain
 
 
-# def _get_answer(raw: Iterator[dict]) -> Iterator[str]:
-#     pass
-
-
 @dataclass
 class GenerationConfig:
     max_length: Optional[int] = None
@@ -161,6 +178,7 @@ class GenerationConfig:
 @torch.inference_mode()
 def generate_interactive(
         model,
+        tokenizer,
         prompt,
         generation_config: Optional[GenerationConfig] = None,
         logits_processor: Optional[LogitsProcessorList] = None,
@@ -273,29 +291,25 @@ def generate_interactive(
 
 @torch.inference_mode()
 def generate_interactive_rag_stream(
-        model,
-        tokenizer,
-        prompt,
-        history,
+        llm,
+        question,
         verbose=False
 ):
     global chain_instance
     if chain_instance is None:
-        chain_instance = load_chain(model=model, tokenizer=tokenizer, verbose=verbose)
+        chain_instance = load_chain(llm, verbose=verbose)
     # chain = chain | _get_answer
-    for cur_response in chain_instance.stream({"question": prompt, "chat_history": history}):
-        yield cur_response.get('answer', '')
+    for cur_response in chain_instance.stream({"query": question}):
+        yield cur_response.get('result', '')
 
 
 @torch.inference_mode()
 def generate_interactive_rag(
-        model,
-        tokenizer,
-        prompt,
-        history,
+        llm,
+        question,
         verbose=False
 ):
     global chain_instance
     if chain_instance is None:
-        chain_instance = load_chain(model=model, tokenizer=tokenizer, verbose=verbose)
-    return chain_instance({"question": prompt, "chat_history": history})['answer']
+        chain_instance = load_chain(llm, verbose=verbose)
+    return chain_instance({"query": question})['result']

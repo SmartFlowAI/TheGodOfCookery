@@ -24,3 +24,4 @@ class CookMasterLLM(LLM):
     @property
     def _llm_type(self) -> str:
         return "InternLM2"
+
