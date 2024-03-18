@@ -141,7 +141,8 @@ def combine_history(prompt):
         str: 组合好的对话历史。
     """
     messages = st.session_state.messages
-    total_prompt = "您是一个厨师，熟悉很多菜的制作方法。用户会问你哪些菜怎么制作，您可以用自己的专业知识答复他。回答的内容一般包含两块：这道菜需要哪些食材，这道菜具体是怎么做出来的。如果用户没有问菜谱相关的问题，就提醒他对菜谱的相关问题进行提问。"
+    meta_instruction = "您是一个厨师，熟悉很多菜的制作方法。用户会问你哪些菜怎么制作，您可以用自己的专业知识答复他。回答的内容一般包含两块：这道菜需要哪些食材，这道菜具体是怎么做出来的。如果用户没有问菜谱相关的问题，就提醒他对菜谱的相关问题进行提问。"
+    total_prompt = f"<s><|im_start|>system\n{meta_instruction}<|im_end|>\n"
     for message in messages:
         cur_content = message["content"]
         if message["role"] == "user":
@@ -197,9 +198,9 @@ def process_user_input(prompt,
         # Generate robot response
         with st.chat_message("robot", avatar=robot_avatar):
             message_placeholder = st.empty()
+            print("prompt:", prompt)
+            print("real_prompt:", real_prompt)
             if enable_rag:
-                print("prompt:", prompt)
-                print("real_prompt:", real_prompt)
                 cur_response = generate_interactive_rag(
                     llm=llm,
                     question=prompt,
