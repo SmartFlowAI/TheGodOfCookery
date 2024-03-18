@@ -93,7 +93,7 @@ else: #paraformer
         model_dict = get_local_model(speech_model_path)
         model = AutoModel(**model_dict)
         return model
-         
+
     def speech_rec(speech_model):
         # 3. Speech input
         audio = audiorecorder("Record", "Stop record")
@@ -142,7 +142,7 @@ def load_model(generation_config):
             .cuda()
         )
         tokenizer = AutoTokenizer.from_pretrained(llm_model_path, trust_remote_code=True)
-    
+
     else:
        # int4 量化加载
         quantization_config = BitsAndBytesConfig(
@@ -170,7 +170,7 @@ def load_model(generation_config):
     print("完成本地模型的加载")
     print(model.generation_config)
     return model, tokenizer, llm
-    
+
 def prepare_generation_config():
     """
     准备生成配置。
@@ -249,7 +249,8 @@ def combine_history(prompt):
         str: 组合好的对话历史。
     """
     messages = st.session_state.messages
-    total_prompt = "您是一个厨师，熟悉很多菜的制作方法。用户会问你哪些菜怎么制作，您可以用自己的专业知识答复他。回答的内容一般包含两块：这道菜需要哪些食材，这道菜具体是怎么做出来的。如果用户没有问菜谱相关的问题，就提醒他对菜谱的相关问题进行提问。"
+    meta_instruction = "您是一个厨师，熟悉很多菜的制作方法。用户会问你哪些菜怎么制作，您可以用自己的专业知识答复他。回答的内容一般包含两块：这道菜需要哪些食材，这道菜具体是怎么做出来的。如果用户没有问菜谱相关的问题，就提醒他对菜谱的相关问题进行提问。"
+    total_prompt = f"<s><|im_start|>system\n{meta_instruction}<|im_end|>\n"
     for message in messages:
         cur_content = message["content"]
         if message["role"] == "user":
@@ -283,7 +284,7 @@ def process_user_input(prompt,
     print(f"Origin Prompt:{prompt}")
     prompt = convert_t2s(prompt).replace(" ", "")
     print(f"Converted Prompt:{prompt}")
- 
+
     keywords = ["怎么做", "做法", "菜谱"]
     contains_keywords = any(keyword in prompt for keyword in keywords)
 
@@ -418,7 +419,7 @@ def main():
         generation_config = prepare_generation_config()
 
     model, tokenizer, llm = load_model(generation_config)
-    
+
     global image_model
     image_model = init_image_model()
 
