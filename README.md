@@ -34,6 +34,7 @@
 
 ## 更新说明
 
+- [2024.3.19] 整合文档到docs目录
 - [2024.3.9] 基于团队成员 @乐正萌 的RAG模块(faiss)，整合 text2image分支，发布二阶段第4个基于openxlab A100的应用 [openxlab A100 app](https://openxlab.org.cn/apps/detail/zhanghui-china/shishen2024) 和 openxlab A10的应用 [openxlab A10 app](https://openxlab.org.cn/apps/detail/zhanghui-china/shishen2024_1.8b)  
 - [2024.3.4] 增加英文readme
 - [2024.3.3] 基于团队成员 @solo fish 的 paraformer语音输入模块，整合 text2image分支，发布二阶段第3个基于openxlab A100的应用 [openxlab app](https://openxlab.org.cn/apps/detail/zhanghui-china/nlp_shishen3)
@@ -44,7 +45,7 @@
 
 ## 技术报告
 
-[食神项目技术报告](https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/tech_report.md)
+[食神项目技术报告](https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/docs/zh_cn/tech_report.md)
 
 ## 使用指南
 
@@ -142,7 +143,7 @@ Demo 访问地址：[A100](https://openxlab.org.cn/apps/detail/zhanghui-china/sh
 
 [modelscope一代7b模型](https://www.modelscope.cn/models/zhanghuiATchina/zhangxiaobai_shishen_full/summary)    <br />
 [modelscope二代7b模型](https://www.modelscope.cn/models/zhanghuiATchina/zhangxiaobai_shishen2_full/summary)    <br />
-[modelscope二代1.8b模型](https://www.modelscope.cn/models/zhanghuiATchina/zhangxiaobai_shishen2_1_8b/summary)    <br />
+[modelscope二代1.8b模型](https://www.modelscope.cn/models/zhanghuiATchina/zhangxiaobai_shishen2_full_1_8b/summary)    <br />
 [openxlab一代7b模型](https://openxlab.org.cn/models/detail/zhanghui-china/zhangxiaobai_shishen_full)    <br />
 [openxlab二代7b模型](https://openxlab.org.cn/models/detail/zhanghui-china/zhangxiaobai_shishen2_full)    <br />
 
@@ -151,7 +152,7 @@ import torch
 from modelscope import AutoTokenizer, AutoModelForCausalLM
 from tools.transformers.interface import GenerationConfig, generate_interactive
 
-model_name_or_path = "zhanghuiATchina/zhangxiaobai_shishen_full" #对于二代模型改为 zhanghuiATchina/zhangxiaobai_shishen2_full
+model_name_or_path = "zhanghuiATchina/zhangxiaobai_shishen_full" #modelscope相对路径，如二代微调模型为 zhanghuiATchina/zhangxiaobai_shishen2_full
 
 tokenizer = AutoTokenizer.from_pretrained(model_name_or_path, trust_remote_code=True)
 model = AutoModelForCausalLM.from_pretrained(model_name_or_path, trust_remote_code=True, torch_dtype=torch.bfloat16, device_map='auto')
@@ -183,6 +184,10 @@ print(response)
 |     |---__init__.py                                      #初始化脚本
 |     |---config.py                                        #配置脚本
 |
+|---docs   # 文档目录
+|     |---tech_report.md                                   #技术报告
+|     |---Introduce_x.x.pdf                                #项目介绍PPT
+|
 |---gen_image    # 文生图目录（主要贡献者 @房宇亮）
 |     |---__init__.py                                      #初始化脚本
 |     |---sd_gen_image.py                                  #使用Stabble Disffion的文生图模块
@@ -208,6 +213,7 @@ print(response)
 |     |---CookMasterLLM.py
 |     |---convert_txt.py
 |     |---create_db.py
+|     |---HyQEContextualCompressionRetriever.py
 |     |---interface.py
 |     |---rag_test.py
 |     |---run_local.py
@@ -219,12 +225,12 @@ print(response)
 |     |---create_db.py
 |     |---interface.py
 |
-|---src    # 食材图标目录
+|---src          # 食材图标目录
 |     |---*.png                                            #各类食材图标
 |
-|---tools    # 工具文件目录
+|---tools        # 工具文件目录
 |
-|---whisper_app    # 语音识别目录（主要贡献者 @solo fish）
+|---whisper_app  # whisper语音识别目录（主要贡献者 @solo fish）
 |     |---__init__.py                                      #初始化脚本
 |     |---whisper.py                                       #语音识别处理脚本
 |
