@@ -4,20 +4,18 @@
 
 ![license](https://img.shields.io/github/license/SmartFlowAI/TheGodOfCookery.svg)  [![issue resolution](https://img.shields.io/github/issues-closed-raw/SmartFlowAI/TheGodOfCookery)](https://github.com/SmartFlowAI/TheGodOfCookery/issues)   [![open issues](https://img.shields.io/github/issues-raw/SmartFlowAI/TheGodOfCookery)](https://github.com/SmartFlowAI/TheGodOfCookery/issues)
 
-[中文 ](https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/README.md)| [English](https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/README_EN.md)
-
 🔍 探索我们的模型：
 
 [![Open in OpenXLab](https://cdn-static.openxlab.org.cn/header/openxlab_models.svg)](https://openxlab.org.cn/models/detail/zhanghui-china/zhangxiaobai_shishen_full)[![Open in OpenXLab](https://cdn-static.openxlab.org.cn/header/openxlab_models.svg)](https://openxlab.org.cn/models/detail/zhanghui-china/zhangxiaobai_shishen2_full)
 
 [![Static Badge](https://img.shields.io/badge/-gery?style=social&label=🤖%20ModelScope1代7b模型)](https://www.modelscope.cn/models/zhanghuiATchina/zhangxiaobai_shishen_full/summary)[![Static Badge](https://img.shields.io/badge/-gery?style=social&label=🤖%20ModelScope2代7b模型)](https://www.modelscope.cn/models/zhanghuiATchina/zhangxiaobai_shishen2_full/summary)[![Static Badge](https://img.shields.io/badge/-gery?style=social&label=🤖%20ModelScope2代1.8b模型)](https://www.modelscope.cn/models/zhanghuiATchina/zhangxiaobai_shishen2_full_1_8b/summary)
 
+
+
+[中文 ](https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/README.md)| [English](https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/README_EN.md)
+
 </div>
 </p>
-
-## 开源许可证
-
-本项目采用 [Apache License 2.0 开源许可证](LICENSE.txt)。
 
 ## 📍目录
 
@@ -37,7 +35,7 @@
   * [实践文档](#8-----)
 - [📋项目代码结构（二阶段）](#-------------)
 - [☕项目成员（排名不分先后））](#------------)
-- [💖特别鸣谢](#------)
+- [💖特别鸣谢](#💖特别鸣谢)
 - [Star History](#star-history)
 
 ## 📖项目简介	
@@ -322,6 +320,10 @@ print(response)
 <center>感谢 浦语小助手 对项目的支持~<br />
 <img src="https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/images/internlm.jpg" width="150"/></center>
 
+
+## 开源许可证
+
+本项目采用 [Apache License 2.0 开源许可证](LICENSE.txt)。
 
 ## Star History
 
