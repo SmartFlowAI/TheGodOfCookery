@@ -307,17 +307,17 @@ print(response)
 
 ## 💖特别鸣谢
 
-<center><b>感谢上海人工智能实验室组织的 书生·浦语实战营 学习活动~~~</b></center>
+<p align="center"><b>感谢上海人工智能实验室组织的 书生·浦语实战营 学习活动~~~</b></p>
 
-<div align=center><img width = '150' height ='150' src ="https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/images/shanghaiailab.png"/></div>
+<div align=center><img src ="https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/images/shanghaiailab.png"/></div>
 
-<center><b>感谢 OpenXLab 对项目部署的算力支持~~~</b></center>
+<p align="center"><b>感谢 OpenXLab 对项目部署的算力支持~~~</b></p>
 
-<div align=center><img width = '150' height ='150' src ="https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/images/openxlab.png"/></div>
+<div align=center><img src ="https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/images/openxlab.png"/></div>
 
-<center><b>感谢 浦语小助手 对项目的支持~~~</b></center>
+<p align="center"><b>感谢 浦语小助手 对项目的支持~~~</b></p>
 
-<div align=center><img width = '150' height ='150' src ="https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/images/internlm.jpg"/></div>
+<div align=center><img src ="https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/images/internlm.jpg"/></div>
 
 ## 开源许可证
 
