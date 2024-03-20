@@ -2,7 +2,7 @@
   <img src="https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/images/cooker.png" width="1092"/>
   <br /><br />
 
-[中文](https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/README.md)| [English](https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/README_EN.md)
+[中文](https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/README.md) | [English](https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/README_EN.md)
 
 ![license](https://img.shields.io/github/license/SmartFlowAI/TheGodOfCookery.svg)  [![issue resolution](https://img.shields.io/github/issues-closed-raw/SmartFlowAI/TheGodOfCookery)](https://github.com/SmartFlowAI/TheGodOfCookery/issues)   [![open issues](https://img.shields.io/github/issues-raw/SmartFlowAI/TheGodOfCookery)](https://github.com/SmartFlowAI/TheGodOfCookery/issues)
 
@@ -34,8 +34,9 @@
 - [📋项目代码结构](#项目代码结构)
 - [☕项目成员（排名不分先后）](#项目成员排名不分先后)
 - [💖特别鸣谢](#特别鸣谢)
-- [开源协议](#开源许可证)
+- [开源协议](#开源协议)
 - [Star History](#star-history)
+
 
 
 ## 📖项目简介	
