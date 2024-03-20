@@ -33,7 +33,7 @@
 - [📋项目代码结构](#项目代码结构)
 - [☕项目成员（排名不分先后）](#项目成员排名不分先后)
 - [💖特别鸣谢](#特别鸣谢)
-- [开源许可证](#开源许可证)
+- [开源协议](#开源许可证)
 - [Star History](#star-history)
 
 
@@ -319,7 +319,7 @@ print(response)
 
 <div align=center><img width = '150' height ='150' src ="https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/images/internlm.jpg"/></div>
 
-## 开源许可证
+## 开源协议
 
 本项目采用 [Apache License 2.0 开源许可证](LICENSE.txt)。
 
