@@ -317,7 +317,7 @@ print(response)
 
 <p align="center"><b>感谢 浦语小助手 对项目的支持~~~</b></p>
 
-<div align=center><img src ="https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/images/internlm.jpg"/></div>
+<div align=center><img width = '150' height ='150' src ="https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/images/internlm.jpg"/></div>
 
 ## 开源许可证
 
