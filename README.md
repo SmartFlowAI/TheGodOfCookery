@@ -1,6 +1,7 @@
 <div align="center">
   <img src="https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/images/cooker.png" width="1092"/>
   <br /><br />
+[中文 ](https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/README.md)| [English](https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/README_EN.md)
 
 ![license](https://img.shields.io/github/license/SmartFlowAI/TheGodOfCookery.svg)  [![issue resolution](https://img.shields.io/github/issues-closed-raw/SmartFlowAI/TheGodOfCookery)](https://github.com/SmartFlowAI/TheGodOfCookery/issues)   [![open issues](https://img.shields.io/github/issues-raw/SmartFlowAI/TheGodOfCookery)](https://github.com/SmartFlowAI/TheGodOfCookery/issues)
 
@@ -9,10 +10,6 @@
 [![Open in OpenXLab](https://cdn-static.openxlab.org.cn/header/openxlab_models.svg)](https://openxlab.org.cn/models/detail/zhanghui-china/zhangxiaobai_shishen_full)[![Open in OpenXLab](https://cdn-static.openxlab.org.cn/header/openxlab_models.svg)](https://openxlab.org.cn/models/detail/zhanghui-china/zhangxiaobai_shishen2_full)
 
 [![Static Badge](https://img.shields.io/badge/-gery?style=social&label=🤖%20ModelScope1代7b模型)](https://www.modelscope.cn/models/zhanghuiATchina/zhangxiaobai_shishen_full/summary)[![Static Badge](https://img.shields.io/badge/-gery?style=social&label=🤖%20ModelScope2代7b模型)](https://www.modelscope.cn/models/zhanghuiATchina/zhangxiaobai_shishen2_full/summary)[![Static Badge](https://img.shields.io/badge/-gery?style=social&label=🤖%20ModelScope2代1.8b模型)](https://www.modelscope.cn/models/zhanghuiATchina/zhangxiaobai_shishen2_full_1_8b/summary)
-
-
-
-[中文 ](https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/README.md)| [English](https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/README_EN.md)
 
 </div>
 </p>
@@ -310,18 +307,17 @@ print(response)
 
 ## 💖特别鸣谢
 
-<center>感谢上海人工智能实验室组织的 书生·浦语实战营 学习活动~~~<br />
-<img src="https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/images/shanghaiailab.png" width="150"/>
-  <br /></center>
+<center><b>感谢上海人工智能实验室组织的 书生·浦语实战营 学习活动~~~</b></center>
 
+<div align=center><img width = '150' height ='150' src ="https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/images/shanghaiailab.png"/></div>
 
+<center><b>感谢 OpenXLab 对项目部署的算力支持~~~</b></center>
 
-<center>感谢 OpenXLab 对项目部署的算力支持~  <br />
-<img src="https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/images/openxlab.png" width="150"/></center>
+<div align=center><img width = '150' height ='150' src ="https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/images/openxlab.png"/></div>
 
-<center>感谢 浦语小助手 对项目的支持~<br />
-<img src="https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/images/internlm.jpg" width="150"/></center>
+<center><b>感谢 浦语小助手 对项目的支持~~~</b></center>
 
+<div align=center><img width = '150' height ='150' src ="https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/images/internlm.jpg"/></div>
 
 ## 开源许可证
 
