@@ -29,13 +29,15 @@
   - [3. 训练](#3-训练)
   - [4. 对话](#4-对话)
   - [5. 演示](#5-演示)
-  - [7. 模型地址](#7-模型地址)
-  - [8. 实践文档](#8-实践文档)
+  - [6. 模型地址](#6-模型地址)
+  - [7. 实践文档](#7-实践文档)
+  - [8. 演示视频](#8-演示视频)
 - [📋项目代码结构](#项目代码结构)
 - [☕项目成员（排名不分先后）](#项目成员排名不分先后)
 - [💖特别鸣谢](#特别鸣谢)
 - [开源协议](#开源协议)
 - [Star History](#star-history)
+
 
 
 
@@ -180,7 +182,7 @@ Demo 样例
 
 ![answer002](images/answer002.png)
 
-### 7. 模型地址
+### 6. 模型地址
 
 [modelscope一代7b模型](https://www.modelscope.cn/models/zhanghuiATchina/zhangxiaobai_shishen_full/summary)    <br />
 [modelscope二代7b模型](https://www.modelscope.cn/models/zhanghuiATchina/zhangxiaobai_shishen2_full/summary)    <br />
@@ -209,10 +211,13 @@ print(response)
 ```
 
 
-### 8. 实践文档
+### 7. 实践文档
 
 [一阶段一代实践](https://zhuanlan.zhihu.com/p/678019309)  <br />
 [一阶段二代实践](https://zhuanlan.zhihu.com/p/678376843)  <br />
+
+### 8. 演示视频
+
 [一阶段实践视频](https://www.bilibili.com/video/BV1Ut421W7Qg)  <br />
 
 [参赛视频](https://www.bilibili.com/video/BV1u6421F7Zw)  <br />
