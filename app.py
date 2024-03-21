@@ -26,6 +26,7 @@ import opencc
 from convert_t2s import convert_t2s
 import sys
 import base64
+import time
 
 logger = logging.get_logger(__name__)
 
@@ -317,11 +318,17 @@ def process_user_input(prompt,
                         history=real_prompt
                     )
                 else: #faiss
+                    # 初始化时间变量
+                    start_time = time.time()
                     cur_response = generate_interactive_rag(
                         llm=llm,
                         question=prompt,
                         verbose=verbose,
                     )
+                    # 计算RAG运行时间
+                    end_time = time.time()
+                    elapsed_time = end_time - start_time
+                    print(f"Generation took {elapsed_time:.4f} seconds")
 
                 cur_response = cur_response.replace('\\n', '\n')
 
