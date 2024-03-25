@@ -38,7 +38,7 @@
 - [开源协议](#开源协议)
 - [Star History](#star-history)
 
-![](images/congratulation_cover.jpg)
+<div align=center><img src ="https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/images/congratulation_cover.jpg"/></div>
 
 <p align="center"><b style="font-size:larger">《食神》项目获上海人工智能实验室主办的2024浦源大模型系列挑战赛春季赛创新创意奖！！</b></p>
 
