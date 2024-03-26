@@ -1,10 +1,6 @@
-*/__pycache__/*
-.vscode
 .idea
-/.idea/
-rag/model/
-/rag/TONGYI_API_KEY.txt
+.vscode
 rag/__pycache__
 tools/transformers/__pycache__
 whisper_app/__pycache__/
-
+.github
