@@ -327,6 +327,12 @@ print(response)
 
 <div align=center><img width = '150' height ='150' src ="https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/images/internlm.jpg"/></div>
 
+## 加入方式
+
+<p><b>欢迎大模型爱好者入群参加讨论：</b></p>
+
+<div align=center><img width = '150' height ='150' src ="https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/images/qun.jpg"/></div>
+
 ## 开源协议
 
 本项目采用 [Apache License 2.0 开源许可证](LICENSE.txt)。
