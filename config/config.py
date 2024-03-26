@@ -22,30 +22,41 @@ Config['global'] = {
 # llm
 Config['llm'] = {
     'finetuned': True,
-    'base_model_type': "internlm2-chat-1.8b",
-    # 'base_model_type': "internlm2-chat-7b",
-    # 'base_model_type': "internlm2-chat-7b",
+    #'load_4bit': True,
+    'load_4bit': True,
 
-    # 'llm_model_path': os.environ.get('HOME') + "/models/zhanghuiATchina/zhangxiaobai_shishen2_full"
+    # 1.8b 二代
+    #'base_model_type': "internlm2-chat-1.8b",
+    # finetuned = True
+    #'llm_model_path': os.environ.get('HOME') + "/models/zhanghuiATchina/zhangxiaobai_shishen2_1_8b",
+    # finetuned = False
+    #'llm_model_path': os.environ.get('HOME') + "/models/Shanghai_AI_Laboratory/internlm2-chat-1_8b",
 
-    # 'llm_model_path': "/home/zhanghui/shishen18/merged"
-    'llm_model_path': os.environ.get('HOME') + "/models/zhanghuiATchina/zhangxiaobai_shishen2_1_8b"
+    # 7b 二代
+    'base_model_type': "internlm2-chat-7b",
+    # finetuned = True
+    'llm_model_path': os.environ.get('HOME') + "/models/zhanghuiATchina/zhangxiaobai_shishen2_full",
+    # finetuned = False
+    #'llm_model_path': os.environ.get('HOME') + "/models/Shanghai_AI_Laboratory/internlm2-chat-7b",
+    #'llm_model_path': "/mnt/d/models/internlm/internlm2-chat-7b",
 
-    # 'llm_model_path': os.environ.get('HOME') + "/models/Shanghai_AI_Laboratory/internlm-chat-7b"
-    # 'llm_model_path': os.environ.get('HOME') + "/models/zhanghuiATchina/zhangxiaobai_shishen_full"
-    # 'llm_model_path': "/mnt/d//models/zhanghuiATchina/zhangxiaobai_shishen_full",
-
+    # 7b 一代
+    #'base_model_type': "internlm-chat-7b",
+    # finetuned = True
+    #'llm_model_path': os.environ.get('HOME') + "/models/“ + ”zhanghuiATchina/zhangxiaobai_shishen_full"
+    #'llm_model_path': "/mnt/d//models/zhanghuiATchina/zhangxiaobai_shishen_full",
+    # finetuned = False
+    #'llm_model_path': os.environ.get('HOME') + "/models/Shanghai_AI_Laboratory/internlm-chat-7b"
 }
 
 # speech
 Config['speech'] = {
-    # 'speech_model_type':"whisper",
+    #'speech_model_type':"whisper",
     'speech_model_type': "paraformer",
     'audio_save_path': "/tmp/audio.wav",
     'whisper_model_scale': "medium",
-    # 'whisper_model_path': "",
-    'speech_model_path': os.environ.get(
-        'HOME') + "/models/iic/speech_paraformer-large-vad-punc_asr_nat-zh-cn-16k-common-vocab8404-pytorch"
+    #'whisper_model_path': "",
+    'speech_model_path': os.environ.get('HOME') + "/models/iic/speech_paraformer-large-vad-punc_asr_nat-zh-cn-16k-common-vocab8404-pytorch"
 }
 
 # rag
@@ -80,7 +91,7 @@ Config['rag'] = {
         'search_kwargs': {"k": 3}
     },
     'bce_emb_config': {
-        'model_name': os.environ.get('HOME') + "/models/bce-embedding-base_v1",
+        'model_name': os.environ.get('HOME') + '/models/bce-embedding-base_v1',
         'model_kwargs': {'device': 'cuda:0'},
         'encode_kwargs': {'batch_size': 32, 'normalize_embeddings': True, 'show_progress_bar': True}
     },
@@ -106,3 +117,4 @@ Config['image'] = {
         }
     }
 }
+

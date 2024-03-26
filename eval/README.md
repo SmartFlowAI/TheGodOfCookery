@@ -9,7 +9,7 @@ def evaluate_retriever():
     with open('./eval_dataset_test.json', 'r', encoding='utf-8') as f:
         data = json.load(f)
 ```
-### 1.1.2. 启动在evaluate.py中启动evaluate_retriever()函数
+### 1.1.2. 启动在evaluate.py中的evaluate_retriever()函数
 ```python
 if __name__ == '__main__':
     evaluate_retriever()
@@ -30,7 +30,7 @@ def evaluate_model():
         data = json.load(f)[:10]
 ```
 
-### 1.2.2. 启动在evaluate.py中启动evaluate_model()函数
+### 1.2.2. 启动在evaluate.py中的evaluate_model()函数
 ```python
 if __name__ == '__main__':
     # evaluate_retriever()
@@ -52,4 +52,22 @@ F1 average: 0.9937684651584043
 评估模型回答：  
 F1 score sum: 5.221176107197454  
 The number of data: 10  
-F1 average: 0.5221176107197454  
+F1 average: 0.5221176107197454 
+
+# RAG测试模块使用说明
+## 1. 测试vector db
+启动test_rag.py中的test_vector_db()函数
+```python
+if __name__ == '__main__':
+    test_vector_db()
+    # test_retriever()
+```
+
+## 2. 测试retriever
+启动test_rag.py中的test_retriever()函数
+```python
+if __name__ == '__main__':
+    # test_vector_db()
+    test_retriever()
+```
+
