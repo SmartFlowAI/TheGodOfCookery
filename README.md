@@ -309,8 +309,7 @@ print(response)
 |        [彬彬](https://github.com/Everfighting)        | 华东师范大学本科毕业、现为某公司算法开发工程师 |                         格式化输出                         |                                                              |
 |        [房宇亮](https://github.com/leonfrank)         |     南京大学本科毕业，现为某公司算法工程师     |                    文生图模块、配置工具                    |                                                              |
 |        [刘光磊](https://github.com/Mrguanglei)        |                       -                        |                     图标设计                     |                                                              |
-|         [喵喵咪](https://github.com/miyc1996)         | 北京航空航天大学硕士毕业，现为上海某国企工程师 |             数据集准备(未完成)            |                                                              |
-|          [轩辕](https://github.com/zzd2001)           |                南京大学在读硕士                |                   文档准备，数据集，微调                   |                                                              |
+|          [轩辕](https://github.com/zzd2001)           |                南京大学在读硕士                |                   项目文档、视频整合                   |                                                              |
 
 ## 💖特别鸣谢
 
