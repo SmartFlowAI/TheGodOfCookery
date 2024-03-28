@@ -14,7 +14,11 @@
 
 </div>
 </p>
+<div align=center><img src ="https://github.com/zzd2001/TheGodOfCookery/blob/main/images/congratulation_cover.jpg"/></div>
 
+<p align="center"><b style="font-size:larger">《食神》项目获上海人工智能实验室主办的2024浦源大模型系列挑战赛春季赛创新创意奖！！！</b></p>
+
+![](images/2024_PuYuan_Competition_certificate.png)
 ## 📍目录
 - [📍目录](#目录)
 - [📖项目简介](#项目简介)
@@ -37,9 +41,6 @@
 - [💖特别鸣谢](#特别鸣谢)
 - [开源协议](#开源协议)
 - [Star History](#star-history)
-
-
-
 
 ## 📖项目简介	
 
@@ -75,7 +76,7 @@
 | **语音识别** |        轩辕        |    sole fish    |
 |  **文生图**  |       房宇亮       |     房宇亮      |
 |   **RAG**    |        轩辕        | Charles，乐正萌 |
-| **模型微调** |        轩辕        |  王巍龙，轩辕   |
+| **模型微调** |        轩辕        |  张辉，轩辕   |
 |  **Web UI**  |       房宇亮       |     房宇亮      |
 
 ## 📆更新说明
@@ -307,10 +308,9 @@ print(response)
 |       [乐正萌](https://github.com/YueZhengMeng)       |         上海海洋大学本科毕业生，考研中         |              二代RAG模块（基于faiss&Chroma）               |                                                              |
 |        [彬彬](https://github.com/Everfighting)        | 华东师范大学本科毕业、现为某公司算法开发工程师 |                         格式化输出                         |                                                              |
 |        [房宇亮](https://github.com/leonfrank)         |     南京大学本科毕业，现为某公司算法工程师     |                    文生图模块、配置工具                    |                                                              |
-|        [刘光磊](https://github.com/Mrguanglei)        |                       -                        |                     图标设计，前端优化                     |                                                              |
-|         [喵喵咪](https://github.com/miyc1996)         | 北京航空航天大学硕士毕业，现为上海某国企工程师 |             数据集准备，后续本地小模型部署测试             |                                                              |
-|                        王巍龙                         |                       -                        |                        数据集，微调                        |                                                              |
-|          [轩辕](https://github.com/zzd2001)           |                南京大学在读硕士                |                   文档准备，数据集，微调                   |                                                              |
+|        [刘光磊](https://github.com/Mrguanglei)        |                       -                        |                     图标设计                     |                                                              |
+|          [轩辕](https://github.com/zzd2001)           |                南京大学在读硕士                |                   项目文档、视频整合                   |                                                              |
+|          [程宏](https://github.com/chg0901)           |                [minisora](https://github.com/mini-sora/minisora)主要维护者                |                   技术资源整合                   |  
 
 ## 💖特别鸣谢
 
@@ -325,6 +325,12 @@ print(response)
 <p align="center"><b>感谢 浦语小助手 对项目的支持~~~</b></p>
 
 <div align=center><img width = '150' height ='150' src ="https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/images/internlm.jpg"/></div>
+
+## 加入我们
+
+<p><b>欢迎大模型爱好者入群参加讨论：</b></p>
+
+<div align=center><img width = '286' height ='400' src ="https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/images/qun.jpg"/></div>
 
 ## 开源协议
 
