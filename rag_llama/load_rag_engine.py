@@ -7,6 +7,9 @@ from llama_index.core.query_engine import RetrieverQueryEngine
 from llama_index.core.postprocessor import SimilarityPostprocessor
 from llama_index.core.response_synthesizers.type import ResponseMode
 from llama_index.core import PromptTemplate
+from warnings import simplefilter
+
+simplefilter("ignore")
 
 qa_template = """你是一个经验丰富的大厨，善于根据用户需求给出食谱和做法。
 可参考的菜品食谱：

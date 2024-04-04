@@ -1,7 +1,5 @@
 .vscode
-rag/__pycache__
-tools/transformers/__pycache__
-whisper_app/__pycache__/
+*/__pycache__
 storage
-dataset
 models
+train_dataset_single.json

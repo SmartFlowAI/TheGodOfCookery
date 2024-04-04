@@ -10,24 +10,33 @@ from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 import json
 import faiss
 import os
-import tqdm
+from tqdm import tqdm
+from config import load_config
 
 """
 TODO:对一般格式的文本进行适配，因为这里没有采用切chunk，而直接把一个问答当一个node
 """
 
+
 def load_embedding_model():
     print("正在读取Embedding模型")
-    Settings.embed_model = HuggingFaceEmbedding(model_name="models/bce-embedding-base_v1", device="cuda:0")
+    Settings.embed_model = HuggingFaceEmbedding(model_name=load_config("rag", "hf_emb_config")["model_name"],device="cuda:0")
     print("Done!")
 
+
 def traindata2nodes():
-    data_path="./dataset/train_dataset_single.json"
+    # 确保同目录下的dataset文件夹中有这个文件！
+    if not os.path.exists("dataset/train_dataset_single.json"):
+        print("当前dataset文件夹中没有原训练集json文件,使用1000个训练集的例子为替代")
+        data_path = "dataset/example1000.json"
+    else:
+        data_path = "dataset/train_dataset_single.json"
+
     nodes = []
     with open(data_path, "r", encoding="utf-8") as f:
         json_data = json.load(f)
 
-    for i in tqdm(range(len(json_data)),desc="Formating"):
+    for i in tqdm(range(len(json_data)), desc="Formating"):
         question = json_data[i]["conversation"][0]["input"]
         if "做" not in question:
             question += "的做法"
@@ -48,7 +57,7 @@ def init_index():
         print("Done!")
         return index
     else:
-        nodes=traindata2nodes()
+        nodes = traindata2nodes()
         faiss_index = faiss.index_factory(
             768, "HNSW64", faiss.METRIC_L2
         )  # embedding的维度，这里用的bce
@@ -64,5 +73,6 @@ def init_index():
         print("索引存储完毕！")
         return index
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     init_index()
