@@ -33,7 +33,12 @@ def load_model():
         tokenizer_name="/root/share/new_models/Shanghai_AI_Laboratory/internlm2-chat-7b",
         context_window=2048,
         max_new_tokens=512,
-        generate_kwargs={"temperature": 0.7, "top_k": 5, "top_p": 0.75 ,"repetition_penalty":1.005},
+        generate_kwargs={
+            "temperature": 0.7,
+            "top_k": 10,
+            "top_p": 0.85,
+            "repetition_penalty": 1.005,
+        },
         messages_to_prompt=messages_to_prompt,
         completion_to_prompt=completion_to_prompt,
         device_map="auto",
@@ -41,4 +46,5 @@ def load_model():
             trust_remote_code=True, torch_dtype=torch.bfloat16, do_sample=True
         ),  # 只能这样设置，会传回原来的huggingface接口
         tokenizer_kwargs=dict(trust_remote_code=True),
+        stopping_ids=[92542, 2],
     )
