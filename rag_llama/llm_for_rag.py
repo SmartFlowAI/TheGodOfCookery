@@ -33,7 +33,7 @@ def load_model():
         tokenizer_name="/root/share/new_models/Shanghai_AI_Laboratory/internlm2-chat-7b",
         context_window=2048,
         max_new_tokens=512,
-        generate_kwargs={"temperature": 0.7, "top_k": 5, "top_p": 0.75},
+        generate_kwargs={"temperature": 0.7, "top_k": 5, "top_p": 0.75 ,"repetition_penalty":1.005},
         messages_to_prompt=messages_to_prompt,
         completion_to_prompt=completion_to_prompt,
         device_map="auto",
