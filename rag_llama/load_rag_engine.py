@@ -17,6 +17,7 @@ qa_template = """你是一个经验丰富的大厨，善于根据用户需求给
 {context_str}
 ---
 如果参考中没有有效的信息，请根据你自己所掌握的知识进行回答。
+若用户提供的非现实存在的菜谱，请你发挥自己的想象力回答
 问题: {query_str}
 回答: \
 """
@@ -55,4 +56,9 @@ if __name__ == "__main__":
     retriever = load_retriever()
     print(retriever.retrieve("烤牛肉怎么做"))
     query_engine = load_query_engine(retriever)
-    print(query_engine.query("烤牛肉怎么做"))
+    while True:
+        query=input("输入要制作的食物,输入q退出：")
+        print("User:",query)
+        print(query_engine.query(query))
+        if query=="q":
+            break

@@ -7,7 +7,7 @@
 3. 似乎对话模板还有一定问题？
 4. 待发现
 
-在 rag_llama 目录中 运行`python load_rag_engine.py`可以测试
+在 rag_llama 目录中，如`(cook)root@intern-studio-068214:~/TheGodOfCookery/rag_llama#`  运行`python load_rag_engine.py`可以测试
 
 faiss-gpu==1.7.2
 llama-index-embeddings-huggingface==0.2.0
