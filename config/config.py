@@ -23,12 +23,13 @@ Config['global'] = {
 Config['llm'] = {
     'finetuned': True,
     #'load_4bit': True,
-    'load_4bit': True,
+    #'load_4bit': True,
+    'load_4bit': False,
 
     # 1.8b 二代
-    #'base_model_type': "internlm2-chat-1.8b",
+    'base_model_type': "internlm2-chat-1.8b",
     # finetuned = True
-    #'llm_model_path': os.environ.get('HOME') + "/models/zhanghuiATchina/zhangxiaobai_shishen2_1_8b",
+    'llm_model_path': os.environ.get('HOME') + "/models/zhanghuiATchina/zhangxiaobai_shishen2_1_8b",
     # finetuned = False
     #'llm_model_path': os.environ.get('HOME') + "/models/Shanghai_AI_Laboratory/internlm2-chat-1_8b",
 
