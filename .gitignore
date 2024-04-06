@@ -1,5 +1,5 @@
 .vscode
-*/__pycache__
+__pycache__
 storage
 models
 train_dataset_single.json
