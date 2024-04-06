@@ -23,8 +23,8 @@ Config['global'] = {
 Config['llm'] = {
     'finetuned': True,
     #'load_4bit': True,
-    #'load_4bit': True,
-    'load_4bit': False,
+    'load_4bit': True,
+    #'load_4bit': False,
 
     # 1.8b 二代
     'base_model_type': "internlm2-chat-1.8b",
