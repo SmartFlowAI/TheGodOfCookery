@@ -21,9 +21,10 @@ qa_template = """你是一个经验丰富的大厨，善于根据用户需求给
 问题: {query_str}
 回答: \
 """
-
-
+retriever = None
+query_engine = None
 def load_retriever():
+    global retriever
     index = init_index()
     # TODO:要一个友好传入参数的方式，比如滑动Streamlit条设置top-k
     retriever = VectorIndexRetriever(
@@ -33,23 +34,27 @@ def load_retriever():
     return retriever
 
 
-def load_query_engine(retriever=None):
+def load_query_engine():
+    global retriever, query_engine
     if retriever is None:
         retriever = load_retriever()
     # 见https://www.bluelabellabs.com/blog/llamaindex-response-modes-explained/#:~:text=LlamaIndex%20has%205%20built%2Din,tree_summarize%2C%20accumulation%2C%20and%20simple_summarize.
     # 这里会损失部分信息，如超出上下文，可能就保留每个文档的n%，n为能容纳所有文档并不超过上下文的最大值，除非自定义retriever过程
-    qa_prompt_tmpl = PromptTemplate(qa_template)
-    Settings.llm = load_model()
-    response_synthesizer = get_response_synthesizer(
-        response_mode=ResponseMode.SIMPLE_SUMMARIZE,
-        text_qa_template=qa_prompt_tmpl,
-    )
-    query_engine = RetrieverQueryEngine(
-        retriever=retriever,
-        response_synthesizer=response_synthesizer,
-        # node_postprocessors=[SimilarityPostprocessor(similarity_cutoff=0.3)]
-    )
-    return query_engine
+    if query_engine is None:
+        qa_prompt_tmpl = PromptTemplate(qa_template)
+        Settings.llm = load_model()
+        response_synthesizer = get_response_synthesizer(
+            response_mode=ResponseMode.SIMPLE_SUMMARIZE,
+            text_qa_template=qa_prompt_tmpl,
+        )
+        query_engine = RetrieverQueryEngine(
+            retriever=retriever,
+            response_synthesizer=response_synthesizer,
+            # node_postprocessors=[SimilarityPostprocessor(similarity_cutoff=0.3)]
+        )
+        return query_engine
+    else:
+        return query_engine
 
 
 if __name__ == "__main__":

@@ -20,6 +20,7 @@ TODO:对一般格式的文本进行适配，因为这里没有采用切chunk，�
 
 def load_embedding_model():
     print("正在读取Embedding模型")
+    # 设置全局embedding模型
     Settings.embed_model = HuggingFaceEmbedding(model_name=load_config("rag", "hf_emb_config")["model_name"],device="cuda:0")
     print("Done!")
 
@@ -59,15 +60,17 @@ def init_index():
     else:
         nodes = traindata2nodes()
         faiss_index = faiss.index_factory(
-            768, "HNSW64", faiss.METRIC_L2
-        )  # embedding的维度，这里用的bce
+            768, # embedding的维度，这里用的bce
+            "HNSW64", # 检索算法，使用HNSW64: https://towardsdatascience.com/similarity-search-part-4-hierarchical-navigable-small-world-hnsw-2aad4fe87d37
+            faiss.METRIC_L2 # 相似度指标，使用L2距离
+        ) 
         vector_store = FaissVectorStore(faiss_index=faiss_index)
         storage_context = StorageContext.from_defaults(vector_store=vector_store)
         index = VectorStoreIndex(
-            nodes,
-            storage_context=storage_context,
-            show_progress=True,
-            insert_batch_size=10240,
+            nodes, # 数据节点
+            storage_context=storage_context, # 存储容器
+            show_progress=True, # 是否显示进度
+            insert_batch_size=10240, # 存储批量大小
         )
         index.storage_context.persist("./storage")
         print("索引存储完毕！")

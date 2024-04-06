@@ -3,7 +3,7 @@ import torch
 from llama_index.llms.huggingface import HuggingFaceLLM
 from llama_index.core import Settings
 
-
+llm = None
 def completion_to_prompt(completion):
     # 需要严格对应模型的对话模板 这里适配书生浦语系列
     return f"<|im_start|>system\n<|im_end|>\n<|im_start|>user\n{completion}<|im_end|>\n<|im_start|>assistant\n"
@@ -28,7 +28,9 @@ def messages_to_prompt(messages):
 
 
 def load_model():
-    return HuggingFaceLLM(
+    global llm
+    if llm is None:
+        llm = HuggingFaceLLM(
         model_name="/root/share/new_models/Shanghai_AI_Laboratory/internlm2-chat-7b",
         tokenizer_name="/root/share/new_models/Shanghai_AI_Laboratory/internlm2-chat-7b",
         context_window=2048,
@@ -48,3 +50,7 @@ def load_model():
         tokenizer_kwargs=dict(trust_remote_code=True),
         stopping_ids=[92542, 2],
     )
+        return llm
+    else:
+        return llm
+
