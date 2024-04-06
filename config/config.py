@@ -61,6 +61,8 @@ Config['speech'] = {
 
 # rag
 Config['rag'] = {
+    'rag_framework': 'langchain',
+    # 'rag_framework': 'llamaindex',
     'rag_model_type': "faiss",
     #'rag_model_type': "chroma",
     'verbose': True,

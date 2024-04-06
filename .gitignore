@@ -3,3 +3,6 @@
 storage
 models
 train_dataset_single.json
+*.drawio
+data
+logs

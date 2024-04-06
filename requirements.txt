@@ -57,7 +57,6 @@ rank_bm25
 bitsandbytes==0.43.0
 
 # llama-index
-faiss-gpu==1.7.2
 llama-index-embeddings-huggingface==0.2.0
 llama-index-vector-stores-faiss==0.1.2
 llama-index==0.10.26

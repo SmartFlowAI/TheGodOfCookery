@@ -57,23 +57,32 @@ print(f"base model type:{base_model_type}")
 
 # rag
 rag_model_type = load_config('rag', 'rag_model_type')
+rag_framework = load_config('rag','rag_framework')
 verbose = load_config('rag', 'verbose')
 
 
 print(f"RAG model type:{rag_model_type}")
 
-if rag_model_type == "chroma":
-    from rag_chroma.interface import (GenerationConfig,
-        generate_interactive,
-        generate_interactive_rag_stream,
-        generate_interactive_rag)
-else: #faiss
-    from rag.interface import (GenerationConfig,
-        generate_interactive,
-        generate_interactive_rag)
+if rag_framework == 'langchain':
+    if rag_model_type == "chroma":
+        from rag_chroma.interface import (GenerationConfig,
+            generate_interactive,
+            generate_interactive_rag_stream,
+            generate_interactive_rag)
+    elif rag_model_type == 'faiss': # faiss
+        from rag.interface import (GenerationConfig,
+            generate_interactive,
+            generate_interactive_rag)
 
-    from rag.CookMasterLLM import CookMasterLLM
-    #from langchain_community.llms.tongyi import Tongyi
+        from rag.CookMasterLLM import CookMasterLLM
+        #from langchain_community.llms.tongyi import Tongyi
+    else:
+        raise NotImplementedError
+elif rag_framework == 'llamaindex':
+    if rag_model_type == 'faiss':
+        pass
+    else:
+        raise NotImplementedError
 
 # speech
 audio_save_path = load_config('speech', 'audio_save_path')
