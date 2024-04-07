@@ -1,8 +1,11 @@
+# import sys
+# sys.path.append('..')
+
 from llama_index.core import PromptTemplate
 import torch
 from llama_index.llms.huggingface import HuggingFaceLLM
 from llama_index.core import Settings
-
+from config import load_config
 llm = None
 def completion_to_prompt(completion):
     # 需要严格对应模型的对话模板 这里适配书生浦语系列
@@ -30,9 +33,10 @@ def messages_to_prompt(messages):
 def load_model():
     global llm
     if llm is None:
+        llm_path = load_config('llm','llm_model_path')
         llm = HuggingFaceLLM(
-        model_name="/root/share/new_models/Shanghai_AI_Laboratory/internlm2-chat-7b",
-        tokenizer_name="/root/share/new_models/Shanghai_AI_Laboratory/internlm2-chat-7b",
+        model_name=llm_path,
+        tokenizer_name=llm_path,
         context_window=2048,
         max_new_tokens=512,
         generate_kwargs={

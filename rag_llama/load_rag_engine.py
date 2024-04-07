@@ -1,3 +1,5 @@
+import sys
+sys.path.append('..')
 from load_index import init_index
 from llm_for_rag import load_model
 from llama_index.core import Settings
@@ -58,12 +60,12 @@ def load_query_engine():
 
 
 if __name__ == "__main__":
-    retriever = load_retriever()
-    print(retriever.retrieve("烤牛肉怎么做"))
-    query_engine = load_query_engine(retriever)
+    # retriever = load_retriever()
+    # print(retriever.retrieve("烤牛肉怎么做"))
+    query_engine = load_query_engine()
     while True:
         query=input("输入要制作的食物,输入q退出：")
-        print("User:",query)
-        print(query_engine.query(query))
         if query=="q":
             break
+        print("User:",query)
+        print(query_engine.query(query))

@@ -42,7 +42,7 @@ def traindata2nodes():
         if "做" not in question:
             question += "的做法"
         answer = json_data[i]["conversation"][0]["output"]
-        nodes.append(TextNode(text=question + "\n" + answer))
+        nodes.append(TextNode(text=question + '\n' + answer))
     return nodes
 
 
