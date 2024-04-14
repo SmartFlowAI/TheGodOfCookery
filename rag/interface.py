@@ -20,8 +20,8 @@ from langchain.output_parsers import BooleanOutputParser
 from langchain.retrievers.document_compressors import LLMChainFilter
 from langchain.memory import ConversationBufferMemory
 from langchain.chains import ConversationalRetrievalChain, LLMChain, RetrievalQA
-# from config import load_config
-from config_test.config_test import load_config
+from config import load_config
+# from config_test.config_test import load_config
 from rag.HyQEContextualCompressionRetriever import HyQEContextualCompressionRetriever
 
 logger = logging.get_logger(__name__)

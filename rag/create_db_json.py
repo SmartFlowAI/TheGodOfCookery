@@ -9,8 +9,8 @@ from langchain_community.vectorstores import Chroma
 from langchain.embeddings import HuggingFaceEmbeddings
 from langchain_community.vectorstores.utils import DistanceStrategy
 from langchain_core.documents import Document
-# from config import load_config
-from config_test.config_test import load_config
+from config import load_config
+# from config_test.config_test import load_config
 
 dataset_config = load_config('rag', 'dataset_config')
 data_path = dataset_config['data_path']

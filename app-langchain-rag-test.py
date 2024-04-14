@@ -5,8 +5,8 @@ import torch
 from modelscope import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
 from transformers.utils import logging
 
-# from config import load_config
-from config_test.config_test import load_config
+from config import load_config
+# from config_test.config_test import load_config
 from rag.CookMasterLLM import CookMasterLLM
 from rag.interface import (GenerationConfig,
                            generate_interactive,
