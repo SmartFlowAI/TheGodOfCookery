@@ -1,4 +1,3 @@
-import os
 import copy
 import warnings
 from dataclasses import dataclass
@@ -11,20 +10,18 @@ from transformers.utils import logging
 from langchain.embeddings.huggingface import HuggingFaceEmbeddings
 from BCEmbedding.tools.langchain import BCERerank
 from langchain.chains.question_answering import load_qa_chain
-from langchain.output_parsers import BooleanOutputParser
 from langchain.prompts import PromptTemplate
 from langchain_community.vectorstores import FAISS
 from langchain_community.vectorstores import Chroma
 from langchain.embeddings import HuggingFaceEmbeddings
-from langchain.retrievers import ContextualCompressionRetriever, EnsembleRetriever
-from langchain.retrievers.document_compressors import LLMChainFilter
 from langchain.retrievers import BM25Retriever
+from langchain.retrievers import EnsembleRetriever
+from langchain.output_parsers import BooleanOutputParser
+from langchain.retrievers.document_compressors import LLMChainFilter
 from langchain.memory import ConversationBufferMemory
 from langchain.chains import ConversationalRetrievalChain, LLMChain, RetrievalQA
-from langchain_community.llms.tongyi import Tongyi
-from rag.CookMasterLLM import CookMasterLLM
-from config import load_config
-# from config_test.config_test import load_config
+# from config import load_config
+from config_test.config_test import load_config
 from rag.HyQEContextualCompressionRetriever import HyQEContextualCompressionRetriever
 
 logger = logging.get_logger(__name__)
@@ -32,40 +29,43 @@ chain_instance = None
 
 
 def load_vector_db():
-    # vector_db config
-    vector_db_config = load_config('rag', 'vector_db')
-    vector_db_name = vector_db_config.get('name')
-    vector_db_path = vector_db_config.get('path')
     # 加载编码模型
-    hf_emb_config = load_config('rag', 'hf_emb_config')
-    embeddings = HuggingFaceEmbeddings(**hf_emb_config)
+    bce_emb_config = load_config('rag', 'bce_emb_config')
+    embeddings = HuggingFaceEmbeddings(**bce_emb_config)
     # 加载本地索引，创建向量检索器
     # 除非指定使用chroma，否则默认使用faiss
-    if vector_db_name == "chroma":
+    rag_model_type = load_config('rag', 'rag_model_type')
+    if rag_model_type == "chroma":
+        vector_db_path = load_config('rag', 'chroma_config')['load_path']
         vectordb = Chroma(persist_directory=vector_db_path, embedding_function=embeddings)
     else:
+        vector_db_path = load_config('rag', 'faiss_config')['load_path']
         vectordb = FAISS.load_local(folder_path=vector_db_path, embeddings=embeddings)
     return vectordb
 
 
 def load_retriever():
-    db_retriever_config = load_config('rag', 'retriever').get('db')
-    bm25_retriever_config = load_config('rag', 'retriever').get('bm25')
-
     # 加载本地索引，创建向量检索器
     vectordb = load_vector_db()
+    rag_model_type = load_config('rag', 'rag_model_type')
+    if rag_model_type == "chroma":
+        db_retriever_config = load_config('rag', 'chroma_config')
+    else:
+        db_retriever_config = load_config('rag', 'faiss_config')
     db_retriever = vectordb.as_retriever(**db_retriever_config)
 
-    # 创建BM25检索器
-    pickle_path = bm25_retriever_config.get('pickle_path')
+    # 加载BM25检索器
+    bm25_config = load_config('rag', 'bm25_config')
+    pickle_path = bm25_config['pickle_path']
     bm25retriever = pickle.load(open(pickle_path, 'rb'))
-    bm25retriever.k = bm25_retriever_config.get('search_kwargs').get('k')
+    bm25retriever.k = bm25_config['search_kwargs']['k']
 
     # 向量检索器与BM25检索器组合为集成检索器
     ensemble_retriever = EnsembleRetriever(retrievers=[bm25retriever, db_retriever], weights=[0.5, 0.5])
 
     #     # 创建带大模型过滤器的检索器，对集成检索器的结果进行过滤
     #     # TongYi api拒绝该请求，可能是禁止将大模型用于数据标注任务
+    #     # 该检索器效率太低，已废弃
     #     filter_prompt_template = """以下是一段可参考的上下文和一个问题, 如果可参看上下文和问题相关请输出 YES , 否则输出 NO .
     # 可参考的上下文：
     # ···
@@ -85,9 +85,9 @@ def load_retriever():
     #     )
 
     # 创建带reranker的检索器，对大模型过滤器的结果进行再排序
-    bce_reranker_config = load_config('rag', 'reranker').get('bce')
+    bce_reranker_config = load_config('rag', 'bce_reranker_config')
     reranker = BCERerank(**bce_reranker_config)
-    # 可以替换假设问题为原始菜谱的Retriever
+    # 依次调用ensemble_retriever与reranker，并且可以将替换假设问题为原始菜谱的Retriever
     compression_retriever = HyQEContextualCompressionRetriever(base_compressor=reranker,
                                                                base_retriever=ensemble_retriever)
     return compression_retriever
@@ -98,13 +98,13 @@ def load_chain(llm, verbose=False):
     retriever = load_retriever()
 
     # RAG对话模板
-    qa_template = """使用以下可参考的上下文来回答用户的问题。
+    qa_template = """先对上下文进行内容总结,再使上下文来回答用户的问题。总是使用中文回答。
 可参考的上下文：
 ···
 {context}
 ···
 问题: {question}
-如果给定的上下文没有有效的参考信息，请根据你自己所掌握的知识进行回答。
+如果给定的上下文无法让你做出回答，请根据你自己所掌握的知识进行回答。
 有用的回答:"""
     QA_CHAIN_PROMPT = PromptTemplate(input_variables=["context", "question"],
                                      template=qa_template)
@@ -123,13 +123,13 @@ def load_chain_with_memory(llm, verbose=False):
     retriever = load_retriever()
 
     # RAG对话模板
-    qa_template = """使用以下可参考的上下文来回答用户的问题。
+    qa_template = """先对上下文进行内容总结,再使上下文来回答用户的问题。总是使用中文回答。
 可参考的上下文：
 ···
 {context}
 ···
 问题: {question}
-如果给定的上下文没有有效的参考信息，请根据你自己所掌握的知识进行回答。
+如果给定的上下文无法让你做出回答，请根据你自己所掌握的知识进行回答。
 有用的回答:"""
     QA_CHAIN_PROMPT = PromptTemplate(input_variables=["context", "question"],
                                      template=qa_template)
@@ -175,6 +175,8 @@ class GenerationConfig:
     repetition_penalty: Optional[float] = 1.0
 
 
+# 书生浦语大模型实战营提供的生成函数模版
+# 搭配streamlit使用，实现markdown结构化输出与流式输出
 @torch.inference_mode()
 def generate_interactive(
         model,
@@ -289,6 +291,7 @@ def generate_interactive(
             break
 
 
+# 用于实现流式输出，实现难度太大，已放弃
 @torch.inference_mode()
 def generate_interactive_rag_stream(
         llm,
