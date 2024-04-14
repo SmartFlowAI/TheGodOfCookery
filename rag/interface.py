@@ -10,18 +10,18 @@ from transformers.utils import logging
 from langchain.embeddings.huggingface import HuggingFaceEmbeddings
 from BCEmbedding.tools.langchain import BCERerank
 from langchain.chains.question_answering import load_qa_chain
-from langchain.output_parsers import BooleanOutputParser
 from langchain.prompts import PromptTemplate
 from langchain_community.vectorstores import FAISS
 from langchain_community.vectorstores import Chroma
 from langchain.embeddings import HuggingFaceEmbeddings
-from langchain.retrievers import ContextualCompressionRetriever, EnsembleRetriever
-from langchain.retrievers.document_compressors import LLMChainFilter
 from langchain.retrievers import BM25Retriever
+from langchain.retrievers import EnsembleRetriever
+from langchain.output_parsers import BooleanOutputParser
+from langchain.retrievers.document_compressors import LLMChainFilter
 from langchain.memory import ConversationBufferMemory
 from langchain.chains import ConversationalRetrievalChain, LLMChain, RetrievalQA
-from config import load_config
-# from config_test.config_test import load_config
+# from config import load_config
+from config_test.config_test import load_config
 from rag.HyQEContextualCompressionRetriever import HyQEContextualCompressionRetriever
 
 logger = logging.get_logger(__name__)
@@ -65,6 +65,7 @@ def load_retriever():
 
     #     # 创建带大模型过滤器的检索器，对集成检索器的结果进行过滤
     #     # TongYi api拒绝该请求，可能是禁止将大模型用于数据标注任务
+    #     # 该检索器效率太低，已废弃
     #     filter_prompt_template = """以下是一段可参考的上下文和一个问题, 如果可参看上下文和问题相关请输出 YES , 否则输出 NO .
     # 可参考的上下文：
     # ···
@@ -86,7 +87,7 @@ def load_retriever():
     # 创建带reranker的检索器，对大模型过滤器的结果进行再排序
     bce_reranker_config = load_config('rag', 'bce_reranker_config')
     reranker = BCERerank(**bce_reranker_config)
-    # 可以替换假设问题为原始菜谱的Retriever
+    # 依次调用ensemble_retriever与reranker，并且可以将替换假设问题为原始菜谱的Retriever
     compression_retriever = HyQEContextualCompressionRetriever(base_compressor=reranker,
                                                                base_retriever=ensemble_retriever)
     return compression_retriever
@@ -174,6 +175,8 @@ class GenerationConfig:
     repetition_penalty: Optional[float] = 1.0
 
 
+# 书生浦语大模型实战营提供的生成函数模版
+# 搭配streamlit使用，实现markdown结构化输出与流式输出
 @torch.inference_mode()
 def generate_interactive(
         model,
@@ -288,6 +291,7 @@ def generate_interactive(
             break
 
 
+# 用于实现流式输出，实现难度太大，已放弃
 @torch.inference_mode()
 def generate_interactive_rag_stream(
         llm,

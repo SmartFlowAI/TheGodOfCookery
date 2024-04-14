@@ -1,23 +1,20 @@
+import sys
 from dataclasses import asdict
-
 import streamlit as st
 import torch
-from langchain_community.llms.tongyi import Tongyi
 from modelscope import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
 from transformers.utils import logging
 
+# from config import load_config
+from config_test.config_test import load_config
+from rag.CookMasterLLM import CookMasterLLM
 from rag.interface import (GenerationConfig,
                            generate_interactive,
                            generate_interactive_rag)
-from config import load_config
-# from config_test.config_test import load_config
-from rag.CookMasterLLM import CookMasterLLM
-import sys
-
+# from langchain_community.llms.tongyi import Tongyi
 logger = logging.get_logger(__name__)
 
 # solve: Your system has an unsupported version of sqlite3. Chroma requires sqlite3 >= 3.35.0
-# but failed!!
 xlab_deploy = load_config('global', 'xlab_deploy')
 if xlab_deploy:
     print("load sqllite3 module...")
@@ -34,18 +31,20 @@ cur_query_prompt = load_config('global', 'cur_query_prompt')
 error_response = load_config('global', 'error_response')
 
 # llm
+load_4bit = load_config('llm', 'load_4bit')
 llm_model_path = load_config('llm', 'llm_model_path')
 base_model_type = load_config('llm', 'base_model_type')
+llm = None
 print(f"base model type:{base_model_type}")
 
 # rag
 rag_model_type = load_config('rag', 'rag_model_type')
+verbose = load_config('rag', 'verbose')
+
 print(f"RAG model type:{rag_model_type}")
 
-verbose = True
 
-
-def on_btn_click():
+def on_clear_btn_click():
     """
     点击按钮时执行的函数，用于删除session_state中存储的消息。
 
@@ -64,31 +63,49 @@ def load_model(generation_config):
     加载预训练模型和分词器。
 
     Args:
-        无。
+        generation_config：模型配置参数。
 
     Returns:
         model (Transformers模型): 预训练模型。
         tokenizer (Transformers分词器): 分词器。
     """
-    # int4 量化加载
-    quantization_config = BitsAndBytesConfig(
-        load_in_4bit=True,
-        bnb_4bit_compute_dtype=torch.float16,
-        bnb_4bit_quant_type="nf4",
-        bnb_4bit_use_double_quant=True,
-    )
-    print("正在从本地加载模型...")
-    model = AutoModelForCausalLM.from_pretrained(llm_model_path, trust_remote_code=True, torch_dtype=torch.float16,
-                                                 device_map="auto",
-                                                 quantization_config=quantization_config).eval()
-    tokenizer = AutoTokenizer.from_pretrained(llm_model_path, trust_remote_code=True)
+
+    # 加载通义千问大语言模型
+    # TONGYI_API_KEY = open("F:/OneDrive/Pythoncode/BCE_model/TONGYI_API_KEY.txt", "r").read().strip()
+    # llm = Tongyi(dashscope_api_key=TONGYI_API_KEY, temperature=0, model_name="qwen-turbo")
+    # model, tokenizer = None, None
+    # return model, tokenizer, llm
+
+    if load_4bit == False:
+
+        model = (
+            AutoModelForCausalLM.from_pretrained(llm_model_path, trust_remote_code=True)
+            .to(torch.bfloat16)
+            .cuda()
+        )
+        tokenizer = AutoTokenizer.from_pretrained(llm_model_path, trust_remote_code=True)
+
+    else:
+        # int4 量化加载
+        quantization_config = BitsAndBytesConfig(
+            load_in_4bit=True,
+            bnb_4bit_compute_dtype=torch.float16,
+            bnb_4bit_quant_type="nf4",
+            bnb_4bit_use_double_quant=True,
+        )
+        print("正在从本地加载模型...")
+        model = AutoModelForCausalLM.from_pretrained(llm_model_path, trust_remote_code=True, torch_dtype=torch.float16,
+                                                     device_map="auto",
+                                                     quantization_config=quantization_config).eval()
+        tokenizer = AutoTokenizer.from_pretrained(llm_model_path, trust_remote_code=True)
+
     llm = CookMasterLLM(model, tokenizer)
+    print("完成本地模型的加载")
     model.generation_config.max_length = generation_config.max_length
     model.generation_config.top_p = generation_config.top_p
     model.generation_config.temperature = generation_config.temperature
     model.generation_config.repetition_penalty = generation_config.repetition_penalty
     print(model.generation_config)
-    print("完成本地模型的加载")
     return model, tokenizer, llm
 
 
@@ -111,7 +128,7 @@ def prepare_generation_config():
         max_length = st.slider("Max Length", min_value=32,
                                max_value=32768, value=32768)
         # 2. Clear history.
-        st.button("Clear Chat History", on_click=on_btn_click)
+        st.button("Clear Chat History", on_click=on_clear_btn_click)
 
         # 3. Enable RAG
         global enable_rag
@@ -125,7 +142,7 @@ def prepare_generation_config():
             max_length=max_length, top_p=0.8, temperature=0.8, repetition_penalty=1.17)  # InternLM2 1.8b need 惩罚参数
     else:
         generation_config = GenerationConfig(
-            max_length=max_length, top_p=0.8, temperature=0.8, repetition_penalty=1.002)  # InternLM2 2 need 惩罚参数
+            max_length=max_length, top_p=0.8, temperature=0.8, repetition_penalty=1.005)  # InternLM2 2 need 惩罚参数
 
     return generation_config
 
@@ -168,6 +185,7 @@ def process_user_input(prompt,
         prompt (str): 用户输入的内容。
         model (str): 使用的模型名称。
         tokenizer (object): 分词器对象。
+        llm: langchain包装的大模型
         generation_config (dict): 生成配置参数。
 
     """
@@ -183,6 +201,7 @@ def process_user_input(prompt,
     with st.chat_message("user", avatar=user_avatar):
         st.markdown(prompt)
     real_prompt = combine_history(prompt)
+
     # Add user message to chat history
     st.session_state.messages.append(
         {"role": "user", "content": prompt, "avatar": user_avatar})
@@ -208,6 +227,7 @@ def process_user_input(prompt,
                 )
                 cur_response = cur_response.replace('\\n', '\n')
 
+                print(cur_response)
                 message_placeholder.markdown(cur_response)
             else:
                 if base_model_type == 'internlm-chat-7b':
@@ -230,6 +250,7 @@ def process_user_input(prompt,
                     cur_response = cur_response.replace('\\n', '\n')
                     message_placeholder.markdown(cur_response + "▌")
 
+                print(cur_response)
                 message_placeholder.markdown(cur_response)
 
         # Add robot response to chat history
@@ -246,10 +267,6 @@ def main():
 
     st.title("食神2 by 其实你也可以是个厨师队")
     model, tokenizer, llm = load_model(generation_config)
-    # 加载通义千问大语言模型
-    # TONGYI_API_KEY = open("F:/OneDrive/Pythoncode/BCE_model/TONGYI_API_KEY.txt", "r").read().strip()
-    # llm = Tongyi(dashscope_api_key=TONGYI_API_KEY, temperature=0, model_name="qwen-turbo")
-    # model, tokenizer = None, None
 
     # 1.Initialize chat history
     if "messages" not in st.session_state:

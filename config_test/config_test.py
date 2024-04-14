@@ -26,7 +26,8 @@ Config['global'] = {
 
 # llm
 Config['llm'] = {
-    'finetuned': True,
+    'finetuned': False,
+    'load_4bit': True,
     'base_model_type': "internlm2-chat-1.8b",
     'llm_model_path': "F:/OneDrive/Pythoncode/BCE_model/internlm2-chat-1_8b"
 }
@@ -65,7 +66,7 @@ Config['rag'] = {
     'bce_emb_config': {
         'model_name': "F:/OneDrive/Pythoncode/BCE_model/bce-embedding-base_v1",
         'model_kwargs': {'device': 'cuda:0'},
-        'encode_kwargs': {'batch_size': 32, 'normalize_embeddings': True, 'show_progress_bar': True}
+        'encode_kwargs': {'batch_size': 32, 'normalize_embeddings': True, 'show_progress_bar': False}
     },
     'bce_reranker_config': {
         'model': 'F:/OneDrive/Pythoncode/BCE_model/bce-reranker-base_v1',

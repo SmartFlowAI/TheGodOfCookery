@@ -1,40 +1,30 @@
-"""
-This script refers to the dialogue example of streamlit, the interactive generation code of chatglm2 and transformers.
-We mainly modified part of the code logic to adapt to the generation of our model.
-Please refer to these links below for more information:
-    1. streamlit chat example: https://docs.streamlit.io/knowledge-base/tutorials/build-conversational-apps
-    2. chatglm2: https://github.com/THUDM/ChatGLM2-6B
-    3. transformers: https://github.com/huggingface/transformers
-"""
-
+import os
+import sys
 from dataclasses import asdict
-
+from datetime import datetime
 import streamlit as st
 import torch
 from audiorecorder import audiorecorder
-#from modelscope import AutoModelForCausalLM, AutoTokenizer
 from modelscope import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
 from transformers.utils import logging
 
-from gen_image import image_models
 from config import load_config
-import os
-from datetime import datetime
-from PIL import Image
-from parse_cur_response import return_final_md
-import opencc
 from convert_t2s import convert_t2s
-import sys
-import base64
+from gen_image import image_models
+from parse_cur_response import return_final_md
+from rag.CookMasterLLM import CookMasterLLM
+from rag.interface import (GenerationConfig,
+                           generate_interactive,
+                           generate_interactive_rag)
 
 logger = logging.get_logger(__name__)
 
 # solve: Your system has an unsupported version of sqlite3. Chroma requires sqlite3 >= 3.35.0
-xlab_deploy = load_config('global','xlab_deploy')
+xlab_deploy = load_config('global', 'xlab_deploy')
 if xlab_deploy:
     print("load sqllite3 module...")
     __import__('pysqlite3')
-    sys.modules['sqlite3']= sys.modules.pop('pysqlite3')
+    sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
 
 # global variables
 enable_rag = load_config('global', 'enable_rag')
@@ -59,56 +49,10 @@ print(f"base model type:{base_model_type}")
 rag_model_type = load_config('rag', 'rag_model_type')
 verbose = load_config('rag', 'verbose')
 
-
 print(f"RAG model type:{rag_model_type}")
 
-if rag_model_type == "chroma":
-    from rag_chroma.interface import (GenerationConfig,
-        generate_interactive,
-        generate_interactive_rag_stream,
-        generate_interactive_rag)
-else: #faiss
-    from rag.interface import (GenerationConfig,
-        generate_interactive,
-        generate_interactive_rag)
 
-    from rag.CookMasterLLM import CookMasterLLM
-    #from langchain_community.llms.tongyi import Tongyi
-
-# speech
-audio_save_path = load_config('speech', 'audio_save_path')
-speech_model_type = load_config('speech', 'speech_model_type')
-print(f"speech model type:{speech_model_type}")
-if speech_model_type == "whisper":
-    from whisper_app import run_whisper
-    whisper_model_scale = load_config('speech', 'whisper_model_scale')
-else: #paraformer
-    from funasr import AutoModel
-    from speech import get_local_model
-
-    speech_model_path = load_config('speech', 'speech_model_path')
-
-    @st.cache_resource
-    def load_speech_model():
-        model_dict = get_local_model(speech_model_path)
-        model = AutoModel(**model_dict)
-        return model
-
-    def speech_rec(speech_model):
-        # 3. Speech input
-        audio = audiorecorder("Record", "Stop record")
-        audio_b64 = base64.b64encode(audio.raw_data)
-        speech_string = None
-        if len(audio) > 0 and ('last_audio_b64' not in st.session_state or st.session_state['last_audio_b64'] != audio_b64):
-            st.session_state['last_audio_b64'] = audio_b64
-            try:
-                audio.export(audio_save_path, format="wav")
-                speech_string = speech_model.generate(input=audio_save_path)[0]['text']
-            except Exception as e:
-                logger.warning('speech rec warning, exception is', e )
-        return speech_string
-
-def on_btn_click():
+def on_clear_btn_click():
     """
     点击按钮时执行的函数，用于删除session_state中存储的消息。
 
@@ -144,7 +88,7 @@ def load_model(generation_config):
         tokenizer = AutoTokenizer.from_pretrained(llm_model_path, trust_remote_code=True)
 
     else:
-       # int4 量化加载
+        # int4 量化加载
         quantization_config = BitsAndBytesConfig(
             load_in_4bit=True,
             bnb_4bit_compute_dtype=torch.float16,
@@ -153,23 +97,19 @@ def load_model(generation_config):
         )
         print("正在从本地加载模型...")
         model = AutoModelForCausalLM.from_pretrained(llm_model_path, trust_remote_code=True, torch_dtype=torch.float16,
-            device_map="auto",
-            quantization_config=quantization_config).eval()
+                                                     device_map="auto",
+                                                     quantization_config=quantization_config).eval()
         tokenizer = AutoTokenizer.from_pretrained(llm_model_path, trust_remote_code=True)
 
-    if rag_model_type == "faiss":
-        llm = CookMasterLLM(model, tokenizer)
-        model.generation_config.max_length = generation_config.max_length
-        model.generation_config.top_p = generation_config.top_p
-        model.generation_config.temperature = generation_config.temperature
-        model.generation_config.repetition_penalty = generation_config.repetition_penalty
-
-    else:
-        llm = None
-
+    llm = CookMasterLLM(model, tokenizer)
     print("完成本地模型的加载")
+    model.generation_config.max_length = generation_config.max_length
+    model.generation_config.top_p = generation_config.top_p
+    model.generation_config.temperature = generation_config.temperature
+    model.generation_config.repetition_penalty = generation_config.repetition_penalty
     print(model.generation_config)
     return model, tokenizer, llm
+
 
 def prepare_generation_config():
     """
@@ -185,16 +125,16 @@ def prepare_generation_config():
     """
     with st.sidebar:
         # 1. Max length of the generated text
-        #max_length = st.slider("Max Length", min_value=32,
+        # max_length = st.slider("Max Length", min_value=32,
         #                       max_value=2048, value=2048)
         max_length = st.slider("Max Length", min_value=32,
                                max_value=32768, value=32768)
         # 2. Clear history.
-        st.button("Clear Chat History", on_click=on_btn_click)
+        st.button("Clear Chat History", on_click=on_clear_btn_click)
 
         # 3. Enable RAG
         global enable_rag
-        enable_rag = st.checkbox("Enable RAG")
+        enable_rag = st.checkbox("Enable RAG", value=True)
 
         # 4. Streaming
         # global streaming
@@ -217,24 +157,23 @@ def prepare_generation_config():
                 speech_string = run_whisper(
                     whisper_model_scale, "cuda",
                     audio_save_path)
-        else: #paraformer
+        else:  # paraformer
             speech_prompt = speech_rec(speech_model)
             st.session_state['speech_prompt'] = speech_prompt
 
     if base_model_type == 'internlm-chat-7b':
         generation_config = GenerationConfig(
-            max_length=max_length)   #InternLM1
+            max_length=max_length)  # InternLM1
     elif base_model_type == 'internlm2-chat-1.8b':
         generation_config = GenerationConfig(
-            max_length=max_length, top_p=0.8, temperature=0.8, repetition_penalty=1.17)   #InternLM2 1.8b need 惩罚参数
+            max_length=max_length, top_p=0.8, temperature=0.8, repetition_penalty=1.17)  # InternLM2 1.8b need 惩罚参数
     else:
         generation_config = GenerationConfig(
-            max_length=max_length, top_p=0.8, temperature=0.8, repetition_penalty=1.005)   #InternLM2 2 need 惩罚参数
-
+            max_length=max_length, top_p=0.8, temperature=0.8, repetition_penalty=1.005)  # InternLM2 2 need 惩罚参数
 
     if speech_model_type == "whisper":
         return generation_config, speech_string
-    else : #paraformer
+    else:  # paraformer
         return generation_config
 
 
@@ -265,10 +204,10 @@ def combine_history(prompt):
 
 
 def process_user_input(prompt,
-        model,
-        tokenizer,
-        llm,
-        generation_config):
+                       model,
+                       tokenizer,
+                       llm,
+                       generation_config):
     """
     处理用户输入，根据用户输入内容调用相应的模型生成回复。
 
@@ -276,14 +215,14 @@ def process_user_input(prompt,
         prompt (str): 用户输入的内容。
         model (str): 使用的模型名称。
         tokenizer (object): 分词器对象。
-        llm: rag faiss包装的模型，其他场景不需要
+        llm: langchain包装的大模型
         generation_config (dict): 生成配置参数。
 
     """
     # Check if the user input contains certain keywords
-    print(f"Origin Prompt:{prompt}")
-    prompt = convert_t2s(prompt).replace(" ", "")
-    print(f"Converted Prompt:{prompt}")
+    # print(f"Origin Prompt:{prompt}")
+    # prompt = convert_t2s(prompt).replace(" ", "")
+    # print(f"Converted Prompt:{prompt}")
 
     keywords = ["怎么做", "做法", "菜谱"]
     contains_keywords = any(keyword in prompt for keyword in keywords)
@@ -308,47 +247,37 @@ def process_user_input(prompt,
         # Generate robot response
         with st.chat_message("robot", avatar=robot_avatar):
             message_placeholder = st.empty()
+            print("prompt:", prompt)
+            print("real_prompt:", real_prompt)
             if enable_rag:
-
-                if rag_model_type == "chroma":
-                    cur_response = generate_interactive_rag(
-                        model=model,
-                        tokenizer=tokenizer,
-                        prompt=prompt,
-                        history=real_prompt
-                    )
-                else: #faiss
-                    cur_response = generate_interactive_rag(
-                        llm=llm,
-                        question=prompt,
-                        verbose=verbose,
-                    )
-
+                cur_response = generate_interactive_rag(
+                    llm=llm,
+                    question=prompt,
+                    verbose=verbose,
+                )
                 cur_response = cur_response.replace('\\n', '\n')
 
                 print(cur_response)
-
                 if enable_markdown:
                     cur_response = return_final_md(cur_response)
                     print('after markdown')
                     print(cur_response)
-
                 message_placeholder.markdown(cur_response)
             else:
                 if base_model_type == 'internlm-chat-7b':
-                    additional_eos_token_id=103028  #InternLM-7b-chat
+                    additional_eos_token_id = 103028  # InternLM-7b-chat
                 elif base_model_type == 'internlm2-chat-1.8b':
-                    additional_eos_token_id=92542  # InternLM2-1.8b-chat
+                    additional_eos_token_id = 92542  # InternLM2-1.8b-chat
                 else:
-                    additional_eos_token_id=92542  # InternLM2-7b-chat
+                    additional_eos_token_id = 92542  # InternLM2-7b-chat
 
-                #print(f"additional_eos_token_id:{additional_eos_token_id}")
+                print(f"additional_eos_token_id:{additional_eos_token_id}")
 
                 generator = generate_interactive(
                     model=model,
                     tokenizer=tokenizer,
                     prompt=real_prompt,
-                    additional_eos_token_id=additional_eos_token_id,  #InternLM or InternLM2
+                    additional_eos_token_id=additional_eos_token_id,  # InternLM or InternLM2
                     **asdict(generation_config),
                 )
                 for cur_response in generator:
@@ -409,15 +338,14 @@ def text_to_image(prompt, image_model):
 def main():
     print(f"Torch support GPU: {torch.cuda.is_available()}")
 
-    st.title("食神2 by 其实你也可以是个厨师队")
-
     if speech_model_type == "whisper":
         generation_config, speech_prompt = prepare_generation_config()
-    else:  #paraformer
+    else:  # paraformer
         global speech_model
         speech_model = load_speech_model()
         generation_config = prepare_generation_config()
 
+    st.title("食神2 by 其实你也可以是个厨师队")
     model, tokenizer, llm = load_model(generation_config)
 
     global image_model
@@ -442,9 +370,10 @@ def main():
     if speech_model_type == "whisper":
         if speech_prompt is not None:
             process_user_input(speech_prompt, model, tokenizer, llm, generation_config)
-    else:  #paraformer
+    else:  # paraformer
         if speech_prompt := st.session_state['speech_prompt']:
             process_user_input(speech_prompt, model, tokenizer, llm, generation_config)
+
 
 if __name__ == "__main__":
     main()
