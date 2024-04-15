@@ -169,11 +169,11 @@ def text_to_image(prompt, image_model):
     if ok:
         current_datetime = datetime.now().strftime("%Y%m%d_%H%M%S")
         new_file_name = f"food_{current_datetime}.jpg"
-        food_image_path = os.path.join(file_dir, "images/", new_file_name)
+        food_image_path = os.path.join(file_dir, "assets/", new_file_name)
         print(f"Image file name:{food_image_path}")
         ret.save(food_image_path)
     else:
-        food_image_path = os.path.join(file_dir, f"images/error.jpg")
+        food_image_path = os.path.join(file_dir, f"assets/error.jpg")
 
     return food_image_path
 

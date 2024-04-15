@@ -23,7 +23,7 @@ class SDGenImage:
 
         # prompt = "An astronaut riding a green horse"
 
-        # images = pipe(prompt=prompt).images[0]
+        # assets = pipe(prompt=prompt).assets[0]
 
     def create_img(self, prompt):
         try:

@@ -80,7 +80,7 @@ def return_final_md(cur_response):
         for i, item in enumerate(ingredients_list):
             try:
                 quantity, name = split_ingredients(item)
-                image_path = os.path.join(file_dir, f"src/{name}.png")
+                image_path = os.path.join(file_dir, f"food_icon/{name}.png")
                 if os.path.exists(image_path):
                     # image_path_and_style = f"<img src='{image_path}' width = '50' height = '50' align=center />"
                     image_path_and_style = ""
