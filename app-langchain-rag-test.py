@@ -6,10 +6,10 @@ from modelscope import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
 from transformers.utils import logging
 from config import load_config
 from parse_cur_response import return_final_md
-from rag.CookMasterLLM import CookMasterLLM
-from rag.interface import (GenerationConfig,
-                           generate_interactive,
-                           generate_interactive_rag)
+from rag_langchain.CookMasterLLM import CookMasterLLM
+from rag_langchain.interface import (GenerationConfig,
+                                     generate_interactive,
+                                     generate_interactive_rag)
 
 # from config_test.config_test import load_config
 # from langchain_community.llms.tongyi import Tongyi

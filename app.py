@@ -13,10 +13,10 @@ from config import load_config
 from gen_image import image_models
 from convert_t2s import convert_t2s
 from parse_cur_response import return_final_md
-from rag.CookMasterLLM import CookMasterLLM
-from rag.interface import (GenerationConfig,
-                           generate_interactive,
-                           generate_interactive_rag)
+from rag_langchain.CookMasterLLM import CookMasterLLM
+from rag_langchain.interface import (GenerationConfig,
+                                     generate_interactive,
+                                     generate_interactive_rag)
 from speech import get_local_model
 
 logger = logging.get_logger(__name__)

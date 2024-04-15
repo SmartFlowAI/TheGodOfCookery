@@ -42,20 +42,20 @@ Config['rag'] = {
     # streamlit加载使用的相对路径格式和直接运行python文件使用的相对路径格式不同
     'faiss_config': {
         'save_path': './faiss_index',  # 保存faiss索引的路径
-        'load_path': './rag/faiss_index',  # streamlit加载faiss索引的路径
+        'load_path': './rag_langchain/faiss_index',  # streamlit加载faiss索引的路径
         'search_type': "similarity_score_threshold",
         'search_kwargs': {"k": 3, "score_threshold": 0.6}
     },
     'chroma_config': {
         'save_path': './chroma_db',  # 保存chroma索引的路径
-        'load_path': './rag/chroma_db',  # streamlit加载chroma索引的路径
+        'load_path': './rag_langchain/chroma_db',  # streamlit加载chroma索引的路径
         'search_type': "similarity",
         'search_kwargs': {"k": 3}
     },
     'bm25_config': {
         'dir_path': './retriever',  # 保存bm25检索器的文件夹的路径
         'save_path': './retriever/bm25retriever.pkl',  # 保存bm25检索器的路径
-        'pickle_path': './rag/retriever/bm25retriever.pkl',  # streamlit加载bm25检索器的路径
+        'pickle_path': './rag_langchain/retriever/bm25retriever.pkl',  # streamlit加载bm25检索器的路径
         'search_kwargs': {"k": 3}
     },
     'bce_emb_config': {

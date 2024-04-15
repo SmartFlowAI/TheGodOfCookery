@@ -254,7 +254,7 @@ print(response)
 |
 |---images   # 暂存文生图模型生成的图片的目录
 |
-|---rag   # 二代RAG代码目录（主要贡献者 @乐正萌）
+|---rag_langchain   # 二代RAG代码目录（主要贡献者 @乐正萌）
 |     |---chroma_db                                        #chroma数据库目录
 |     |     |- chroma.sqlite3                              #chroma数据库文件
 |     |---data                                             #菜谱数据集目录
