@@ -1,10 +1,11 @@
 # coding: utf-8
 import logging
 
+
 # ZhipuAI提供的画图接口
 
 class ZhipuAIImage(object):
-    def __init__(self, api_key, model = 'cogview-3', image_create_size = '256x256'):
+    def __init__(self, api_key, model='cogview-3', image_create_size='256x256'):
         from zhipuai import ZhipuAI
         self.client = ZhipuAI(api_key=api_key)
         self.model = model

@@ -4,13 +4,14 @@ import streamlit as st
 import torch
 from modelscope import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
 from transformers.utils import logging
-
 from config import load_config
-# from config_test.config_test import load_config
+from parse_cur_response import return_final_md
 from rag.CookMasterLLM import CookMasterLLM
 from rag.interface import (GenerationConfig,
                            generate_interactive,
                            generate_interactive_rag)
+
+# from config_test.config_test import load_config
 # from langchain_community.llms.tongyi import Tongyi
 logger = logging.get_logger(__name__)
 
@@ -23,6 +24,8 @@ if xlab_deploy:
 
 # global variables
 enable_rag = load_config('global', 'enable_rag')
+enable_image = load_config('global', 'enable_image')
+enable_markdown = load_config('global', 'enable_markdown')
 user_avatar = load_config('global', 'user_avatar')
 robot_avatar = load_config('global', 'robot_avatar')
 user_prompt = load_config('global', 'user_prompt')
@@ -40,21 +43,7 @@ print(f"base model type:{base_model_type}")
 # rag
 rag_model_type = load_config('rag', 'rag_model_type')
 verbose = load_config('rag', 'verbose')
-
 print(f"RAG model type:{rag_model_type}")
-
-
-def on_clear_btn_click():
-    """
-    点击按钮时执行的函数，用于删除session_state中存储的消息。
-
-    Args:
-        无
-
-    Returns:
-        无
-    """
-    del st.session_state.messages
 
 
 @st.cache_resource
@@ -68,6 +57,7 @@ def load_model(generation_config):
     Returns:
         model (Transformers模型): 预训练模型。
         tokenizer (Transformers分词器): 分词器。
+        llm (CookMasterLLM): langchain封装的大模型。
     """
 
     # 加载通义千问大语言模型
@@ -109,44 +99,6 @@ def load_model(generation_config):
     return model, tokenizer, llm
 
 
-def prepare_generation_config():
-    """
-    准备生成配置。
-
-    Args:
-        无
-
-    Returns:
-        Tuple[GenerationConfig, Optional[str]]: 包含生成配置和语音字符串的元组。
-            - GenerationConfig: 生成配置。
-            - Optional[str]: 语音字符串，如果没有录制语音则为None。
-    """
-    with st.sidebar:
-        # 1. Max length of the generated text
-        # max_length = st.slider("Max Length", min_value=32,
-        #                       max_value=2048, value=2048)
-        max_length = st.slider("Max Length", min_value=32,
-                               max_value=32768, value=32768)
-        # 2. Clear history.
-        st.button("Clear Chat History", on_click=on_clear_btn_click)
-
-        # 3. Enable RAG
-        global enable_rag
-        enable_rag = st.checkbox("Enable RAG", value=True)
-
-    if base_model_type == 'internlm-chat-7b':
-        generation_config = GenerationConfig(
-            max_length=max_length)  # InternLM1
-    elif base_model_type == 'internlm2-chat-1.8b':
-        generation_config = GenerationConfig(
-            max_length=max_length, top_p=0.8, temperature=0.8, repetition_penalty=1.17)  # InternLM2 1.8b need 惩罚参数
-    else:
-        generation_config = GenerationConfig(
-            max_length=max_length, top_p=0.8, temperature=0.8, repetition_penalty=1.005)  # InternLM2 2 need 惩罚参数
-
-    return generation_config
-
-
 def combine_history(prompt):
     """
     根据用户输入的提示信息，组合出一段完整的对话历史，用于机器人进行对话。
@@ -173,6 +125,48 @@ def combine_history(prompt):
     return total_prompt
 
 
+def on_clear_btn_click():
+    """
+    点击按钮时执行的函数，用于删除session_state中存储的消息。
+    """
+    del st.session_state.messages
+
+
+def prepare_generation_config():
+    """
+    准备生成配置。
+
+    Args:
+        无
+
+    Returns:
+        Tuple[GenerationConfig, Optional[str]]: 包含生成配置和语音字符串的元组。
+            - GenerationConfig: 生成配置。
+            - Optional[str]: 语音字符串，如果没有录制语音则为None。
+    """
+    with st.sidebar:
+        # 1. Max length of the generated text
+        max_length = st.slider("Max Length", min_value=32,
+                               max_value=32768, value=32768)
+        # 2. Clear history.
+        st.button("Clear Chat History", on_click=on_clear_btn_click)
+
+        # 3. Enable RAG
+        global enable_rag
+        enable_rag = st.checkbox("Enable RAG", value=True)
+
+    if base_model_type == 'internlm-chat-7b':
+        generation_config = GenerationConfig(max_length=max_length)  # InternLM1
+    elif base_model_type == 'internlm2-chat-1.8b':
+        generation_config = GenerationConfig(
+            max_length=max_length, top_p=0.8, temperature=0.8, repetition_penalty=1.17)  # InternLM2 1.8b need 惩罚参数
+    else:
+        generation_config = GenerationConfig(
+            max_length=max_length, top_p=0.8, temperature=0.8, repetition_penalty=1.005)  # InternLM2 2 need 惩罚参数
+
+    return generation_config
+
+
 def process_user_input(prompt,
                        model,
                        tokenizer,
@@ -189,11 +183,8 @@ def process_user_input(prompt,
         generation_config (dict): 生成配置参数。
 
     """
-    # Check if the user input contains certain keywords
-    # print(f"Origin Prompt:{prompt}")
-    # prompt = convert_t2s(prompt).replace(" ", "")
-    # print(f"Converted Prompt:{prompt}")
 
+    # Check if the user input contains certain keywords
     keywords = ["怎么做", "做法", "菜谱"]
     contains_keywords = any(keyword in prompt for keyword in keywords)
 
@@ -225,10 +216,14 @@ def process_user_input(prompt,
                     question=prompt,
                     verbose=verbose,
                 )
+
                 cur_response = cur_response.replace('\\n', '\n')
 
-                print(cur_response)
-                message_placeholder.markdown(cur_response)
+                # print(cur_response)
+                if enable_markdown:
+                    cur_response = return_final_md(cur_response)
+                    # print('after markdown：', cur_response)
+                message_placeholder.markdown(cur_response + "▌")
             else:
                 if base_model_type == 'internlm-chat-7b':
                     additional_eos_token_id = 103028  # InternLM-7b-chat
@@ -250,7 +245,10 @@ def process_user_input(prompt,
                     cur_response = cur_response.replace('\\n', '\n')
                     message_placeholder.markdown(cur_response + "▌")
 
-                print(cur_response)
+                # print(cur_response)
+                if enable_markdown:
+                    cur_response = return_final_md(cur_response)
+                    # print('after markdown：', cur_response)
                 message_placeholder.markdown(cur_response)
 
         # Add robot response to chat history
@@ -280,7 +278,7 @@ def main():
                 st.image(message['food_image_path'], width=230)
 
     # 3.Process text input
-    if text_prompt := st.chat_input("What is up?"):
+    if text_prompt := st.chat_input("请在这里输入"):
         process_user_input(text_prompt, model, tokenizer, llm, generation_config)
 
 

@@ -1,4 +1,4 @@
-from .config import *
+from .config_test import *
 
 
 def load_config(domain, key):

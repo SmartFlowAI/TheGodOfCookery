@@ -1,21 +1,23 @@
 import os
 import sys
+import base64
 from dataclasses import asdict
 from datetime import datetime
 import streamlit as st
 import torch
 from audiorecorder import audiorecorder
+from funasr import AutoModel
 from modelscope import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
 from transformers.utils import logging
-
 from config import load_config
-from convert_t2s import convert_t2s
 from gen_image import image_models
+from convert_t2s import convert_t2s
 from parse_cur_response import return_final_md
 from rag.CookMasterLLM import CookMasterLLM
 from rag.interface import (GenerationConfig,
                            generate_interactive,
                            generate_interactive_rag)
+from speech import get_local_model
 
 logger = logging.get_logger(__name__)
 
@@ -48,21 +50,13 @@ print(f"base model type:{base_model_type}")
 # rag
 rag_model_type = load_config('rag', 'rag_model_type')
 verbose = load_config('rag', 'verbose')
-
 print(f"RAG model type:{rag_model_type}")
 
-
-def on_clear_btn_click():
-    """
-    点击按钮时执行的函数，用于删除session_state中存储的消息。
-
-    Args:
-        无
-
-    Returns:
-        无
-    """
-    del st.session_state.messages
+# speech
+audio_save_path = load_config('speech', 'audio_save_path')
+speech_model_type = load_config('speech', 'speech_model_type')
+speech_model_path = load_config('speech', 'speech_model_path')
+print(f"speech model type:{speech_model_type}")
 
 
 @st.cache_resource
@@ -76,6 +70,7 @@ def load_model(generation_config):
     Returns:
         model (Transformers模型): 预训练模型。
         tokenizer (Transformers分词器): 分词器。
+        llm (CookMasterLLM): langchain封装的大模型。
     """
 
     if load_4bit == False:
@@ -107,74 +102,8 @@ def load_model(generation_config):
     model.generation_config.top_p = generation_config.top_p
     model.generation_config.temperature = generation_config.temperature
     model.generation_config.repetition_penalty = generation_config.repetition_penalty
-    print(model.generation_config)
+    # print(model.generation_config)
     return model, tokenizer, llm
-
-
-def prepare_generation_config():
-    """
-    准备生成配置。
-
-    Args:
-        无
-
-    Returns:
-        Tuple[GenerationConfig, Optional[str]]: 包含生成配置和语音字符串的元组。
-            - GenerationConfig: 生成配置。
-            - Optional[str]: 语音字符串，如果没有录制语音则为None。
-    """
-    with st.sidebar:
-        # 1. Max length of the generated text
-        # max_length = st.slider("Max Length", min_value=32,
-        #                       max_value=2048, value=2048)
-        max_length = st.slider("Max Length", min_value=32,
-                               max_value=32768, value=32768)
-        # 2. Clear history.
-        st.button("Clear Chat History", on_click=on_clear_btn_click)
-
-        # 3. Enable RAG
-        global enable_rag
-        enable_rag = st.checkbox("Enable RAG", value=True)
-
-        # 4. Streaming
-        # global streaming
-        # streaming = st.checkbox("Streaming")
-
-        # 6. Output markdown
-        global enable_markdown
-        enable_markdown = st.checkbox("Markdown output")
-
-        # 7. Image
-        global enable_image
-        enable_image = st.checkbox("Show Image")
-
-        # 5. Speech input
-        if speech_model_type == "whisper":
-            audio = audiorecorder("Record", "Stop record")
-            speech_string = None
-            if len(audio) > 0:
-                audio.export(audio_save_path, format="wav")
-                speech_string = run_whisper(
-                    whisper_model_scale, "cuda",
-                    audio_save_path)
-        else:  # paraformer
-            speech_prompt = speech_rec(speech_model)
-            st.session_state['speech_prompt'] = speech_prompt
-
-    if base_model_type == 'internlm-chat-7b':
-        generation_config = GenerationConfig(
-            max_length=max_length)  # InternLM1
-    elif base_model_type == 'internlm2-chat-1.8b':
-        generation_config = GenerationConfig(
-            max_length=max_length, top_p=0.8, temperature=0.8, repetition_penalty=1.17)  # InternLM2 1.8b need 惩罚参数
-    else:
-        generation_config = GenerationConfig(
-            max_length=max_length, top_p=0.8, temperature=0.8, repetition_penalty=1.005)  # InternLM2 2 need 惩罚参数
-
-    if speech_model_type == "whisper":
-        return generation_config, speech_string
-    else:  # paraformer
-        return generation_config
 
 
 def combine_history(prompt):
@@ -203,6 +132,115 @@ def combine_history(prompt):
     return total_prompt
 
 
+@st.cache_resource
+def init_image_model():
+    image_model_type = load_config('image', 'image_model_type')
+    image_model_config = load_config('image', 'image_model_config').get(image_model_type)
+    image_model = image_models[image_model_type](**image_model_config)
+    return image_model
+
+
+def text_to_image(prompt, image_model):
+    file_dir = os.path.dirname(__file__)
+    ok, ret = image_model.create_img(prompt)
+    if ok:
+        current_datetime = datetime.now().strftime("%Y%m%d_%H%M%S")
+        new_file_name = f"food_{current_datetime}.jpg"
+        food_image_path = os.path.join(file_dir, "images/", new_file_name)
+        print(f"Image file name:{food_image_path}")
+        ret.save(food_image_path)
+    else:
+        food_image_path = os.path.join(file_dir, f"images/error.jpg")
+
+    return food_image_path
+
+
+@st.cache_resource
+def load_speech_model():
+    model_dict = get_local_model(speech_model_path)
+    model = AutoModel(**model_dict)
+    return model
+
+
+def speech_rec(speech_model):
+    audio = audiorecorder("开始语音输入", "停止语音输入")
+    audio_b64 = base64.b64encode(audio.raw_data)
+    speech_string = None
+    if len(audio) > 0 and (
+            'last_audio_b64' not in st.session_state or st.session_state['last_audio_b64'] != audio_b64):
+        st.session_state['last_audio_b64'] = audio_b64
+        try:
+            audio.export(audio_save_path, format="wav")
+            speech_string = speech_model.generate(input=audio_save_path)[0]['text']
+            # 语言识别模型的返回结果可能有繁体字，需要转换。
+            # print(f"Origin speech_string:{speech_string}")
+            speech_string = convert_t2s(speech_string)
+            # print(f"Converted speech_string:{speech_string}")
+            # 语音识别模型的返回结果可能有多余的空格，需要去掉。
+            speech_string = speech_string.replace(' ', '')
+        except Exception as e:
+            logger.warning('speech rec warning, exception is', e)
+    return speech_string
+
+
+def on_clear_btn_click():
+    """
+    点击按钮时执行的函数，用于删除session_state中存储的消息。
+    """
+    del st.session_state.messages
+
+
+def prepare_generation_config():
+    """
+    准备生成配置。
+
+    Args:
+        无
+
+    Returns:
+        Tuple[GenerationConfig, Optional[str]]: 包含生成配置和语音字符串的元组。
+            - GenerationConfig: 生成配置。
+            - Optional[str]: 语音字符串，如果没有录制语音则为None。
+    """
+    with st.sidebar:
+        # 1. Max length of the generated text
+        max_length = st.slider("Max Length", min_value=32,
+                               max_value=32768, value=32768)
+        # 2. Clear history.
+        st.button("Clear Chat History", on_click=on_clear_btn_click)
+
+        # 3. Enable RAG
+        global enable_rag
+        enable_rag = st.checkbox("Enable RAG", value=True)
+
+        # 4. Streaming
+        # global streaming
+        # streaming = st.checkbox("Streaming")
+
+        # 5. Output markdown
+        global enable_markdown
+        enable_markdown = st.checkbox("Markdown output")
+
+        # 6. Image
+        global enable_image
+        enable_image = st.checkbox("Show Image")
+
+        # 7. Speech input
+        speech_prompt = speech_rec(speech_model)
+        st.session_state['speech_prompt'] = speech_prompt
+
+    if base_model_type == 'internlm-chat-7b':
+        generation_config = GenerationConfig(max_length=max_length)  # InternLM1
+    elif base_model_type == 'internlm2-chat-1.8b':
+        generation_config = GenerationConfig(
+            max_length=max_length, top_p=0.8, temperature=0.8, repetition_penalty=1.17)  # InternLM2 1.8b need 惩罚参数
+    else:
+        generation_config = GenerationConfig(
+            max_length=max_length, top_p=0.8, temperature=0.8, repetition_penalty=1.005)  # InternLM2 2 need 惩罚参数
+
+    return generation_config
+
+
 def process_user_input(prompt,
                        model,
                        tokenizer,
@@ -219,11 +257,8 @@ def process_user_input(prompt,
         generation_config (dict): 生成配置参数。
 
     """
-    # Check if the user input contains certain keywords
-    # print(f"Origin Prompt:{prompt}")
-    # prompt = convert_t2s(prompt).replace(" ", "")
-    # print(f"Converted Prompt:{prompt}")
 
+    # Check if the user input contains certain keywords
     keywords = ["怎么做", "做法", "菜谱"]
     contains_keywords = any(keyword in prompt for keyword in keywords)
 
@@ -247,22 +282,22 @@ def process_user_input(prompt,
         # Generate robot response
         with st.chat_message("robot", avatar=robot_avatar):
             message_placeholder = st.empty()
-            print("prompt:", prompt)
-            print("real_prompt:", real_prompt)
+            # print("prompt:", prompt)
+            # print("real_prompt:", real_prompt)
             if enable_rag:
                 cur_response = generate_interactive_rag(
                     llm=llm,
                     question=prompt,
                     verbose=verbose,
                 )
+
                 cur_response = cur_response.replace('\\n', '\n')
 
-                print(cur_response)
+                # print(cur_response)
                 if enable_markdown:
                     cur_response = return_final_md(cur_response)
-                    print('after markdown')
-                    print(cur_response)
-                message_placeholder.markdown(cur_response)
+                    # print('after markdown：', cur_response)
+                message_placeholder.markdown(cur_response + "▌")
             else:
                 if base_model_type == 'internlm-chat-7b':
                     additional_eos_token_id = 103028  # InternLM-7b-chat
@@ -271,7 +306,7 @@ def process_user_input(prompt,
                 else:
                     additional_eos_token_id = 92542  # InternLM2-7b-chat
 
-                print(f"additional_eos_token_id:{additional_eos_token_id}")
+                # print(f"additional_eos_token_id:{additional_eos_token_id}")
 
                 generator = generate_interactive(
                     model=model,
@@ -280,26 +315,22 @@ def process_user_input(prompt,
                     additional_eos_token_id=additional_eos_token_id,  # InternLM or InternLM2
                     **asdict(generation_config),
                 )
+
                 for cur_response in generator:
                     cur_response = cur_response.replace('\\n', '\n')
                     message_placeholder.markdown(cur_response + "▌")
 
-                print(cur_response)
+                # print(cur_response)
                 if enable_markdown:
                     cur_response = return_final_md(cur_response)
-                    print('after markdown')
-                    print(cur_response)
+                    # print('after markdown：', cur_response)
                 message_placeholder.markdown(cur_response)
 
             if enable_image and prompt:
                 food_image_path = text_to_image(prompt, image_model)
                 # add food image
-                # img = Image.open(food_image_path)
                 st.image(food_image_path, width=230)
-            # for cur_response in generator:
-            #     cur_response = cur_response.replace('\\n', '\n')
-            #     message_placeholder.markdown(cur_response + "▌")
-            # message_placeholder.markdown(cur_response)
+
         # Add robot response to chat history
         response_message = {"role": "robot", "content": cur_response, "avatar": robot_avatar}
 
@@ -310,40 +341,12 @@ def process_user_input(prompt,
         torch.cuda.empty_cache()
 
 
-@st.cache_resource
-def init_image_model():
-    image_model_type = load_config('image', 'image_model_type')
-    image_model_config = load_config('image', 'image_model_config').get(image_model_type)
-    image_model = image_models[image_model_type](**image_model_config)
-    return image_model
-
-
-# @st.cache_resource
-def text_to_image(prompt, image_model):
-    file_dir = os.path.dirname(__file__)
-    # generate image
-    ok, ret = image_model.create_img(prompt)
-    if ok:
-        current_datetime = datetime.now().strftime("%Y%m%d_%H%M%S")
-        new_file_name = f"food_{current_datetime}.jpg"
-        food_image_path = os.path.join(file_dir, "images/", new_file_name)
-        print(f"Image file name:{food_image_path}")
-        ret.save(food_image_path)
-    else:
-        food_image_path = os.path.join(file_dir, f"images/error.jpg")
-
-    return food_image_path
-
-
 def main():
     print(f"Torch support GPU: {torch.cuda.is_available()}")
 
-    if speech_model_type == "whisper":
-        generation_config, speech_prompt = prepare_generation_config()
-    else:  # paraformer
-        global speech_model
-        speech_model = load_speech_model()
-        generation_config = prepare_generation_config()
+    global speech_model
+    speech_model = load_speech_model()
+    generation_config = prepare_generation_config()
 
     st.title("食神2 by 其实你也可以是个厨师队")
     model, tokenizer, llm = load_model(generation_config)
@@ -363,16 +366,12 @@ def main():
                 st.image(message['food_image_path'], width=230)
 
     # 3.Process text input
-    if text_prompt := st.chat_input("What is up?"):
+    if text_prompt := st.chat_input("请在这里输入"):
         process_user_input(text_prompt, model, tokenizer, llm, generation_config)
 
     # 4. Process speech input
-    if speech_model_type == "whisper":
-        if speech_prompt is not None:
-            process_user_input(speech_prompt, model, tokenizer, llm, generation_config)
-    else:  # paraformer
-        if speech_prompt := st.session_state['speech_prompt']:
-            process_user_input(speech_prompt, model, tokenizer, llm, generation_config)
+    if speech_prompt := st.session_state['speech_prompt']:
+        process_user_input(speech_prompt, model, tokenizer, llm, generation_config)
 
 
 if __name__ == "__main__":

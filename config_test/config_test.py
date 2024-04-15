@@ -1,11 +1,6 @@
 import os
 from collections import defaultdict
 
-
-def load_config(domain, key):
-    return Config.get(domain).get(key, None)
-
-
 # 总的config
 Config = defaultdict(dict)
 
@@ -15,8 +10,8 @@ Config['global'] = {
     'streaming': None,
     'enable_markdown': None,
     'enable_image': None,
-    'user_avatar': "images/user.png",
-    'robot_avatar': "images/robot.png",
+    'user_avatar': "assets/user.png",
+    'robot_avatar': "assets/robot.png",
     'user_prompt': '<|im_start|>user\n{user}<|im_end|>\n',
     'robot_prompt': '<|im_start|>assistant\n{robot}<|im_end|>\n',
     'cur_query_prompt': '<|im_start|>user\n{user}<|im_end|>\n<|im_start|>assistant\n',
