@@ -1,6 +1,6 @@
 
 <div align="center">
-  <img src="https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/images/cooker.png" width="1092"/>
+  <img src="https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/assets/cooker.png" width="1092"/>
   <br /><br />
 
 [中文](https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/README.md) | [English](https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/README_EN.md)
@@ -14,7 +14,6 @@
 [![Static Badge](https://img.shields.io/badge/-grey?style=social&label=🤖%20ModelScope1stGen7bModel)](https://www.modelscope.cn/models/zhanghuiATchina/zhangxiaobai_shishen_full/summary)[![Static Badge](https://img.shields.io/badge/-grey?style=social&label=🤖%20ModelScope2ndGen7bModel)](https://www.modelscope.cn/models/zhanghuiATchina/zhangxiaobai_shishen2_full/summary)[![Static Badge](https://img.shields.io/badge/-grey?style=social&label=🤖%20ModelScope2ndGen1.8bModel)](https://www.modelscope.cn/models/zhanghuiATchina/zhangxiaobai_shishen2_full_1_8b/summary)
 
 </div>
-</p>
 
 ## 📍Table of Contents
 - [📍Table of Contents](#table-of-contents)
@@ -51,13 +50,13 @@
 
 The project primarily relies on the open-source model from the Shanghai AI Lab, known as internlm-chat-7b, which includes both first and second generations. We fine-tuned this model on the XiaChuFang Recipe Corpus, which consists of 1,520,327 Chinese recipes. This tuning was facilitated by Xtuner with LoRA fine-tuning, resulting in the creation of the shishen2_full model. Post-tuning, the model was integrated with a vector database into Langchain, achieving an enhanced retrieval effect through RAG (Retrieval-Augmented Generation). It supports multimodal (voice, text, image) question-answering dialogues. The frontend interaction with users is implemented using Streamlit.
 
-![Overall Technical Architecture](images/整体技术架构.png)
+![Overall Technical Architecture](assets/整体技术架构.png)
 
 ### 2. Application Workflow
 
 Upon receiving a request from a user, the application loads the models (voice model, text-to-image model, fine-tuned dialogue model) and processes the user's text or voice input. If the RAG switch is not activated, it directly calls the fine-tuned dialogue model to generate a reply, formats the result, and uses the stable diffusion model to generate an image, finally returning the result to the user. If the RAG switch is activated, it uses Langchain to search the vector database, inputs the search results into the fine-tuned dialogue model to generate a reply, formats the result, and calls the stable diffusion model to generate an image, ultimately returning the result to the user.
 
-![Application Workflow](images/处理流程.png)
+![Application Workflow](assets/处理流程.png)
 
 ## ✨ Technical Report
 
@@ -68,11 +67,11 @@ Access the technical report and explanatory videos through the following links:
 [**2. Explanatory Video**](https://www.bilibili.com/video/BV1kr421W7iA)
 
 | **Section Name**      | **Document Author**        | **Technical Lead**     |
-| --------------------- | -------------------------- | ---------------------- |
+| --------------------- | -------------------------- |------------------------|
 | **General Overview**  | Xuanyuan, Jiuyue, Zhanghui | Zhanghui               |
 | **Voice Recognition** | Xuanyuan                   | sole fish              |
 | **Text-to-Image**     | Fang Yuliang               | Fang Yuliang           |
-| **RAG**               | Xuanyuan                   | Charles, Le Zhengmeng  |
+| **RAG**               | Xuanyuan                   | Charles, Yue Zhengmeng |
 | **Model Fine-Tuning** | Xuanyuan                   | Wang Weilong, Xuanyuan |
 | **Web UI**            | Fang Yuliang               | Fang Yuliang           |
 
@@ -80,7 +79,7 @@ Access the technical report and explanatory videos through the following links:
 
 - [2024.3.20] Updated README
 - [2024.3.19] Integrated documentation into the docs directory
-- [2024.3.9] Based on the RAG module (faiss) by team member @Le Zhengmeng, integrated the text2image branch, released the fourth phase of the second-generation application based on OpenXLab A100 [openxlab A100 app](https://openxlab.org.cn/apps/detail/zhanghui-china/shishen2024) and OpenXLab A10 application [openxlab A10 app](https://openxlab.org.cn/apps/detail/zhanghui-china/shishen2024_1.8b)
+- [2024.3.9] Based on the RAG module (faiss) by team member @Yue Zhengmeng, integrated the text2image branch, released the fourth phase of the second-generation application based on OpenXLab A100 [openxlab A100 app](https://openxlab.org.cn/apps/detail/zhanghui-china/shishen2024) and OpenXLab A10 application [openxlab A10 app](https://openxlab.org.cn/apps/detail/zhanghui-china/shishen2024_1.8b)
 - [2024.3.4] Added English README
 - [2024.3.3] Based on the paraformer voice input module by team member @solo fish, integrated the text2image branch, released the third phase of the second-generation application based on OpenXLab A100 [openxlab app](https://openxlab.org.cn/apps/detail/zhanghui-china/nlp_shishen3)
 - [2024.2.24] Based on the RAG module (Chroma) by team member @Charles, integrated the text2image branch, released the second phase of the second-generation application based on OpenXLab A100 [openxlab app](https://openxlab.org.cn/apps/detail/zhanghui-china/nlp_shishen3)
@@ -169,17 +168,17 @@ Two-phase dialogue effects (text + image dialogue):
 
 Demo access addresses: [A100](https://openxlab.org.cn/apps/detail/zhanghui-china/shishen2024) [A10](https://openxlab.org.cn/apps/detail/zhanghui-china/shishen2024_1.8b)
 
-![1710422208862](images/1710422208862.png)
+![1710422208862](assets/1710422208862.png)
 
-![1710422224731](images/1710422224731.png)
+![1710422224731](assets/1710422224731.png)
 
 First-phase dialogue effects (text-only dialogue):
 
 Demo examples
 
-![answer001](images/answer001.png)
+![answer001](assets/answer001.png)
 
-![answer002](images/answer002.png)
+![answer002](assets/answer002.png)
 
 ### 6. Model Addresses
 
@@ -227,6 +226,11 @@ Second Phase
 
 ```shell
 Project Directory
+|---assets  # Image directory, generated assets are also temporarily stored here, planning to move to other directories in the future
+|     |---robot.png                                        # Dialogue robot icon
+|     |---user.png                                         # Dialogue user icon
+|     |---shishen.png                                      # Project icon (Main contributor: Liu Guanglei)
+|
 |---config   # Configuration file directory (Main contributor: Fang Yuliang)
 |     |---__init__.py                                      # Initialization script
 |     |---config.py                                        # Configuration script
@@ -235,74 +239,57 @@ Project Directory
 |     |---tech_report.md                                   # Technical report
 |     |---Introduce_x.x.pdf                                # Project introduction PPT
 |
+|---eval   # RAG module evaluation directory
+|
+|---food_icon          # Ingredient icon directory
+|     |---*.png                                            # Icons for various ingredients
+|
 |---gen_image    # Text-to-Image directory (Main contributor: Fang Yuliang)
 |     |---__init__.py                                      # Initialization script
 |     |---sd_gen_image.py                                  # Text-to-Image module using Stable Diffusion
 |     |---zhipu_ai_image.py                                # Text-to-Image module using Zhipu AI
 |
-|---images  # Image directory, generated images are also temporarily stored here, planning to move to other directories in the future
-|     |---robot.png                                        # Dialogue robot icon
-|     |---user.png                                         # Dialogue user icon
-|     |---shishen.png                                      # Project icon (Main contributor: Liu Guanglei)
+|---images   # Cache images generated by the text-to-image model
 |
-|---rag   # Second-generation RAG code directory (Main contributor: Le Zhengmeng)
-|     |---source_data                                      # Original dataset directory
-|     |     |- text.txt                                    # Original recipe dataset
-|     |---data                                             # Processed dataset directory
-|     |     |- caipu.txt                                   # Processed recipe dataset
+|---rag   # Second-generation RAG code directory (Main contributor: Yue Zhengmeng)
 |     |---chroma_db                                        # Chroma database directory
 |     |     |- chroma.sqlite3                              # Chroma database file
+|     |---data                                             # Directory of Recipe Datasets
+|     |     |- tran_dataset_1000.json                      # Test Recipe Datasets with only 1000 data
 |     |---faiss_index                                      # FAISS database directory
 |     |     |- index.faiss   
 |     |     |- index.pkl
-|     |---retrieve                                         # Retrieve directory
-|     |     |- bm25retriever.pkl
-|     |---CookMasterLLM.py
-|     |---convert_txt.py
-|     |---create_db.py
-|     |---HyQEContextualCompressionRetriever.py
-|     |---interface.py
-|     |---rag_test.py
-|     |---run_local.py
-|
-|---rag_chroma   # Second-generation RAG code directory (Main contributor: Charles)
-|     |---database                                         # Chroma database directory
-|     |     |- chroma.sqlite3                              # Chroma database file
-|     |---LLM.py
-|     |---create_db.py
-|     |---interface.py
-|
-|---src          # Ingredient icon directory
-|     |---*.png                                            # Icons for various ingredients
-|
-|---tools        # Tools directory
-|
-|---whisper_app  # Whisper voice recognition directory (Main contributor: solo fish)
-|     |---__init__.py                                      # Initialization script
-|     |---whisper.py                                       # Voice recognition processing script
+|     |---retrieve                                         # retrieve save directory
+|     |     |- bm25retriever.pkl                           # Serialized saved BM25retrieve
+|     |---CookMasterLLM.py                                 # LLM packaged by langchain
+|     |---create_db_json.py                                # Create vector database script
+|     |---HyQEContextualCompressionRetriever.py            # HyQE retriever
+|     |---interface.py                                     # RAG module interface
+|     |---README.md                                        # RAG module description
 |
 |---speech    # Paraformer voice recognition directory (Main contributor: solo fish)
 |     |---__init__.py                                      # Initialization script
 |     |---utils.py                                         # Voice recognition processing script
 |
-|---requirements.txt                                       # System dependency packages (please use pip install -r requirements.txt for installation)
-|---convert_t2s.py                                         # Traditional to Simplified Chinese conversion tool (Main contributor: Bin Bin)
-|---parse_cur_response.py                                  # Output formatting tool (Main contributor: Bin Bin)
-|---README.md                                              # This document
-|---cli_demo.py                                            # Model testing script
-|---download.py                                            # Model download script
-|---start.py                                               # Web Demo start script
 |---app.py                                                 # Web Demo main script
+|---cli_demo.py                                            # Model testing script
+|---convert_t2s.py                                         # Traditional to Simplified Chinese conversion tool (Main contributor: Bin Bin)
+|---download.py                                            # Model download script
+|---parse_cur_response.py                                  # Output formatting tool (Main contributor: Bin Bin)
+|---start.py                                               # streamlit start script
+|---web_demo.py                                            # Web Demo start script
+|---requirements.txt                                       # System dependency packages (please use pip install -r requirements.txt for installation)
+|---README.md                                              # This document
 ```
 
 ## ☕ Project Members (listed in no particular order)
 
 |                             Name                             |                         Organization                         |                         Contribution                         |                           Remarks                            |
-| :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
+|:------------------------------------------------------------:| :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
 | [Zhang Xiaobai](https://www.zhihu.com/people/zhanghui_china) | Graduated from Nanjing University, Data Engineer at a company |      Project planning, testing, and miscellaneous tasks      | Huawei Cloud HCDE (formerly Huawei Cloud MVP), Top 10 Huawei Cloud Community Bloggers in 2020, Outstanding Ascend Community Developer in 2022, Outstanding Huawei Cloud Community Moderator in 2022, MindSpore Evangelist, Excellent DataWhale Learner |
 |          [sole fish](https://github.com/YanxingLiu)          | PhD student at the University of Chinese Academy of Sciences |                      Voice input module                      |                                                              |
 |         [Charles](https://github.com/SchweitzerGAO)          | Bachelor's degree from Tongji University, currently applying for master's |    RAG module (based on Chroma) for the first generation     |                                                              |
-|       [Le Zhengmeng](https://github.com/YueZhengMeng)        | Bachelor's degree from Shanghai Ocean University, currently applying for master's | RAG module (based on faiss & Chroma) for the second generation |                                                              |
+|       [Yue Zhengmeng](https://github.com/YueZhengMeng)       | Bachelor's degree from Shanghai Ocean University, currently applying for master's | RAG module (based on faiss & Chroma) for the second generation |                                                              |
 |          [Bin Bin](https://github.com/Everfighting)          | Bachelor's degree from East China Normal University, Algorithm Developer at a company |                      Formatting output                       |                                                              |
 |         [Fang Yuliang](https://github.com/leonfrank)         | Graduated from Nanjing University, Algorithm Engineer at a company |          Text-to-Image module, configuration tools           |                                                              |
 |        [Liu Guanglei](https://github.com/Mrguanglei)         |                              -                               |              Icon design, frontend optimization              |                                                              |
@@ -314,15 +301,15 @@ Project Directory
 
 <p align="center"><b>We would like to extend our gratitude to the Shanghai Artificial Intelligence Laboratory for organizing the Shusheng·Puyu Practical Camp event~~~</b></p>
 
-<div align=center><img src ="https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/images/shanghaiailab.png"/></div>
+<div align=center><img src ="https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/assets/shanghaiailab.png"/></div>
 
 <p align="center"><b>We are deeply grateful for the computational support provided by OpenXLab for project deployment~~~</b></p>
 
-<div align=center><img src ="https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/images/openxlab.png"/></div>
+<div align=center><img src ="https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/assets/openxlab.png"/></div>
 
 <p align="center"><b>A heartfelt thank you to Puyu Assistant for their support of the project~~~</b></p>
 
-<div align=center><img width = '150' height ='150' src ="https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/images/internlm.jpg"/></div>
+<div align=center><img width = '150' height ='150' src ="https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/assets/internlm.jpg"/></div>
 
 ## License
 

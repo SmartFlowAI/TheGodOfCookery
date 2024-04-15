@@ -46,6 +46,8 @@ for i in range(len(json_data)):
 
 # 加载编码模型
 bce_emb_config = load_config('rag', 'bce_emb_config')
+# 编码向量数据库时显示进度条
+bce_emb_config["encode_kwargs"]["show_progress_bar"] = True
 embeddings = HuggingFaceEmbeddings(**bce_emb_config)
 
 # 构建BM25检索器
