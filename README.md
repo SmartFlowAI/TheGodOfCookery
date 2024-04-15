@@ -14,7 +14,7 @@
 
 </div>
 
-<div align=center><img src ="https://github.com/zzd2001/TheGodOfCookery/blob/main/assets/congratulation_cover.jpg"/></div>
+<div align=center><img src ="https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/assets/congratulation_cover.jpg"/></div>
 
 <p align="center"><b style="font-size:larger">《食神》项目获上海人工智能实验室主办的2024浦源大模型系列挑战赛春季赛创新创意奖！！！</b></p>
 
@@ -254,7 +254,7 @@ print(response)
 |
 |---images   # 暂存文生图模型生成的图片的目录
 |
-|---rag   # 二代RAG代码目录（主要贡献者 @乐正萌）
+|---rag_langchain   # 二代RAG代码目录（主要贡献者 @乐正萌）
 |     |---chroma_db                                        #chroma数据库目录
 |     |     |- chroma.sqlite3                              #chroma数据库文件
 |     |---data                                             #菜谱数据集目录
@@ -321,7 +321,7 @@ print(response)
 
 ## 开源协议
 
-本项目采用 [Apache License 2.0 开源许可证](LICENSE.txt)。
+本项目采用 [Apache License 2.0 开源许可证](LICENSE)。
 
 ## Star History
 

@@ -1,20 +1,23 @@
-import torch
-import pickle
 from dataclasses import dataclass
 from typing import Optional
+import pickle
+import torch
 from langchain.embeddings.huggingface import HuggingFaceEmbeddings
 from BCEmbedding.tools.langchain import BCERerank
 from langchain.prompts import PromptTemplate
 from langchain_community.vectorstores import FAISS
 from langchain_community.vectorstores import Chroma
 from langchain.embeddings import HuggingFaceEmbeddings
-from langchain.retrievers import ContextualCompressionRetriever, EnsembleRetriever
+from langchain.retrievers import BM25Retriever
+from langchain.retrievers import EnsembleRetriever
 from langchain.chains import RetrievalQA
+from modelscope import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
+import sys
+sys.path.append('..')
+from rag_langchain.HyQEContextualCompressionRetriever import HyQEContextualCompressionRetriever
+from rag_langchain.CookMasterLLM import CookMasterLLM
 from config import load_config
 # from config_test.config_test import load_config
-from rag.HyQEContextualCompressionRetriever import HyQEContextualCompressionRetriever
-from rag.CookMasterLLM import CookMasterLLM
-from modelscope import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
 
 
 @dataclass
@@ -34,10 +37,10 @@ def load_vector_db():
     # 除非指定使用chroma，否则默认使用faiss
     rag_model_type = load_config('rag', 'rag_model_type')
     if rag_model_type == "chroma":
-        vector_db_path = "../rag/chroma_db"
+        vector_db_path = "../rag_langchain/chroma_db"
         vectordb = Chroma(persist_directory=vector_db_path, embedding_function=embeddings)
     else:
-        vector_db_path = "../rag/faiss_index"
+        vector_db_path = "../rag_langchain/faiss_index"
         vectordb = FAISS.load_local(folder_path=vector_db_path, embeddings=embeddings)
     return vectordb
 
@@ -54,7 +57,7 @@ def load_retriever():
 
     # 加载BM25检索器
     bm25_config = load_config('rag', 'bm25_config')
-    pickle_path = "../rag/retriever/bm25retriever.pkl"
+    pickle_path = "../rag_langchain/retriever/bm25retriever.pkl"
     bm25retriever = pickle.load(open(pickle_path, 'rb'))
     bm25retriever.k = bm25_config['search_kwargs']['k']
 

@@ -2,13 +2,14 @@
 import json
 import os
 import pickle
-
 from langchain_community.retrievers import BM25Retriever
 from langchain_community.vectorstores import FAISS
 from langchain_community.vectorstores import Chroma
 from langchain.embeddings import HuggingFaceEmbeddings
 from langchain_community.vectorstores.utils import DistanceStrategy
 from langchain_core.documents import Document
+import sys
+sys.path.append('..')
 from config import load_config
 # from config_test.config_test import load_config
 
