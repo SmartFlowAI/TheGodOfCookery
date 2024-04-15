@@ -6,7 +6,7 @@ config/__pycache__
 config_test/__pycache__
 eval/__pycache__
 gen_image/__pycache__
-rag/__pycache__
+rag_langchain/__pycache__
 speech/__pycache__
 tools/__pycache__
 tools/transformers/__pycache__
