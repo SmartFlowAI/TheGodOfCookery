@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="assets/cooker.png" width="974"/>
+  <img src="https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/assets/cooker.png" width="1092"/>
   <br /><br />
 
 [中文](https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/README.md) | [English](https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/README_EN.md)
@@ -300,15 +300,15 @@ Project Directory
 
 <p align="center"><b>We would like to extend our gratitude to the Shanghai Artificial Intelligence Laboratory for organizing the Shusheng·Puyu Practical Camp event~~~</b></p>
 
-<div align=center><img src ="assets/shanghaiailab.png"/></div>
+<div align=center><img src ="https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/assets/shanghaiailab.png"/></div>
 
 <p align="center"><b>We are deeply grateful for the computational support provided by OpenXLab for project deployment~~~</b></p>
 
-<div align=center><img src ="assets/openxlab.png"/></div>
+<div align=center><img src ="https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/assets/openxlab.png"/></div>
 
 <p align="center"><b>A heartfelt thank you to Puyu Assistant for their support of the project~~~</b></p>
 
-<div align=center><img width = '150' height ='150' src ="assets/internlm.jpg"/></div>
+<div align=center><img width = '150' height ='150' src ="https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/assets/internlm.jpg"/></div>
 
 ## License
 

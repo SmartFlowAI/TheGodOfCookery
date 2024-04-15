@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="assets/cooker.png" width="974"/>
+  <img src="https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/assets/cooker.png" width="1092"/>
   <br /><br />
 
 [中文](https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/README.md) | [English](https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/README_EN.md)
@@ -14,7 +14,7 @@
 
 </div>
 
-<div align=center><img src ="assets/congratulation_cover.jpg"/></div>
+<div align=center><img src ="https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/assets/congratulation_cover.jpg"/></div>
 
 <p align="center"><b style="font-size:larger">《食神》项目获上海人工智能实验室主办的2024浦源大模型系列挑战赛春季赛创新创意奖！！！</b></p>
 
@@ -303,21 +303,21 @@ print(response)
 
 <p align="center"><b>感谢上海人工智能实验室组织的 书生·浦语实战营 学习活动~~~</b></p>
 
-<div align=center><img src ="assets/shanghaiailab.png"/></div>
+<div align=center><img src ="https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/assets/shanghaiailab.png"/></div>
 
 <p align="center"><b>感谢 OpenXLab 对项目部署的算力支持~~~</b></p>
 
-<div align=center><img src ="assets/openxlab.png"/></div>
+<div align=center><img src ="https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/assets/openxlab.png"/></div>
 
 <p align="center"><b>感谢 浦语小助手 对项目的支持~~~</b></p>
 
-<div align=center><img width = '150' height ='150' src ="assets/internlm.jpg"/></div>
+<div align=center><img width = '150' height ='150' src ="https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/assets/internlm.jpg"/></div>
 
 ## 加入我们
 
 <p><b>欢迎大模型爱好者入群参加讨论：</b></p>
 
-<div align=center><img width = '286' height ='400' src ="assets/qun.jpg"/></div>
+<div align=center><img width = '286' height ='400' src ="https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/assets/qun.jpg"/></div>
 
 ## 开源协议
 
