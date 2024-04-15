@@ -57,8 +57,8 @@ if __name__ == "__main__":
     print(retriever.retrieve("烤牛肉怎么做"))
     query_engine = load_query_engine(retriever)
     while True:
-        query=input("输入要制作的食物,输入q退出：")
-        print("User:",query)
+        query = input("输入要制作的食物,输入q退出：")
+        print("User:", query)
         print(query_engine.query(query))
-        if query=="q":
+        if query == "q":
             break

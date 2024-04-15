@@ -20,7 +20,8 @@ TODO:对一般格式的文本进行适配，因为这里没有采用切chunk，�
 
 def load_embedding_model():
     print("正在读取Embedding模型")
-    Settings.embed_model = HuggingFaceEmbedding(model_name=load_config("rag", "hf_emb_config")["model_name"],device="cuda:0")
+    Settings.embed_model = HuggingFaceEmbedding(model_name=load_config("rag", "hf_emb_config")["model_name"],
+                                                device="cuda:0")
     print("Done!")
 
 

@@ -1,11 +1,6 @@
 import os
 from collections import defaultdict
 
-
-def load_config(domain, key):
-    return Config.get(domain).get(key, None)
-
-
 # 总的config
 Config = defaultdict(dict)
 

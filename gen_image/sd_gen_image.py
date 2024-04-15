@@ -4,8 +4,9 @@ import os
 import torch
 import logging
 
+
 class SDGenImage:
-    def __init__(self, model_path, lora_path = None, lora_scale = 1.0):
+    def __init__(self, model_path, lora_path=None, lora_scale=1.0):
         # 这里先只考虑有1个lora scale:
         os.environ['HF_ENDPOINT'] = 'https://hf-mirror.com'
 

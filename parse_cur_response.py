@@ -2,11 +2,13 @@ import os.path
 import re
 
 import jieba.posseg as pseg
+
+
 # 特殊情况处理，添加用户自定义词典
 # jieba.suggest_freq('番茄', True)
 
 def split_ingredients(ingredient):
-    #ingredient = ingredient.replace('kg', '千克').replace('g', '克').replace('蒜', '蒜头')
+    # ingredient = ingredient.replace('kg', '千克').replace('g', '克').replace('蒜', '蒜头')
 
     # 正则表达式模式
     pattern = r'(?P<quantity>\d+(?:\.\d+)?|半|适量|少许|若干|[零一二两三四五六七八九十百千万亿半整适些少零壹貳贰叁參肆伍陆陸柒捌玖拾佰仟萬億兩]+)?(?P<unit>g|kg|大片|片|克|勺|张|盒|箱|个|瓣|滴|块|根|把|条]+)?(?P<ingredient>.+)'
@@ -27,8 +29,9 @@ def split_ingredients(ingredient):
             unit = ""
         if quantity == None:
             quantity = ""
-    
-    return quantity+unit, ingredient
+
+    return quantity + unit, ingredient
+
 
 def split_ingredients_old(ingredient):
     ingredient = ingredient.replace('kg', '千克').replace('g', '克').replace('蒜', '蒜头')
@@ -52,6 +55,7 @@ def split_ingredients_old(ingredient):
         else:
             name += word
     return quantity, name
+
 
 def return_final_md(cur_response):
     try:
@@ -78,7 +82,7 @@ def return_final_md(cur_response):
                 quantity, name = split_ingredients(item)
                 image_path = os.path.join(file_dir, f"src/{name}.png")
                 if os.path.exists(image_path):
-                    #image_path_and_style = f"<img src='{image_path}' width = '50' height = '50' align=center />"
+                    # image_path_and_style = f"<img src='{image_path}' width = '50' height = '50' align=center />"
                     image_path_and_style = ""
                 else:
                     image_path_and_style = ""
@@ -109,7 +113,6 @@ def return_final_md(cur_response):
 
 # Execute the function and print the output
 if __name__ == '__main__':
-
     cur_response = """
                     您需要准备以下食材:
                     ['1块鸡胸肉', '适量花生米', '1勺淀粉', '1勺料酒', '1勺生抽', '1勺老抽', '2勺醋', '1勺白糖', '1勺豆瓣酱', '1勺蚝油', '1勺食用油', '5片姜', '5瓣蒜', '1根葱','1勺盐', '5勺水']

@@ -4,13 +4,12 @@ import streamlit as st
 import torch
 from modelscope import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
 from transformers.utils import logging
-
-from config import load_config
-# from config_test.config_test import load_config
 from rag.CookMasterLLM import CookMasterLLM
 from rag.interface import (GenerationConfig,
                            generate_interactive,
                            generate_interactive_rag)
+from config import load_config
+# from config_test.config_test import load_config
 # from langchain_community.llms.tongyi import Tongyi
 logger = logging.get_logger(__name__)
 

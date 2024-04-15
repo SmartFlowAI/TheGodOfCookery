@@ -1,11 +1,12 @@
 import torch
 from modelscope import AutoTokenizer, AutoModelForCausalLM
-from tools.transformers.interface import GenerationConfig, generate_interactive
+from web_demo import GenerationConfig, generate_interactive
 
-model_name_or_path = "zhanghuiATchina/zhangxiaobai_shishen2_full" #对于二代模型改为 zhangxiaobai_shishen2_full
+model_name_or_path = "zhanghuiATchina/zhangxiaobai_shishen2_full"  # 对于二代模型改为 zhangxiaobai_shishen2_full
 
 tokenizer = AutoTokenizer.from_pretrained(model_name_or_path, trust_remote_code=True)
-model = AutoModelForCausalLM.from_pretrained(model_name_or_path, trust_remote_code=True, torch_dtype=torch.bfloat16, device_map='auto')
+model = AutoModelForCausalLM.from_pretrained(model_name_or_path, trust_remote_code=True, torch_dtype=torch.bfloat16,
+                                             device_map='auto')
 model = model.eval()
 
 messages = []
