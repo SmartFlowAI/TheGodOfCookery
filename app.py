@@ -1,22 +1,23 @@
-import base64
 import os
 import sys
+import base64
 from dataclasses import asdict
 from datetime import datetime
 import streamlit as st
 import torch
 from audiorecorder import audiorecorder
+from funasr import AutoModel
 from modelscope import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
 from transformers.utils import logging
-from funasr import AutoModel
-from speech import get_local_model
+from config import load_config
 from gen_image import image_models
+from convert_t2s import convert_t2s
 from parse_cur_response import return_final_md
 from rag.CookMasterLLM import CookMasterLLM
 from rag.interface import (GenerationConfig,
                            generate_interactive,
                            generate_interactive_rag)
-from config import load_config
+from speech import get_local_model
 
 logger = logging.get_logger(__name__)
 
@@ -132,6 +133,29 @@ def combine_history(prompt):
 
 
 @st.cache_resource
+def init_image_model():
+    image_model_type = load_config('image', 'image_model_type')
+    image_model_config = load_config('image', 'image_model_config').get(image_model_type)
+    image_model = image_models[image_model_type](**image_model_config)
+    return image_model
+
+
+def text_to_image(prompt, image_model):
+    file_dir = os.path.dirname(__file__)
+    ok, ret = image_model.create_img(prompt)
+    if ok:
+        current_datetime = datetime.now().strftime("%Y%m%d_%H%M%S")
+        new_file_name = f"food_{current_datetime}.jpg"
+        food_image_path = os.path.join(file_dir, "images/", new_file_name)
+        print(f"Image file name:{food_image_path}")
+        ret.save(food_image_path)
+    else:
+        food_image_path = os.path.join(file_dir, f"images/error.jpg")
+
+    return food_image_path
+
+
+@st.cache_resource
 def load_speech_model():
     model_dict = get_local_model(speech_model_path)
     model = AutoModel(**model_dict)
@@ -148,34 +172,15 @@ def speech_rec(speech_model):
         try:
             audio.export(audio_save_path, format="wav")
             speech_string = speech_model.generate(input=audio_save_path)[0]['text']
-            # 语言识别模型的返回结果可能有多余的空格，需要去掉
+            # 语言识别模型的返回结果可能有繁体字，需要转换。
+            # print(f"Origin speech_string:{speech_string}")
+            speech_string = convert_t2s(speech_string)
+            # print(f"Converted speech_string:{speech_string}")
+            # 语音识别模型的返回结果可能有多余的空格，需要去掉。
             speech_string = speech_string.replace(' ', '')
         except Exception as e:
             logger.warning('speech rec warning, exception is', e)
     return speech_string
-
-
-@st.cache_resource
-def init_image_model():
-    image_model_type = load_config('image', 'image_model_type')
-    image_model_config = load_config('image', 'image_model_config').get(image_model_type)
-    image_model = image_models[image_model_type](**image_model_config)
-    return image_model
-
-
-def text_to_image(prompt, image_model):
-    file_dir = os.path.dirname(__file__)
-    ok, ret = image_model.create_img(prompt)
-    if ok:
-        current_datetime = datetime.now().strftime("%Y%m%d_%H%M%S")
-        new_file_name = f"food_{current_datetime}.jpg"
-        food_image_path = os.path.join(file_dir, "assets/", new_file_name)
-        print(f"Image file name:{food_image_path}")
-        ret.save(food_image_path)
-    else:
-        food_image_path = os.path.join(file_dir, f"assets/error.jpg")
-
-    return food_image_path
 
 
 def on_clear_btn_click():
@@ -212,17 +217,17 @@ def prepare_generation_config():
         # global streaming
         # streaming = st.checkbox("Streaming")
 
-        # 5. Speech input
-        speech_prompt = speech_rec(speech_model)
-        st.session_state['speech_prompt'] = speech_prompt
-
-        # 6. Output markdown
+        # 5. Output markdown
         global enable_markdown
         enable_markdown = st.checkbox("Markdown output")
 
-        # 7. Image
+        # 6. Image
         global enable_image
         enable_image = st.checkbox("Show Image")
+
+        # 7. Speech input
+        speech_prompt = speech_rec(speech_model)
+        st.session_state['speech_prompt'] = speech_prompt
 
     if base_model_type == 'internlm-chat-7b':
         generation_config = GenerationConfig(max_length=max_length)  # InternLM1
@@ -253,10 +258,6 @@ def process_user_input(prompt,
 
     """
 
-    # print(f"Origin Prompt:{prompt}")
-    # prompt = convert_t2s(prompt).replace(" ", "")
-    # print(f"Converted Prompt:{prompt}")
-
     # Check if the user input contains certain keywords
     keywords = ["怎么做", "做法", "菜谱"]
     contains_keywords = any(keyword in prompt for keyword in keywords)
@@ -281,8 +282,8 @@ def process_user_input(prompt,
         # Generate robot response
         with st.chat_message("robot", avatar=robot_avatar):
             message_placeholder = st.empty()
-            print("prompt:", prompt)
-            print("real_prompt:", real_prompt)
+            # print("prompt:", prompt)
+            # print("real_prompt:", real_prompt)
             if enable_rag:
                 cur_response = generate_interactive_rag(
                     llm=llm,

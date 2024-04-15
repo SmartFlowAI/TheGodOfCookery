@@ -227,8 +227,13 @@ print(response)
 
 二阶段
 
-   ```shell
+```shell
 项目目录
+|---assets  # 图片目录，生成的图片临时也放在这里，今后会考虑迁移到其他目录
+|     |---robot.png                                        #对话机器人图标 
+|     |---user.png                                         #对话用户图标 
+|     |---shishen.png                                      #项目图标 （主要贡献者 @刘光磊）
+|
 |---config   # 配置文件目录（主要贡献者 @房宇亮）
 |     |---__init__.py                                      #初始化脚本
 |     |---config.py                                        #配置脚本
@@ -237,15 +242,17 @@ print(response)
 |     |---tech_report.md                                   #技术报告
 |     |---Introduce_x.x.pdf                                #项目介绍PPT
 |
+|---eval   # RAG模块评测目录
+|
+|---food_icon   # 食材图标目录
+|     |---*.png                                            #各类食材图标
+|
 |---gen_image    # 文生图目录（主要贡献者 @房宇亮）
 |     |---__init__.py                                      #初始化脚本
 |     |---sd_gen_image.py                                  #使用Stabble Disffion的文生图模块
 |     |---zhipu_ai_image.py                                #使用智谱AI的文生图模块
 |
-|---assets  # 图片目录，生成的图片临时也放在这里，今后会考虑迁移到其他目录
-|     |---robot.png                                        #对话机器人图标 
-|     |---user.png                                         #对话用户图标 
-|     |---shishen.png                                      #项目图标 （主要贡献者 @刘光磊）
+|---images   # 暂存文生图模型生成的图片的目录
 |
 |---rag   # 二代RAG代码目录（主要贡献者 @乐正萌）
 |     |---chroma_db                                        #chroma数据库目录
@@ -263,23 +270,20 @@ print(response)
 |     |---interface.py                                     #RAG模块接口
 |     |---README.md                                        #RAG模块说明
 |
-|---food_icon   # 食材图标目录
-|     |---*.png                                            #各类食材图标
-|
 |---speech   # paraformer语音识别目录（主要贡献者 @solo fish）
 |     |---__init__.py                                      #初始化脚本
 |     |---utils.py                                         #语音识别处理脚本
 |
 |---app.py                                                 #Web Demo主脚本
 |---cli_demo.py                                            #模型测试脚本
+|---convert_t2s.py                                         #繁体字转简体字工具（主要贡献者 @彬彬）
 |---download.py                                            #模型下载脚本
 |---parse_cur_response.py                                  #输出格式化处理工具 （主要贡献者 @彬彬）
 |---start.py                                               #streamlit启动脚本
 |---web_demo.py                                            #Web Demo启动脚本
 |---requirements.txt                                       #系统依赖包（请使用pip install -r requirements.txt安装）
 |---README.md                                              #本文档
-
-   ```
+```
 
 ## ☕项目成员（排名不分先后）
 

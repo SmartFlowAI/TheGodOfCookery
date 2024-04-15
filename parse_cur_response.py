@@ -64,14 +64,14 @@ def return_final_md(cur_response):
             _, ingredients_raw, steps_raw = cur_response.split(":")
             ingredients_raw, _ = ingredients_raw.split("按")
         except Exception as e:
-            print("error message is ...", e)
+            print("error1 message is ...", e)
             return cur_response
         # Evaluating the strings to lists
         try:
             ingredients_list = eval(ingredients_raw.strip())
             steps_list = eval(steps_raw.strip())
         except Exception as e:
-            print("error message is ...", e)
+            print("error2 message is ...", e)
             return cur_response
 
         file_dir = os.path.dirname(os.path.abspath(__file__))
@@ -89,14 +89,14 @@ def return_final_md(cur_response):
                 line = f"| {i + 1} | {quantity} | {name} |{image_path_and_style}|"
                 ingredients_md += line + "\n"
             except Exception as e:
-                print("error message is ...", e)
+                print("error3 message is ...", e)
 
         # Generate markdown for steps table
         steps_md = "| 步骤 | 做法 |\n| --- | --- |\n"
         try:
             steps_md += "\n".join([f"| {i + 1} | {step} |" for i, step in enumerate(steps_list) if step != '好吃'])
         except Exception as e:
-            print("error message is ...", e)
+            print("error4 message is ...", e)
 
         # Combine both markdowns into one final markdown
         # Define the recipe name for the markdown output
@@ -106,7 +106,7 @@ def return_final_md(cur_response):
         step_title = '制作步骤'
         final_md = f"# {recipe_name}\n\n## {ingredients_title}\n{ingredients_md}\n\n## {step_title}\n{steps_md}"
     except Exception as e:
-        print("error message is ...", e)
+        print("error5 message is ...", e)
         final_md = cur_response
     return final_md
 
