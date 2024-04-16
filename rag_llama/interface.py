@@ -15,8 +15,8 @@ from warnings import simplefilter
 import sys
 
 sys.path.append('..')
-# from config import load_config
-from config_test import load_config
+from config import load_config
+# from config_test import load_config
 from HyQEFusionRerankRetriever import HyQEFusionRerankRetriever
 simplefilter("ignore")
 

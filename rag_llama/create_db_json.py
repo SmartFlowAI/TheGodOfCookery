@@ -3,15 +3,15 @@ import os
 import pickle
 import faiss
 from llama_index.core import Settings
-from llama_index.core import load_index_from_storage, VectorStoreIndex, StorageContext
+from llama_index.core import VectorStoreIndex, StorageContext
 from llama_index.core.schema import TextNode
 from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 from llama_index.retrievers.bm25 import BM25Retriever
 from llama_index.vector_stores.faiss import FaissVectorStore
 import sys
 sys.path.append('..')
-# from config import load_config
-from config_test import load_config
+from config import load_config
+# from config_test import load_config
 
 dataset_config = load_config('rag_llama', 'dataset_config')
 data_path = dataset_config['data_path']
