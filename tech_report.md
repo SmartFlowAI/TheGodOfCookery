@@ -1,6 +1,6 @@
 # 食神项目技术报告 V1.4
 
-![img](https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/images/cooker.png)
+![img](https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/assets/cooker.png)
 
 # 0、项目基础信息
 
@@ -51,7 +51,7 @@ https://www.bilibili.com/video/BV1kr421W7iA
 
 ​     项目主要依赖上海人工智能实验室开源模型internlm-chat-7b（包含1代和2代），在[XiaChuFang Recipe Corpus](https://opendatalab.org.cn/XiaChuFang_Recipe_Corpus) 提供的1,520,327种中国食谱数据集上借助Xtuner进行LoRA微调，形成shishen2_full模型。使用langchain将微调后的模型与chroma或faiss向量数据库整合，实现RAG检索增强的效果。并且可以进行多模态（语音、文字、图片）问答对话。前端基于streamlit实现与用户的交互。
 
-![img](https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/images/pic01.PNG)
+![img](https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/assets/pic01.PNG)
 
 <div align = "center">图1 整体技术架构</div>
 
@@ -59,7 +59,7 @@ https://www.bilibili.com/video/BV1kr421W7iA
 
 ​     用户发出请求后，应用加载各模型（语音模型，文生图模型，微调后的对话模型），并根据用户的输入类型（文字输入或者语音输入），分别进行预处理。如果未启用RAG模块，则直接调用微调后的对话模型生成回复；如果启用RAG模块，则调用langchain检索向量数据库，并将检索结果与用户输入一起输入微调后的对话模型生成回复。之后对模型回复进行格式化输出，并调用stable diffusion (SD) 模型生成图片，最后将全部结果返回用户。
 
-![img](https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/images/pic02.PNG)
+![img](https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/assets/pic02.PNG)
 
 <div align = "center">图2 应用整体流程</div>
 
@@ -102,7 +102,7 @@ LangChain 框架由以下部分组成。
 
 下图展示了 LangChain 框架的层次组织结构，显示了跨多个层次的部分之间的相互连接。
 
-![img](https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/images/pic03.png)
+![img](https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/assets/pic03.png)
 
 <div align = "center">图 3 LangChain 框架层次组织结构</div>
 
@@ -142,7 +142,7 @@ BCEmbedding以其出色的双语和跨语种能力而著称，在语义检索中
 - **强大的双语和跨语种语义表征能力【****[基于MTEB的语义表征评测指标](https://github.com/netease-youdao/BCEmbedding/blob/master/README_zh.md#基于mteb的语义表征评测指标)****】。**
 - **基于LlamaIndex的RAG评测，表现SOTA【****[基于LlamaIndex的RAG评测指标](https://github.com/netease-youdao/BCEmbedding/blob/master/README_zh.md#基于llamaindex的rag评测指标)****】。**
 
-![img](https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/images/pic04.png)
+![img](https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/assets/pic04.png)
 
 <div align = "center">图4 BCEmbedding评测表现</div>
 
@@ -166,7 +166,7 @@ bce-reranker-base_v1模型同样是一款基于XLMRoberta的句子向量编码�
 
 同时考虑到本项目完整数据集有150万份菜谱，我们最终采用了高性能的Faiss作为RAG模块的默认向量数据库。但也保留了对轻量级的Chroma向量数据库的支持。两个向量数据库的互相切换可以在项目启动前通过修改配置文件实现。
 
-![image](./images/pic17.png)
+![image](assets/pic17.png)
 
 采用HyQE方案后，本项目RAG系统达到了近乎100%的召回率。同时，编码和保存短问题的资源消耗也远少于长菜谱。但是，该方案也存在两个明显缺陷：第一，仅适用于拥有现成的一问一答格式的数据集的项目，如果是常见的连续长文档格式的RAG数据集，就要考虑合适的文档分块与假设问题生成策略，建议参考FastGPT项目的方案。第二，用户输入仅限于“xx菜怎么做”类型的问题这一假设太强，尤其不符合多轮对话场景的后续问题。解决该问题可以考虑使用基于大模型的上下文压缩器，将对话历史和用户当前问题重写为一个新的问题。langchain框架在多轮对话RAG链的实现中就采用了这一方案。但是压缩过程中的信息损失比较严重，生成的新问题质量也难以保证。更合适的解决方法，我们也仍在探索当中。
 
@@ -216,7 +216,7 @@ SD模型的主体结构如下图所示，主要包括三个模型：
 - CLIP text encoder：提取输入text的text embeddings，通过cross attention方式送入扩散模型的UNet中作为condition；
 - UNet：扩散模型的主体，用来实现文本引导下的latent生成。
 
-![img](https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/images/pic05.png)
+![img](https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/assets/pic05.png)
 
 <div align = "center">图5 StableDiffusion模型架构</div>
 
@@ -276,17 +276,17 @@ SD模型的主体结构如下图所示，主要包括三个模型：
 - 鲁棒性：主要还是源于海量的训练数据，并在语音数据上进行了常见的增强操作，例如变速、加噪、谱增强等。
 - 多模型：提供了从tiny到large，从小到大的五种规格模型，适合不同场景。如下图所示：
 
-![img](https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/images/pic06.png)
+![img](https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/assets/pic06.png)
 
 <div align = "center">图6 Whisper多规格模型</div>
 
 ​     如下图所示，Whisper的架构是一个简单的端到端（end to end）方法，采用了编码器-解码器的[Transformer](https://arxiv.org/abs/1706.03762)模型实现。在工作过程中，输入的音频首先被分成30秒的块，并转换成log-Mel频谱图，然后传递到编码器。解码器则负责预测相应的文本标题，并与特殊token标记混合，这些标记指导单个模型执行诸如语言识别（language identification）、短语级时间戳（phrase-level timestamps）、多语言语音转录（multilingual speech transcription）和英语语音翻译（to-English speech translation）等任务。
 
-![img](https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/images/pic07.png)
+![img](https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/assets/pic07.png)
 
 <div align = "center">图7 Whisper模型架构</div>
 
-![img](https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/images/pic08.png)
+![img](https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/assets/pic08.png)
 
 <div align = "center">图8 Whisper训练过程</div>
 
@@ -300,7 +300,7 @@ SD模型的主体结构如下图所示，主要包括三个模型：
 - Sampler：通过采样，将声学特征向量与目标文字向量变换成含有语义信息的特征向量，配合双向的 Decoder 来增强模型对于上下文的建模能力
 - 基于负样本采样的 MWER 训练准则
 
-![img](https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/images/pic09.png)
+![img](https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/assets/pic09.png)
 
 <div align = "center">图9 Paraformer模型结构</div>
 
@@ -339,13 +339,13 @@ SD模型的主体结构如下图所示，主要包括三个模型：
 
 ​       大模型微调是一种迁移学习技术，通过在预训练模型的基础上进行额外训练，使其适应特定任务或领域。这一过程包括选择预训练模型，准备目标任务的数据，调整模型结构，进行微调训练，以及评估和部署。微调的优点在于节省时间和资源，提高性能，但也存在过拟合风险和模型选择与调整的复杂性。总体而言，它是一种强大的技术，特别适用于数据受限或计算资源有限的情况。在 OpenAI 发布的 ChatGPT 中，就主要应用了大模型微调技术，从而获得了惊艳全世界的效果。
 
-![img](https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/images/pic10.png)
+![img](https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/assets/pic10.png)
 
 <div align = "center">图10 ChatGPT模型微调</div>
 
 如下图所示，微调由以下4步构成。
 
-![img](https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/images/pic11.png)
+![img](https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/assets/pic11.png)
 
 <div align = "center">图11  模型微调步骤</div>
 
@@ -414,7 +414,7 @@ XTuner 是一个高效、灵活、全能的轻量化大模型微调工具库。
 
 生成的微调数据集如下所示：
 
-![img](https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/images/pic12.png)
+![img](https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/assets/pic12.png)
 
 <div align = "center">图12 微调数据集</div>
 
@@ -544,7 +544,7 @@ Streamlit 的工作流程如下：
 
 如果没有使用with st.sidebar: 开头，那么st的组件默认放到正文区域内。如下图，title，history和text_input都放在正文区域。除了text_input组件固定在正文区域最底部，其他组件在正文区域内的布局顺序和代码里的顺序也保持一致。
 
-![img](https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/images/pic13.png)
+![img](https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/assets/pic13.png)
 
 <div align = "center">图 13 streamlit页面</div>
 
@@ -579,7 +579,7 @@ streamlit 刷新机制是基于事件驱动的，它使得应用程序能够在�
 
 在加载文生图模型的函数前面加一条@st.cache_resource 装饰器，streamlit会把该函数的返回结果保存到缓存里，当这个函数的参数不变时，就会直接返回缓存里的返回结果。
 
-![img](https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/images/pic14.png)
+![img](https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/assets/pic14.png)
 
 **问题描述：**
 
@@ -593,11 +593,11 @@ streamlit 刷新机制是基于事件驱动的，它使得应用程序能够在�
 
 如果开启了文生图功能，在st.session_state.messages里加入生成图片的文件位置。
 
-![img](https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/images/pic15.png)
+![img](https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/assets/pic15.png)
 
 然后，在展示对话历史时，如果历史信息里有图片路径，在输出文字回复后，使用st.image展示图片。
 
-![img](https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/images/pic16.png)
+![img](https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/assets/pic16.png)
 
 **问题描述：**
 
