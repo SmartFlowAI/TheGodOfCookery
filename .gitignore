@@ -1,4 +1,5 @@
 .vscode
-rag/__pycache__
-tools/transformers/__pycache__
-whisper_app/__pycache__/
+__pycache__
+data
+*.drawio
+logs
