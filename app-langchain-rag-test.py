@@ -6,12 +6,12 @@ from modelscope import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
 from transformers.utils import logging
 from config import load_config
 from parse_cur_response import return_final_md
-from rag.CookMasterLLM import CookMasterLLM
-from rag.interface import (GenerationConfig,
-                           generate_interactive,
-                           generate_interactive_rag)
+from rag_langchain.CookMasterLLM import CookMasterLLM
+from rag_langchain.interface import (GenerationConfig,
+                                     generate_interactive,
+                                     generate_interactive_rag)
 
-# from config_test.config_test import load_config
+# from config_test import load_config
 # from langchain_community.llms.tongyi import Tongyi
 logger = logging.get_logger(__name__)
 
@@ -41,8 +41,8 @@ llm = None
 print(f"base model type:{base_model_type}")
 
 # rag
-rag_model_type = load_config('rag', 'rag_model_type')
-verbose = load_config('rag', 'verbose')
+rag_model_type = load_config('rag_langchain', 'rag_model_type')
+verbose = load_config('rag_langchain', 'verbose')
 print(f"RAG model type:{rag_model_type}")
 
 
