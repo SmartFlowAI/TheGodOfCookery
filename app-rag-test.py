@@ -1,10 +1,7 @@
-import os
 import sys
 import copy
-import base64
 import warnings
 from dataclasses import asdict, dataclass
-from datetime import datetime
 from typing import Callable, List, Optional
 import streamlit as st
 import torch
@@ -12,11 +9,6 @@ from torch import nn
 from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
 from transformers.generation.utils import LogitsProcessorList, StoppingCriteriaList
 from transformers.utils import logging
-from audiorecorder import audiorecorder
-from funasr import AutoModel
-from gen_image import image_models
-from convert_t2s import convert_t2s
-from speech import get_local_model
 from parse_cur_response import return_final_md
 from config import load_config
 # from config_test import load_config
@@ -60,12 +52,6 @@ else:
 print(f"RAG framework:{rag_framework}")
 print(f"RAG model type:{rag_model_type}")
 
-
-# speech
-audio_save_path = load_config('speech', 'audio_save_path')
-speech_model_type = load_config('speech', 'speech_model_type')
-speech_model_path = load_config('speech', 'speech_model_path')
-print(f"speech model type:{speech_model_type}")
 
 @dataclass
 class GenerationConfig:
@@ -284,57 +270,6 @@ def combine_history(prompt, retrieval_content=None):
     return total_prompt
 
 
-@st.cache_resource
-def init_image_model():
-    image_model_type = load_config('image', 'image_model_type')
-    image_model_config = load_config('image', 'image_model_config').get(image_model_type)
-    image_model = image_models[image_model_type](**image_model_config)
-    return image_model
-
-
-def text_to_image(prompt, image_model):
-    file_dir = os.path.dirname(__file__)
-    ok, ret = image_model.create_img(prompt)
-    if ok:
-        current_datetime = datetime.now().strftime("%Y%m%d_%H%M%S")
-        new_file_name = f"food_{current_datetime}.jpg"
-        food_image_path = os.path.join(file_dir, "images/", new_file_name)
-        print(f"Image file name:{food_image_path}")
-        ret.save(food_image_path)
-    else:
-        food_image_path = os.path.join(file_dir, f"images/error.jpg")
-
-    return food_image_path
-
-
-@st.cache_resource
-def load_speech_model():
-    model_dict = get_local_model(speech_model_path)
-    model = AutoModel(**model_dict)
-    return model
-
-
-def speech_rec(speech_model):
-    audio = audiorecorder("开始语音输入", "停止语音输入")
-    audio_b64 = base64.b64encode(audio.raw_data)
-    speech_string = None
-    if len(audio) > 0 and (
-            'last_audio_b64' not in st.session_state or st.session_state['last_audio_b64'] != audio_b64):
-        st.session_state['last_audio_b64'] = audio_b64
-        try:
-            audio.export(audio_save_path, format="wav")
-            speech_string = speech_model.generate(input=audio_save_path)[0]['text']
-            # 语言识别模型的返回结果可能有繁体字，需要转换。
-            # print(f"Origin speech_string:{speech_string}")
-            speech_string = convert_t2s(speech_string)
-            # print(f"Converted speech_string:{speech_string}")
-            # 语音识别模型的返回结果可能有多余的空格，需要去掉。
-            speech_string = speech_string.replace(' ', '')
-        except Exception as e:
-            logger.warning('speech rec warning, exception is', e)
-    return speech_string
-
-
 def on_clear_btn_click():
     """
     点击按钮时执行的函数，用于删除session_state中存储的消息。
@@ -366,18 +301,6 @@ def prepare_generation_config():
         # 3. Enable RAG
         global enable_rag
         enable_rag = st.checkbox("Enable RAG", value=True)
-
-        # 4. Output markdown
-        global enable_markdown
-        enable_markdown = st.checkbox("Markdown output")
-
-        # 5. Image
-        global enable_image
-        enable_image = st.checkbox("Show Image")
-
-        # 6. Speech input
-        speech_prompt = speech_rec(speech_model)
-        st.session_state['speech_prompt'] = speech_prompt
 
     if base_model_type == 'internlm-chat-7b':
         generation_config = GenerationConfig(max_length=max_length, top_p=top_p, temperature=temperature)  # InternLM1
@@ -467,27 +390,16 @@ def process_user_input(prompt,
                 # print('after markdown：', cur_response)
             message_placeholder.markdown(cur_response + "▌")
 
-            if enable_image and prompt:
-                food_image_path = text_to_image(prompt, image_model)
-                # add food image
-                st.image(food_image_path, width=230)
+        # Add robot response to chat history
+        response_message = {"role": "robot", "content": cur_response, "avatar": robot_avatar}
 
-
-            # Add robot response to chat history
-            response_message = {"role": "robot", "content": cur_response, "avatar": robot_avatar}
-
-            if enable_image and prompt:
-                response_message.update({'food_image_path': food_image_path})
-
-            st.session_state.messages.append(response_message)
-        torch.cuda.empty_cache()
+        st.session_state.messages.append(response_message)
+    torch.cuda.empty_cache()
 
 
 def main():
     print(f"Torch support GPU: {torch.cuda.is_available()}")
 
-    global speech_model
-    speech_model = load_speech_model()
     generation_config = prepare_generation_config()
 
     st.title("食神2 by 其实你也可以是个厨师队")
@@ -495,9 +407,6 @@ def main():
     rag_pipeline = None
     if enable_rag:
         rag_pipeline = load_rag_pipeline()
-
-    global image_model
-    image_model = init_image_model()
 
     # 1.Initialize chat history
     if "messages" not in st.session_state:
@@ -513,10 +422,6 @@ def main():
     # 3.Process text input
     if text_prompt := st.chat_input("请在这里输入"):
         process_user_input(text_prompt, model, tokenizer, rag_pipeline, generation_config)
-
-    # 4. Process speech input
-    if speech_prompt := st.session_state['speech_prompt']:
-        process_user_input(speech_prompt, model, tokenizer, rag_pipeline, generation_config)
 
 
 if __name__ == "__main__":

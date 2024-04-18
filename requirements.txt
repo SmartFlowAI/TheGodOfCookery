@@ -1,4 +1,5 @@
 torch-scatter
+rotary_embedding_torch==0.5.3
 
 #RAG
 langchain==0.1.4
