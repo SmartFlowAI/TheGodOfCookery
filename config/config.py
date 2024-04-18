@@ -6,7 +6,7 @@ Config = defaultdict(dict)
 
 # global variables
 Config['global'] = {
-    'enable_rag': None,
+    'enable_rag': True,
     'streaming': None,
     'enable_markdown': None,
     'enable_image': None,
@@ -16,10 +16,11 @@ Config['global'] = {
     'robot_prompt': '<|im_start|>assistant\n{robot}<|im_end|>\n',
     'cur_query_prompt': '<|im_start|>user\n{user}<|im_end|>\n<|im_start|>assistant\n',
     'error_response': "我是食神周星星的唯一传人，我什么菜都会做，包括黑暗料理，您可以问我什么菜怎么做———比如酸菜鱼怎么做？我会告诉你具体的做法。如果您遇到一些异常，请刷新页面重新提问。",
+    # 'rag_framework': "langchain", # 选择使用的RAG框架
+    'rag_framework': "llama-index",
     'xlab_deploy': False
 }
 
-# llm
 # llm
 Config['llm'] = {
 
@@ -102,6 +103,7 @@ Config['rag_langchain'] = {
 
 Config['rag_llama'] = {
     'rag_model_type': "faiss",  # 使用faiss数据库
+    'verbose': True,  # 是否打印详细的模型输入内容信息
     'dataset_config': {
         'data_path': "./data/tran_dataset_1000.json",  # 这里更换为完整的数据集路径
         'test_count': 1000  # 测试数据量，填入-1表示使用全部数据
@@ -112,8 +114,8 @@ Config['rag_llama'] = {
     },
     # streamlit加载使用的相对路径格式和直接运行python文件使用的相对路径格式不同
     'faiss_config': {
-        'save_path': './storage',  # 保存faiss索引的路径
-        'load_path': './rag_llama/storage',  # streamlit加载faiss索引的路径
+        'save_path': './faiss_index',  # 保存faiss索引的路径
+        'load_path': './rag_llama/faiss_index',  # streamlit加载faiss索引的路径
         'search_type': "similarity_score_threshold",
         'search_kwargs': {"k": 3, "score_threshold": 0.6}
     },
@@ -127,9 +129,9 @@ Config['rag_llama'] = {
                        'max_length': 512,
                        'embed_batch_size': 32,
                        'device': 'cuda:0'
-    },
+                       },
     'bce_reranker_config': {
-        'model': os.environ.get('HOME') + "/models/bce-reranker-base_v1",
+        'model': os.environ.get('HOME') + '/models/bce-reranker-base_v1',
         'top_n': 1,
         'device': 'cuda:0',
         'use_fp16': True

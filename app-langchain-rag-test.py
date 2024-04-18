@@ -86,7 +86,7 @@ def load_model(generation_config):
         print("正在从本地加载模型...")
         model = AutoModelForCausalLM.from_pretrained(llm_model_path, trust_remote_code=True, torch_dtype=torch.float16,
                                                      device_map="auto",
-                                                     quantization_config=quantization_config).eval()
+                                                     quantization_config=quantization_config)
         tokenizer = AutoTokenizer.from_pretrained(llm_model_path, trust_remote_code=True)
 
     llm = CookMasterLLM(model, tokenizer)
