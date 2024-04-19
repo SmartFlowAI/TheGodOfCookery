@@ -10,8 +10,6 @@ from rag_langchain.CookMasterLLM import CookMasterLLM
 from rag_langchain.interface import (GenerationConfig,
                                      generate_interactive,
                                      generate_interactive_rag)
-
-# from config_test import load_config
 # from langchain_community.llms.tongyi import Tongyi
 logger = logging.get_logger(__name__)
 
