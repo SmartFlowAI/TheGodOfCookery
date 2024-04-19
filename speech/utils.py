@@ -2,8 +2,8 @@ import os
 from omegaconf import OmegaConf
 import json
 
-def add_file_root_path(model_or_path: str, file_path_metas: dict, cfg = {}):
 
+def add_file_root_path(model_or_path: str, file_path_metas: dict, cfg={}):
     if isinstance(file_path_metas, dict):
         for k, v in file_path_metas.items():
             if isinstance(v, str):
@@ -16,6 +16,7 @@ def add_file_root_path(model_or_path: str, file_path_metas: dict, cfg = {}):
                 add_file_root_path(model_or_path, v, cfg[k])
 
     return cfg
+
 
 def get_local_model(model_path):
     kwargs = {}

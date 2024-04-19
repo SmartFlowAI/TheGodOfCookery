@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/images/cooker.png" width="1092"/>
+  <img src="https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/assets/cooker.png" width="1092"/>
   <br /><br />
 
 [中文](https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/README.md) | [English](https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/README_EN.md)
@@ -13,12 +13,12 @@
 [![Static Badge](https://img.shields.io/badge/-gery?style=social&label=🤖%20ModelScope1代7b模型)](https://www.modelscope.cn/models/zhanghuiATchina/zhangxiaobai_shishen_full/summary)[![Static Badge](https://img.shields.io/badge/-gery?style=social&label=🤖%20ModelScope2代7b模型)](https://www.modelscope.cn/models/zhanghuiATchina/zhangxiaobai_shishen2_full/summary)[![Static Badge](https://img.shields.io/badge/-gery?style=social&label=🤖%20ModelScope2代1.8b模型)](https://www.modelscope.cn/models/zhanghuiATchina/zhangxiaobai_shishen2_full_1_8b/summary)
 
 </div>
-</p>
-<div align=center><img src ="https://github.com/zzd2001/TheGodOfCookery/blob/main/images/congratulation_cover.jpg"/></div>
+
+<div align=center><img src ="https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/assets/congratulation_cover.jpg"/></div>
 
 <p align="center"><b style="font-size:larger">《食神》项目获上海人工智能实验室主办的2024浦源大模型系列挑战赛春季赛创新创意奖！！！</b></p>
 
-![](images/2024_PuYuan_Competition_certificate.png)
+![](assets/2024_PuYuan_Competition_certificate.png)
 ## 📍目录
 - [📍目录](#目录)
 - [📖项目简介](#项目简介)
@@ -56,13 +56,13 @@
 
 ​		项目主要依赖上海人工智能实验室开源模型internlm-chat-7b（包含1代和2代），在XiaChuFang Recipe Corpus 提供的1,520,327种中国食谱数据集上借助Xtuner进行LoRA微调，形成shishen2_full模型，并将微调后模型与向量数据库整合入langchain，实现RAG检索增强的效果，并可进行多模态（语音、文字、图片）问答对话，前端基于streamlit实现与用户的交互。
 
-![](images/整体技术架构.png)
+![](assets/整体技术架构.png)
 
 ### 2. 应用整体流程
 
 ​		用户发出请求后，应用加载模型（语音模型，文生图模型，微调后的对话模型），并处理用户的文字输入或者语音输入，如果未打开RAG开关，则直接调用微调后的对话模型生成回复，对结果进行格式化输出，并调用stable diffusion模型生成图片，最后将相应结果返回用户；如果打开RAG开关，则利用langchain检索向量数据库，并将检索结果输入微调后的对话模型生成回复，对结果进行格式化输出，并调用stable diffusion模型生成图片，最后将相应结果返回用户。
 
-![](images/处理流程.png)
+![](assets/处理流程.png)
 
 ## ✨技术报告
 
@@ -171,17 +171,17 @@ xtuner chat ${SAVE_PATH} [optional arguments]
 
 Demo 访问地址：[A100](https://openxlab.org.cn/apps/detail/zhanghui-china/shishen2024)  [A10](https://openxlab.org.cn/apps/detail/zhanghui-china/shishen2024_1.8b)
 
-![1710422208862](images/1710422208862.png)
+![1710422208862](assets/1710422208862.png)
 
-![1710422224731](images/1710422224731.png)
+![1710422224731](assets/1710422224731.png)
 
 一阶段对话效果（纯文本对话）：
 
 Demo 样例
 
-![answer001](images/answer001.png)
+![answer001](assets/answer001.png)
 
-![answer002](images/answer002.png)
+![answer002](assets/answer002.png)
 
 ### 6. 模型地址
 
@@ -227,8 +227,13 @@ print(response)
 
 二阶段
 
-   ```shell
+```shell
 项目目录
+|---assets  # 图片目录，生成的图片临时也放在这里，今后会考虑迁移到其他目录
+|     |---robot.png                                        #对话机器人图标 
+|     |---user.png                                         #对话用户图标 
+|     |---shishen.png                                      #项目图标 （主要贡献者 @刘光磊）
+|
 |---config   # 配置文件目录（主要贡献者 @房宇亮）
 |     |---__init__.py                                      #初始化脚本
 |     |---config.py                                        #配置脚本
@@ -237,66 +242,48 @@ print(response)
 |     |---tech_report.md                                   #技术报告
 |     |---Introduce_x.x.pdf                                #项目介绍PPT
 |
+|---eval   # RAG模块评测目录
+|
+|---food_icon   # 食材图标目录
+|     |---*.png                                            #各类食材图标
+|
 |---gen_image    # 文生图目录（主要贡献者 @房宇亮）
 |     |---__init__.py                                      #初始化脚本
 |     |---sd_gen_image.py                                  #使用Stabble Disffion的文生图模块
 |     |---zhipu_ai_image.py                                #使用智谱AI的文生图模块
 |
-|---images  # 的图片目录，生成的图片临时也放在这里，今后会考虑迁移到其他目录
-|     |---robot.png                                        #对话机器人图标 
-|     |---user.png                                         #对话用户图标 
-|     |---shishen.png                                      #项目图标 （主要贡献者 @刘光磊）
+|---images   # 暂存文生图模型生成的图片的目录
 |
-|---rag   # 二代RAG代码目录（主要贡献者 @乐正萌）
-|     |---source_data                                      #原始数据集目录
-|     |     |- text.txt                                    #原始菜谱数据集
-|     |---data                                             #处理后的数据集目录
-|     |     |- caipu.txt                                   #处理后的菜谱数据集
+|---rag_langchain   # 二代RAG代码目录（主要贡献者 @乐正萌）
 |     |---chroma_db                                        #chroma数据库目录
-|     |     |- chroma.sqlite3                              #chroma库文件
+|     |     |- chroma.sqlite3                              #chroma数据库文件
+|     |---data                                             #菜谱数据集目录
+|     |     |- tran_dataset_1000.json                      #只有1000条数据的测试菜谱数据集
 |     |---faiss_index                                      #FAISS数据库目录
 |     |     |- index.faiss   
 |     |     |- index.pkl
 |     |---retrieve                                         #retrieve目录
-|     |     |- bm25retriever.pkl
-|     |---CookMasterLLM.py
-|     |---convert_txt.py
-|     |---create_db.py
-|     |---HyQEContextualCompressionRetriever.py
-|     |---interface.py
-|     |---rag_test.py
-|     |---run_local.py
+|     |     |- bm25retriever.pkl                           #序列化保存的BM25retrieve
+|     |---CookMasterLLM.py                                 #langchain封装的大模型
+|     |---create_db_json.py                                #从json数据集文件创建向量数据库
+|     |---HyQEContextualCompressionRetriever.py            #HyQE检索器
+|     |---interface.py                                     #RAG模块接口
+|     |---README.md                                        #RAG模块说明
 |
-|---rag_chroma   # 二代RAG代码目录（主要贡献者 @Charles）
-|     |---database                                         #chroma数据库目录
-|     |     |- chroma.sqlite3                              #chroma库文件
-|     |---LLM.py
-|     |---create_db.py
-|     |---interface.py
-|
-|---src          # 食材图标目录
-|     |---*.png                                            #各类食材图标
-|
-|---tools        # 工具文件目录
-|
-|---whisper_app  # whisper语音识别目录（主要贡献者 @solo fish）
-|     |---__init__.py                                      #初始化脚本
-|     |---whisper.py                                       #语音识别处理脚本
-|
-|---speech    # paraformer语音识别目录（主要贡献者 @solo fish）
+|---speech   # paraformer语音识别目录（主要贡献者 @solo fish）
 |     |---__init__.py                                      #初始化脚本
 |     |---utils.py                                         #语音识别处理脚本
 |
-|---requirements.txt                                       #系统依赖包（请使用pip install -r requirements.txt安装）
-|---convert_t2s.py                                         #繁体字转简体字工具（主要贡献者 @彬彬）
-|---parse_cur_response.py                                  #输出格式化处理工具 （主要贡献者 @彬彬）
-|---README.md                                              #本文档
-|---cli_demo.py                                            #模型测试脚本
-|---download.py                                            #模型下载脚本
-|---start.py                                               #Web Demo启动脚本
 |---app.py                                                 #Web Demo主脚本
-
-   ```
+|---cli_demo.py                                            #模型测试脚本
+|---convert_t2s.py                                         #繁体字转简体字工具（主要贡献者 @彬彬）
+|---download.py                                            #模型下载脚本
+|---parse_cur_response.py                                  #输出格式化处理工具 （主要贡献者 @彬彬）
+|---start.py                                               #streamlit启动脚本
+|---web_demo.py                                            #Web Demo启动脚本
+|---requirements.txt                                       #系统依赖包（请使用pip install -r requirements.txt安装）
+|---README.md                                              #本文档
+```
 
 ## ☕项目成员（排名不分先后）
 
@@ -316,25 +303,25 @@ print(response)
 
 <p align="center"><b>感谢上海人工智能实验室组织的 书生·浦语实战营 学习活动~~~</b></p>
 
-<div align=center><img src ="https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/images/shanghaiailab.png"/></div>
+<div align=center><img src ="https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/assets/shanghaiailab.png"/></div>
 
 <p align="center"><b>感谢 OpenXLab 对项目部署的算力支持~~~</b></p>
 
-<div align=center><img src ="https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/images/openxlab.png"/></div>
+<div align=center><img src ="https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/assets/openxlab.png"/></div>
 
 <p align="center"><b>感谢 浦语小助手 对项目的支持~~~</b></p>
 
-<div align=center><img width = '150' height ='150' src ="https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/images/internlm.jpg"/></div>
+<div align=center><img width = '150' height ='150' src ="https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/assets/internlm.jpg"/></div>
 
 ## 加入我们
 
 <p><b>欢迎大模型爱好者入群参加讨论：</b></p>
 
-<div align=center><img width = '286' height ='400' src ="https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/images/qun.jpg"/></div>
+<div align=center><img width = '286' height ='400' src ="https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/assets/qun.jpg"/></div>
 
 ## 开源协议
 
-本项目采用 [Apache License 2.0 开源许可证](LICENSE.txt)。
+本项目采用 [Apache License 2.0 开源许可证](LICENSE)。
 
 ## Star History
 

@@ -33,8 +33,6 @@ from config import load_config
 
 logger = logging.get_logger(__name__)
 
-
-
 llm_model_path = load_config('llm', 'llm_model_path')
 
 
@@ -50,16 +48,16 @@ class GenerationConfig:
 
 @torch.inference_mode()
 def generate_interactive(
-    model,
-    tokenizer,
-    prompt,
-    generation_config: Optional[GenerationConfig] = None,
-    logits_processor: Optional[LogitsProcessorList] = None,
-    stopping_criteria: Optional[StoppingCriteriaList] = None,
-    prefix_allowed_tokens_fn: Optional[Callable[[int, torch.Tensor],
-                                                List[int]]] = None,
-    additional_eos_token_id: Optional[int] = None,
-    **kwargs,
+        model,
+        tokenizer,
+        prompt,
+        generation_config: Optional[GenerationConfig] = None,
+        logits_processor: Optional[LogitsProcessorList] = None,
+        stopping_criteria: Optional[StoppingCriteriaList] = None,
+        prefix_allowed_tokens_fn: Optional[Callable[[int, torch.Tensor],
+        List[int]]] = None,
+        additional_eos_token_id: Optional[int] = None,
+        **kwargs,
 ):
     inputs = tokenizer([prompt], padding=True, return_tensors='pt')
     input_length = len(inputs['input_ids'][0])
@@ -93,7 +91,7 @@ def generate_interactive(
         )
     elif generation_config.max_new_tokens is not None:
         generation_config.max_length = generation_config.max_new_tokens + \
-            input_ids_seq_length
+                                       input_ids_seq_length
         if not has_default_max_length:
             logger.warn(  # pylint: disable=W4902
                 f"Both 'max_new_tokens' (={generation_config.max_new_tokens}) "
@@ -188,7 +186,7 @@ def on_btn_click():
 def load_model():
     model = (AutoModelForCausalLM.from_pretrained(llm_model_path,
                                                   trust_remote_code=True).to(
-                                                      torch.bfloat16).cuda())
+        torch.bfloat16).cuda())
     tokenizer = AutoTokenizer.from_pretrained(llm_model_path,
                                               trust_remote_code=True)
     return model, tokenizer
@@ -259,7 +257,7 @@ def main():
             now_avatar = user_avatar
         else:
             now_avatar = robot_avatar
-        #print(f"now_avatar={now_avatar}")
+        # print(f"now_avatar={now_avatar}")
         with st.chat_message(message['role'], avatar=now_avatar):
             st.markdown(message['content'])
 
