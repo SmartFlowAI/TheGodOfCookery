@@ -17,7 +17,6 @@ sys.path.append('..')
 from rag_langchain.HyQEContextualCompressionRetriever import HyQEContextualCompressionRetriever
 from rag_langchain.CookMasterLLM import CookMasterLLM
 from config import load_config
-# from config_test import load_config
 
 
 @dataclass
@@ -35,8 +34,8 @@ def load_vector_db():
     embeddings = HuggingFaceEmbeddings(**bce_emb_config)
     # 加载本地索引，创建向量检索器
     # 除非指定使用chroma，否则默认使用faiss
-    rag_model_type = load_config('rag_langchain', 'rag_model_type')
-    if rag_model_type == "chroma":
+    rag_database = load_config('rag_langchain', 'rag_database')
+    if rag_database == "chroma":
         vector_db_path = "../rag_langchain/chroma_db"
         vectordb = Chroma(persist_directory=vector_db_path, embedding_function=embeddings)
     else:
@@ -48,8 +47,8 @@ def load_vector_db():
 def load_retriever():
     # 加载本地索引，创建向量检索器
     vectordb = load_vector_db()
-    rag_model_type = load_config('rag_langchain', 'rag_model_type')
-    if rag_model_type == "chroma":
+    rag_database = load_config('rag_langchain', 'rag_database')
+    if rag_database == "chroma":
         db_retriever_config = load_config('rag_langchain', 'chroma_config')
     else:
         db_retriever_config = load_config('rag_langchain', 'faiss_config')
@@ -57,8 +56,8 @@ def load_retriever():
 
     # 加载BM25检索器
     bm25_config = load_config('rag_langchain', 'bm25_config')
-    bm25_load_path = "../rag_langchain/retriever/bm25retriever.pkl"
-    bm25retriever = pickle.load(open(bm25_load_path, 'rb'))
+    bm25_save_path = "../rag_langchain/retriever/bm25retriever.pkl"
+    bm25retriever = pickle.load(open(bm25_save_path, 'rb'))
     bm25retriever.k = bm25_config['search_kwargs']['k']
 
     # 向量检索器与BM25检索器组合为集成检索器

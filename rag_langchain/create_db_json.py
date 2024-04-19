@@ -11,7 +11,6 @@ from langchain_core.documents import Document
 import sys
 sys.path.append('..')
 from config import load_config
-# from config_test import load_config
 
 dataset_config = load_config('rag_langchain', 'dataset_config')
 data_path = dataset_config['data_path']
@@ -71,8 +70,8 @@ print("BM25检索器构建完成")
 
 print("开始编码向量数据库")
 # 构建向量数据库
-rag_model_type = load_config('rag_langchain', 'rag_model_type')
-if rag_model_type == "chroma":
+rag_database = load_config('rag_langchain', 'rag_database')
+if rag_database == "chroma":
     vectordb = Chroma.from_documents(documents=split_docs, embedding=embeddings,
                                      persist_directory=load_config('rag_langchain', 'chroma_config')['save_path'])
     # 持久化到磁盘

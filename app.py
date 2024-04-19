@@ -19,7 +19,6 @@ from convert_t2s import convert_t2s
 from speech import get_local_model
 from parse_cur_response import return_final_md
 from config import load_config
-# from config_test import load_config
 
 logger = logging.get_logger(__name__)
 
@@ -51,21 +50,23 @@ print(f"base model type:{base_model_type}")
 rag_framework = load_config('global', 'rag_framework')
 if rag_framework == 'langchain':
     from rag_langchain.interface import RagPipeline
-    rag_model_type = load_config('rag_langchain', 'rag_model_type')
+
+    rag_database = load_config('rag_langchain', 'rag_database')
     verbose = load_config('rag_langchain', 'verbose')
 else:
     from rag_llama.interface import RagPipeline
-    rag_model_type = load_config('rag_llama', 'rag_model_type')
+
+    rag_database = load_config('rag_llama', 'rag_database')
     verbose = load_config('rag_llama', 'verbose')
 print(f"RAG framework:{rag_framework}")
-print(f"RAG model type:{rag_model_type}")
-
+print(f"RAG database:{rag_database}")
 
 # speech
 audio_save_path = load_config('speech', 'audio_save_path')
 speech_model_type = load_config('speech', 'speech_model_type')
 speech_model_path = load_config('speech', 'speech_model_path')
 print(f"speech model type:{speech_model_type}")
+
 
 @dataclass
 class GenerationConfig:
@@ -436,7 +437,6 @@ def process_user_input(prompt,
         with st.chat_message("robot", avatar=robot_avatar):
             message_placeholder = st.empty()
 
-
             if base_model_type == 'internlm-chat-7b':
                 additional_eos_token_id = 103028  # InternLM-7b-chat
             elif base_model_type == 'internlm2-chat-1.8b':
@@ -471,7 +471,6 @@ def process_user_input(prompt,
                 food_image_path = text_to_image(prompt, image_model)
                 # add food image
                 st.image(food_image_path, width=230)
-
 
             # Add robot response to chat history
             response_message = {"role": "robot", "content": cur_response, "avatar": robot_avatar}

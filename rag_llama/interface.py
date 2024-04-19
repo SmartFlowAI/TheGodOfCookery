@@ -7,7 +7,6 @@ from llama_index.core.retrievers import VectorIndexRetriever
 from llama_index.vector_stores.faiss import FaissVectorStore
 from rag_llama.HyQEFusionRerankRetriever import HyQEFusionRerankRetriever
 from config import load_config
-# from config_test import load_config
 
 
 def load_embedding_model():
@@ -20,9 +19,9 @@ def load_embedding_model():
 
 def load_vector_db():
     # 加载向量数据库
-    load_path = load_config('rag_llama', 'faiss_config')['load_path']
-    vector_store = FaissVectorStore.from_persist_dir(load_path)
-    storage_context = StorageContext.from_defaults(vector_store=vector_store, persist_dir=load_path)
+    save_path = load_config('rag_llama', 'faiss_config')['save_path']
+    vector_store = FaissVectorStore.from_persist_dir(save_path)
+    storage_context = StorageContext.from_defaults(vector_store=vector_store, persist_dir=save_path)
     index = load_index_from_storage(storage_context=storage_context)
     return index
 
@@ -34,8 +33,8 @@ def load_retriever():
     db_retriever = VectorIndexRetriever(index=index, similarity_top_k=faiss_top_k)
     # 加载BM25检索器
     bm25_config = load_config('rag_llama', 'bm25_config')
-    bm25_load_path = bm25_config['load_path']
-    bm25retriever = pickle.load(open(bm25_load_path, 'rb'))
+    bm25_save_path = bm25_config['save_path']
+    bm25retriever = pickle.load(open(bm25_save_path, 'rb'))
     # 加载Reranker模型Config
     bce_reranker_config = load_config('rag_llama', 'bce_reranker_config')
     # 搭建HyQEFusionRerankRetriever

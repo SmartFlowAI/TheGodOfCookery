@@ -11,7 +11,6 @@ from transformers.generation.utils import LogitsProcessorList, StoppingCriteriaL
 from transformers.utils import logging
 from parse_cur_response import return_final_md
 from config import load_config
-# from config_test import load_config
 
 logger = logging.get_logger(__name__)
 
@@ -43,14 +42,16 @@ print(f"base model type:{base_model_type}")
 rag_framework = load_config('global', 'rag_framework')
 if rag_framework == 'langchain':
     from rag_langchain.interface import RagPipeline
-    rag_model_type = load_config('rag_langchain', 'rag_model_type')
+
+    rag_database = load_config('rag_langchain', 'rag_database')
     verbose = load_config('rag_langchain', 'verbose')
 else:
     from rag_llama.interface import RagPipeline
-    rag_model_type = load_config('rag_llama', 'rag_model_type')
+
+    rag_database = load_config('rag_llama', 'rag_database')
     verbose = load_config('rag_llama', 'verbose')
 print(f"RAG framework:{rag_framework}")
-print(f"RAG model type:{rag_model_type}")
+print(f"RAG database:{rag_database}")
 
 
 @dataclass
@@ -358,7 +359,6 @@ def process_user_input(prompt,
         # Generate robot response
         with st.chat_message("robot", avatar=robot_avatar):
             message_placeholder = st.empty()
-
 
             if base_model_type == 'internlm-chat-7b':
                 additional_eos_token_id = 103028  # InternLM-7b-chat

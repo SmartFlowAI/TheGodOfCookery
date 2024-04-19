@@ -11,7 +11,6 @@ from llama_index.vector_stores.faiss import FaissVectorStore
 import sys
 sys.path.append('..')
 from config import load_config
-# from config_test import load_config
 
 dataset_config = load_config('rag_llama', 'dataset_config')
 data_path = dataset_config['data_path']
