@@ -1,6 +1,9 @@
 import os
 from collections import defaultdict
 
+dataset_scale = 'base'  # 可选 small base 或 large
+home = os.environ.get('HOME')
+
 # 总的config
 Config = defaultdict(dict)
 
@@ -26,33 +29,38 @@ Config['llm'] = {
 
     'load_4bit': True,
 
-    # 1.8b 二代
-    'base_model_type': "internlm2-chat-1.8b",
-    # 'finetuned': True,
-    # 'llm_model_path': os.environ.get('HOME') + "/models/zhanghuiATchina/zhangxiaobai_shishen2_1_8b",
-    'finetuned': False,
-    'llm_model_path': os.environ.get('HOME') + "/models/Shanghai_AI_Laboratory/internlm2-chat-1_8b",
+    # # 1.8b 二代
+    # 'base_model_type': "internlm2-chat-1.8b",
+    # # 'finetuned': True,
+    # # 'llm_model_path': home + "/models/zhanghuiATchina/zhangxiaobai_shishen2_1_8b",
+    # 'finetuned': False,
+    # 'llm_model_path': home + "/share/new_models/Shanghai_AI_Laboratory/internlm2-chat-1_8b",
 
     # 7b 二代
-    # 'base_model_type': "internlm2-chat-7b",
+    'base_model_type': "internlm2-chat-7b",
     # 'finetuned': True,
-    # 'llm_model_path': os.environ.get('HOME') + "/models/zhanghuiATchina/zhangxiaobai_shishen2_full",
-    # 'finetuned': False,
-    # 'llm_model_path': os.environ.get('HOME') + "/models/Shanghai_AI_Laboratory/internlm2-chat-7b",
+    # 'llm_model_path': home + "/models/zhanghuiATchina/zhangxiaobai_shishen2_full",
+    'finetuned': False,
+    'llm_model_path': home + "/share/new_models/Shanghai_AI_Laboratory/internlm2-chat-7b",
 
     # 7b 一代
     # 'base_model_type': "internlm-chat-7b",
     # 'finetuned': True,
-    # 'llm_model_path': os.environ.get('HOME') + "/models/" + "zhanghuiATchina/zhangxiaobai_shishen_full",
+    # 'llm_model_path': home + "/models/" + "zhanghuiATchina/zhangxiaobai_shishen_full",
     # 'finetuned': False,
-    # 'llm_model_path': os.environ.get('HOME') + "/models/Shanghai_AI_Laboratory/internlm-chat-7b",
+    # 'llm_model_path': home + "/share/new_models/Shanghai_AI_Laboratory/internlm-chat-7b",
+    
+    # llama 3
+    # 'base_model_type': "llama-3-8b-instruct",
+    # 'finetuned': False,
+    # 'llm_model_path': home + "/share/models/Shanghai_AI_Laboratory/internlm2-chat-7b",
 }
 
 # speech
 Config['speech'] = {
     'speech_model_type': "paraformer",
     'audio_save_path': "/tmp/audio.wav",
-    'speech_model_path': os.environ.get('HOME')
+    'speech_model_path': home
                          + "/models/iic/speech_paraformer-large-vad-punc_asr_nat-zh-cn-16k-common-vocab8404-pytorch"
 }
 
@@ -89,12 +97,12 @@ Config['rag_langchain'] = {
         'search_kwargs': {"k": 3}
     },
     'bce_emb_config': {
-        'model_name': os.environ.get('HOME') + "/models/bce-embedding-base_v1",
+        'model_name': home + "/models/bce-embedding-base_v1",
         'model_kwargs': {'device': 'cuda:0'},
         'encode_kwargs': {'batch_size': 32, 'normalize_embeddings': True, 'show_progress_bar': False}
     },
     'bce_reranker_config': {
-        'model': os.environ.get('HOME') + "/models/bce-reranker-base_v1",
+        'model': home + "/models/bce-reranker-base_v1",
         'top_n': 1,
         'device': 'cuda:0',
         'use_fp16': True
@@ -105,8 +113,8 @@ Config['rag_llama'] = {
     'rag_model_type': "faiss",  # 使用faiss数据库
     'verbose': True,  # 是否打印详细的模型输入内容信息
     'dataset_config': {
-        'data_path': "./data/tran_dataset_1000.json",  # 这里更换为完整的数据集路径
-        'test_count': 1000  # 测试数据量，填入-1表示使用全部数据
+        'data_path': f'{home}/cook-data/{dataset_scale}/dataset_{dataset_scale}.json',  # 这里更换为完整的数据集路径
+        'test_count': -1  # 测试数据量，填入-1表示使用全部数据
     },
     'emb_strategy': {
         "source_caipu": False,  # 是否编码原始菜谱
@@ -114,24 +122,24 @@ Config['rag_llama'] = {
     },
     # streamlit加载使用的相对路径格式和直接运行python文件使用的相对路径格式不同
     'faiss_config': {
-        'save_path': './faiss_index',  # 保存faiss索引的路径
-        'load_path': './rag_llama/faiss_index',  # streamlit加载faiss索引的路径
+        'save_path': f'{home}/cook-data/{dataset_scale}/storage',  # 保存faiss索引的路径
+        'load_path': f'{home}/cook-data/{dataset_scale}/storage',  # streamlit加载faiss索引的路径
         'search_type': "similarity_score_threshold",
         'search_kwargs': {"k": 3, "score_threshold": 0.6}
     },
     'bm25_config': {
-        'dir_path': './retriever',  # 保存bm25检索器的文件夹的路径
-        'save_path': './retriever/bm25retriever.pkl',  # 保存bm25检索器的路径
-        'load_path': './rag_llama/retriever/bm25retriever.pkl',  # streamlit加载bm25检索器的路径
+        'dir_path': f'{home}/cook-data/{dataset_scale}/retriever',  # 保存bm25检索器的文件夹的路径
+        'save_path': f'{home}/cook-data/{dataset_scale}/retriever/bm25retriever.pkl',  # 保存bm25检索器的路径
+        'load_path': f'{home}/cook-data/{dataset_scale}/retriever/bm25retriever.pkl',  # streamlit加载bm25检索器的路径
         'search_kwargs': {"k": 3}
     },
-    'bce_emb_config': {'model_name': os.environ.get('HOME') + "/models/bce-embedding-base_v1",
+    'bce_emb_config': {'model_name': home + "/models/bce-embedding-base_v1",
                        'max_length': 512,
                        'embed_batch_size': 32,
                        'device': 'cuda:0'
                        },
     'bce_reranker_config': {
-        'model': os.environ.get('HOME') + '/models/bce-reranker-base_v1',
+        'model': home + "/models/bce-reranker-base_v1",
         'top_n': 1,
         'device': 'cuda:0',
         'use_fp16': True
@@ -144,7 +152,7 @@ Config['image'] = {
     # 'image_model_type': 'glm-4',
     'image_model_config': {
         'stable-diffusion': {
-            "model_path": os.environ.get('HOME') + "/models/Taiyi-Stable-Diffusion-1B-Chinese-v0.1",
+            "model_path": home + "/models/Taiyi-Stable-Diffusion-1B-Chinese-v0.1",
             "lora_path": 'gen_image/lora_weights/meishi.safetensors',
             "lora_scale": 0.75  # range[0.,1.]
         },
