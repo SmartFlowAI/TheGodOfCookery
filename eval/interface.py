@@ -17,7 +17,6 @@ sys.path.append('..')
 from rag_langchain.HyQEContextualCompressionRetriever import HyQEContextualCompressionRetriever
 from rag_langchain.CookMasterLLM import CookMasterLLM
 from config import load_config
-# from config_test import load_config
 
 
 @dataclass

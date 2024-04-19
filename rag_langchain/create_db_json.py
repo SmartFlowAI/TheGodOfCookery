@@ -11,7 +11,6 @@ from langchain_core.documents import Document
 import sys
 sys.path.append('..')
 from config import load_config
-# from config_test import load_config
 
 dataset_config = load_config('rag_langchain', 'dataset_config')
 data_path = dataset_config['data_path']
