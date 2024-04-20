@@ -2,11 +2,11 @@
 
 ## 1. 修改config/config.py
 ### 1.1 修改向量数据库类型
-在config/config.py中修改`Config['rag_langchain']['rag_model_type']`的值，可选值为`"chroma"`和`"faiss"`，分别表示使用`chroma`数据库和`faiss`数据库。
+在config/config.py中修改`Config['rag_langchain']['rag_database']`的值，可选值为`"chroma"`和`"faiss"`，分别表示使用`chroma`数据库和`faiss`数据库。
 ```python
 Config['rag_langchain'] = {
-    # 'rag_model_type': "chroma", # 使用chroma数据库
-    'rag_model_type': "faiss",  # 使用faiss数据库
+    # 'rag_database': "chroma", # 使用chroma数据库
+    'rag_database': "faiss",  # 使用faiss数据库
 }
 ```
 
@@ -38,8 +38,8 @@ Config['rag_langchain'] = {
 ```
 
 ## 2. 运行rag/create_db_json.py
-一次运行只生成`Config['rag_langchain']['rag_model_type']`指定的数据库类型的数据库文件。  
-如果需要切换数据库类型，请修改`Config['rag_langchain']['rag_model_type']`文件后，重新运行一次。
+一次运行只生成`Config['rag_langchain']['rag_database']`指定的数据库类型的数据库文件。  
+如果需要切换数据库类型，请修改`Config['rag_langchain']['rag_database']`文件后，重新运行一次。
 
 # 注意：
 ## 向量数据库只需要生成一次，之后可以直接使用。  

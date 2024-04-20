@@ -1,6 +1,5 @@
 import os
 from modelscope import snapshot_download
-import whisper
 from config import load_config
 
 # download shishen LLM model
@@ -61,20 +60,11 @@ if not os.path.exists(os.environ.get('HOME') + '/models/Taiyi-Stable-Diffusion-1
     os.system(command_str)
 
 # download voice recognize model
-speech_model_type = load_config('speech', 'speech_model_type')
-if speech_model_type == "whisper":
-    # os.system('python download_whisper.py')
-    print("Download voice model:whisper")
-    # download whisper models
-    scales = ["tiny", "base", "small", "medium", "large"]
-    for scale in scales:
-        whisper.load_model(scale)
-else:
-    # os.system('python download_paraformer.py')
-    print("Download voice model:paraformer")
-    if not os.path.exists(os.environ.get(
-            'HOME') + 'models/iic/speech_paraformer-large-vad-punc_asr_nat-zh-cn-16k-common-vocab8404-pytorch'):
-        model_dir = snapshot_download(
-            "iic/speech_paraformer-large-vad-punc_asr_nat-zh-cn-16k-common-vocab8404-pytorch",
-            revision="v2.0.4",
-            cache_dir=os.environ.get('HOME') + '/models')
+# os.system('python download_paraformer.py')
+print("Download voice model:paraformer")
+if not os.path.exists(os.environ.get(
+        'HOME') + 'models/iic/speech_paraformer-large-vad-punc_asr_nat-zh-cn-16k-common-vocab8404-pytorch'):
+    model_dir = snapshot_download(
+        "iic/speech_paraformer-large-vad-punc_asr_nat-zh-cn-16k-common-vocab8404-pytorch",
+        revision="v2.0.4",
+        cache_dir=os.environ.get('HOME') + '/models')

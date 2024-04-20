@@ -254,19 +254,16 @@ print(response)
 |
 |---images   # 暂存文生图模型生成的图片的目录
 |
-|---rag_langchain   # 二代RAG代码目录（主要贡献者 @乐正萌）
-|     |---chroma_db                                        #chroma数据库目录
-|     |     |- chroma.sqlite3                              #chroma数据库文件
-|     |---data                                             #菜谱数据集目录
-|     |     |- tran_dataset_1000.json                      #只有1000条数据的测试菜谱数据集
-|     |---faiss_index                                      #FAISS数据库目录
-|     |     |- index.faiss   
-|     |     |- index.pkl
-|     |---retrieve                                         #retrieve目录
-|     |     |- bm25retriever.pkl                           #序列化保存的BM25retrieve
+|---rag_langchain   # 基于langchain的RAG代码目录（主要贡献者 @乐正萌）
 |     |---CookMasterLLM.py                                 #langchain封装的大模型
 |     |---create_db_json.py                                #从json数据集文件创建向量数据库
 |     |---HyQEContextualCompressionRetriever.py            #HyQE检索器
+|     |---interface.py                                     #RAG模块接口
+|     |---README.md                                        #RAG模块说明
+|
+|---rag_llama   # 基于llama-index的RAG代码目录（主要贡献者 @乐正萌）
+|     |---create_db_json.py                                #从json数据集文件创建向量数据库
+|     |---HyQEFusionRerankRetriever.py                     #HyQE检索器
 |     |---interface.py                                     #RAG模块接口
 |     |---README.md                                        #RAG模块说明
 |

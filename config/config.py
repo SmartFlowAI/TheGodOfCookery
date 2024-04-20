@@ -1,7 +1,7 @@
 import os
 from collections import defaultdict
 
-dataset_scale = 'base'  # 可选 small base 或 large
+dataset_scale = 'test'  # 可选 test、small、base 或 large
 home = os.environ.get('HOME')
 
 # 总的config
@@ -19,7 +19,7 @@ Config['global'] = {
     'robot_prompt': '<|im_start|>assistant\n{robot}<|im_end|>\n',
     'cur_query_prompt': '<|im_start|>user\n{user}<|im_end|>\n<|im_start|>assistant\n',
     'error_response': "我是食神周星星的唯一传人，我什么菜都会做，包括黑暗料理，您可以问我什么菜怎么做———比如酸菜鱼怎么做？我会告诉你具体的做法。如果您遇到一些异常，请刷新页面重新提问。",
-    # 'rag_framework': "langchain", # 选择使用的RAG框架
+    # 'rag_framework': "langchain",  # 选择使用的RAG框架
     'rag_framework': "llama-index",
     'xlab_deploy': False
 }
@@ -30,18 +30,18 @@ Config['llm'] = {
     'load_4bit': True,
 
     # # 1.8b 二代
-    # 'base_model_type': "internlm2-chat-1.8b",
+    'base_model_type': "internlm2-chat-1.8b",
     # # 'finetuned': True,
     # # 'llm_model_path': home + "/models/zhanghuiATchina/zhangxiaobai_shishen2_1_8b",
-    # 'finetuned': False,
-    # 'llm_model_path': home + "/share/new_models/Shanghai_AI_Laboratory/internlm2-chat-1_8b",
+    'finetuned': False,
+    'llm_model_path': home + "/share/new_models/Shanghai_AI_Laboratory/internlm2-chat-1_8b",
 
     # 7b 二代
-    'base_model_type': "internlm2-chat-7b",
+    # 'base_model_type': "internlm2-chat-7b",
     # 'finetuned': True,
     # 'llm_model_path': home + "/models/zhanghuiATchina/zhangxiaobai_shishen2_full",
-    'finetuned': False,
-    'llm_model_path': home + "/share/new_models/Shanghai_AI_Laboratory/internlm2-chat-7b",
+    # 'finetuned': False,
+    # 'llm_model_path': home + "/share/new_models/Shanghai_AI_Laboratory/internlm2-chat-7b",
 
     # 7b 一代
     # 'base_model_type': "internlm-chat-7b",
@@ -49,7 +49,7 @@ Config['llm'] = {
     # 'llm_model_path': home + "/models/" + "zhanghuiATchina/zhangxiaobai_shishen_full",
     # 'finetuned': False,
     # 'llm_model_path': home + "/share/new_models/Shanghai_AI_Laboratory/internlm-chat-7b",
-    
+
     # llama 3
     # 'base_model_type': "llama-3-8b-instruct",
     # 'finetuned': False,
@@ -66,12 +66,12 @@ Config['speech'] = {
 
 # rag
 Config['rag_langchain'] = {
-    # 'rag_model_type': "chroma", # 使用chroma数据库
-    'rag_model_type': "faiss",  # 使用faiss数据库
+    # 'rag_database': "chroma",  # 使用chroma数据库
+    'rag_database': "faiss",  # 使用faiss数据库
     'verbose': True,  # 是否打印详细的模型输入内容信息
     'dataset_config': {
-        'data_path': "./data/tran_dataset_1000.json",  # 这里更换为完整的数据集路径
-        'test_count': 1000  # 测试数据量，填入-1表示使用全部数据
+        'data_path': f'{home}/cook-data/{dataset_scale}/dataset_{dataset_scale}.json',  # 这里更换为完整的数据集路径
+        'test_count': -1  # 测试数据量，填入-1表示使用全部数据
     },
     'emb_strategy': {
         "source_caipu": False,  # 是否编码原始菜谱
@@ -79,21 +79,18 @@ Config['rag_langchain'] = {
     },
     # streamlit加载使用的相对路径格式和直接运行python文件使用的相对路径格式不同
     'faiss_config': {
-        'save_path': './faiss_index',  # 保存faiss索引的路径
-        'load_path': './rag_langchain/faiss_index',  # streamlit加载faiss索引的路径
+        'save_path': f'{home}/cook-data/{dataset_scale}/faiss_index',  # 保存faiss索引的路径
         'search_type': "similarity_score_threshold",
         'search_kwargs': {"k": 3, "score_threshold": 0.6}
     },
     'chroma_config': {
-        'save_path': './chroma_db',  # 保存chroma索引的路径
-        'load_path': './rag_langchain/chroma_db',  # streamlit加载chroma索引的路径
+        'save_path': f'{home}/cook-data/{dataset_scale}/chroma_db',  # 保存faiss索引的路径
         'search_type': "similarity",
         'search_kwargs': {"k": 3}
     },
     'bm25_config': {
-        'dir_path': './retriever',  # 保存bm25检索器的文件夹的路径
-        'save_path': './retriever/bm25retriever.pkl',  # 保存bm25检索器的路径
-        'load_path': './rag_langchain/retriever/bm25retriever.pkl',  # streamlit加载bm25检索器的路径
+        'dir_path': f'{home}/cook-data/{dataset_scale}/retriever_langchain',  # 保存bm25检索器的文件夹的路径
+        'save_path': f'{home}/cook-data/{dataset_scale}/retriever_langchain/bm25retriever.pkl',  # 保存bm25检索器的路径
         'search_kwargs': {"k": 3}
     },
     'bce_emb_config': {
@@ -110,7 +107,7 @@ Config['rag_langchain'] = {
 }
 
 Config['rag_llama'] = {
-    'rag_model_type': "faiss",  # 使用faiss数据库
+    'rag_database': "faiss",  # 使用faiss数据库
     'verbose': True,  # 是否打印详细的模型输入内容信息
     'dataset_config': {
         'data_path': f'{home}/cook-data/{dataset_scale}/dataset_{dataset_scale}.json',  # 这里更换为完整的数据集路径
@@ -123,14 +120,11 @@ Config['rag_llama'] = {
     # streamlit加载使用的相对路径格式和直接运行python文件使用的相对路径格式不同
     'faiss_config': {
         'save_path': f'{home}/cook-data/{dataset_scale}/storage',  # 保存faiss索引的路径
-        'load_path': f'{home}/cook-data/{dataset_scale}/storage',  # streamlit加载faiss索引的路径
-        'search_type': "similarity_score_threshold",
-        'search_kwargs': {"k": 3, "score_threshold": 0.6}
+        'search_kwargs': {"k": 3}
     },
     'bm25_config': {
-        'dir_path': f'{home}/cook-data/{dataset_scale}/retriever',  # 保存bm25检索器的文件夹的路径
-        'save_path': f'{home}/cook-data/{dataset_scale}/retriever/bm25retriever.pkl',  # 保存bm25检索器的路径
-        'load_path': f'{home}/cook-data/{dataset_scale}/retriever/bm25retriever.pkl',  # streamlit加载bm25检索器的路径
+        'dir_path': f'{home}/cook-data/{dataset_scale}/retriever_llama',  # 保存bm25检索器的文件夹的路径
+        'save_path': f'{home}/cook-data/{dataset_scale}/retriever_llama/bm25retriever.pkl',  # 保存bm25检索器的路径
         'search_kwargs': {"k": 3}
     },
     'bce_emb_config': {'model_name': home + "/models/bce-embedding-base_v1",
