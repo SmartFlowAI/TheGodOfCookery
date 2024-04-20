@@ -22,7 +22,6 @@ from langchain.memory import ConversationBufferMemory
 from langchain.chains import ConversationalRetrievalChain, LLMChain, RetrievalQA
 from rag_langchain.HyQEContextualCompressionRetriever import HyQEContextualCompressionRetriever
 from config import load_config
-# from config_test import load_config
 
 logger = logging.get_logger(__name__)
 chain_instance = None
