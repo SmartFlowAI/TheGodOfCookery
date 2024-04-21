@@ -72,7 +72,7 @@
 
 | **章节名称** | **文档写作负责人** | **技术负责人**  |
 | :----------: | :----------------: | :-------------: |
-| **总体概述** |  轩辕, 九月, 张辉  |      张辉       |
+| **总体概述** |  [轩辕](https://github.com/zzd2001), [九月](https://github.com/chg0901), 张辉  |      张辉
 | **语音识别** |        轩辕        |    sole fish    |
 |  **文生图**  |       房宇亮       |     房宇亮      |
 |   **RAG**    |        轩辕        | Charles，乐正萌 |
@@ -80,16 +80,16 @@
 |  **Web UI**  |       房宇亮       |     房宇亮      |
 
 ## 📆更新说明
-
+- [2024.4.21] 基于团队成员 @乐正萌 的HyQE(基于LangChain)合并到main分支
 - [2024.3.20] 修改readme
 - [2024.3.19] 整合文档到docs目录
-- [2024.3.9] 基于团队成员 @乐正萌 的RAG模块(faiss)，整合 text2image分支，发布二阶段第4个基于openxlab A100的应用 [openxlab A100 app](https://openxlab.org.cn/apps/detail/zhanghui-china/shishen2024) 和 openxlab A10的应用 [openxlab A10 app](https://openxlab.org.cn/apps/detail/zhanghui-china/shishen2024_1.8b)  
+- [2024.3.9] 基于团队成员 [@乐正萌](https://github.com/YueZhengMeng) 的RAG模块(faiss)，整合 text2image分支，发布二阶段第4个基于openxlab A100的应用 [点我体验](https://openxlab.org.cn/apps/detail/zhanghui-china/shishen2024) 和 openxlab A10的应用 [点我体验](https://openxlab.org.cn/apps/detail/zhanghui-china/shishen2024_1.8b)  
 - [2024.3.4] 增加英文readme
-- [2024.3.3] 基于团队成员 @solo fish 的 paraformer语音输入模块，整合 text2image分支，发布二阶段第3个基于openxlab A100的应用 [openxlab app](https://openxlab.org.cn/apps/detail/zhanghui-china/nlp_shishen3)
-- [2024.2.24] 基于团队成员 @Charles 的RAG模块(Chroma)，整合 text2image分支，发布二阶段第2个基于openxlab A100的应用 [openxlab app](https://openxlab.org.cn/apps/detail/zhanghui-china/nlp_shishen3)
-- [2024.2.22] 基于团队成员 @房生亮 的文生图模块 以及 @solo fish 的 whisper语音输入模块，整合 text2image分支，发布二阶段第1个基于openxlab A100的应用 [openxlab app](https://openxlab.org.cn/apps/detail/zhanghui-china/nlp_shishen3)
-- [2024.1.30] 基于二代150万菜谱微调的模型和APP发布。（使用InternStudio+A100 1/4X2 40G显存微调，1.25 15:46-1.30 12:25，微调历时4天20小时39分钟）
-- [2024.1.28] 基于一代150万菜谱微调的模型和APP发布。（使用WSL+Ubuntu22.04+RTX4090 24G显存微调，1.26 18:40-1.28 13:46历时1天19小时6分钟）。
+- [2024.3.3] 基于团队成员 @sole fish 的 paraformer语音输入模块，整合 text2image分支，发布二阶段第3个基于openxlab A100的应用 [点我体验](https://openxlab.org.cn/apps/detail/zhanghui-china/nlp_shishen3)
+- [2024.2.24] 基于团队成员 [@Charles](https://github.com/SchweitzerGAO) 的RAG模块(Chroma)，整合 text2image分支，发布二阶段第2个基于openxlab A100的应用 [点我体验](https://openxlab.org.cn/apps/detail/zhanghui-china/nlp_shishen3)
+- [2024.2.22] 基于团队成员 [@房宇亮](https://github.com/leonfrank) 的文生图模块 以及 [@sole fish](https://github.com/YanxingLiu) 的 whisper语音输入模块，整合 text2image分支，发布二阶段（模型基座[InternLM2-Chat-7B](https://huggingface.co/internlm/internlm2-chat-7b)）第1个基于openxlab A100的应用 [openxlab app](https://openxlab.org.cn/apps/detail/zhanghui-china/nlp_shishen3)
+- [2024.1.30] 基于团队成员 @张辉 二代150万菜谱微调的模型和APP发布。（使用InternStudio+A100 1/4X2 40G显存微调，1.25 15:46-1.30 12:25，微调历时4天20小时39分钟）
+- [2024.1.28] 基于团队成员 [@张辉](https://github.com/zhanghui-china)一代150万菜谱(使用了其中一部分数据)微调的模型（模型基座为[InternLM-Chat-7B](https://huggingface.co/internlm/internlm-chat-7b)）和APP发布。（使用WSL+Ubuntu22.04+RTX4090 24G显存微调，1.26 18:40-1.28 13:46历时1天19小时6分钟）。
 
 ## 🛠️使用指南
 

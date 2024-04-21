@@ -67,24 +67,24 @@ Access the technical report and explanatory videos through the following links:
 
 | **Section Name**      | **Document Author**        | **Technical Lead**     |
 | --------------------- | -------------------------- |------------------------|
-| **General Overview**  | Xuanyuan, Jiuyue, Zhanghui | Zhanghui               |
-| **Voice Recognition** | Xuanyuan                   | sole fish              |
+| **General Overview**  | [zzd2001](https://github.com/zzd2001), [chg001](https://github.com/chg0901), zhanghui-china |      zhanghui-china               |
+| **Voice Recognition** | zzd001                   | sole fish              |
 | **Text-to-Image**     | Fang Yuliang               | Fang Yuliang           |
-| **RAG**               | Xuanyuan                   | Charles, Yue Zhengmeng |
-| **Model Fine-Tuning** | Xuanyuan                   | Wang Weilong, Xuanyuan |
+| **RAG**               | zzd2001                  | Charles, Yue Zhengmeng |
+| **Model Fine-Tuning** | zzd2001                  |  chg001, zzd2001, zhanghui-china |
 | **Web UI**            | Fang Yuliang               | Fang Yuliang           |
 
 ## 📆 Update Notes
-
+- [2024.4.21] HyQE RAG system with LangChain proposed by team member @Yue Zhengmeng merged to main branch
 - [2024.3.20] Updated README
 - [2024.3.19] Integrated documentation into the docs directory
-- [2024.3.9] Based on the RAG module (faiss) by team member @Yue Zhengmeng, integrated the text2image branch, released the fourth phase of the second-generation application based on OpenXLab A100 [openxlab A100 app](https://openxlab.org.cn/apps/detail/zhanghui-china/shishen2024) and OpenXLab A10 application [openxlab A10 app](https://openxlab.org.cn/apps/detail/zhanghui-china/shishen2024_1.8b)
+- [2024.3.9] Based on the RAG module (faiss) by team member [@Yue Zhengmeng](https://github.com/YueZhengMeng) , integrated the text2image branch, released the fourth phase of the second-generation application based on OpenXLab A100 [Click to try it out](https://openxlab.org.cn/apps/detail/zhanghui-china/shishen2024) and OpenXLab A10 application [Click to try it out](https://openxlab.org.cn/apps/detail/zhanghui-china/shishen2024_1.8b)
 - [2024.3.4] Added English README
-- [2024.3.3] Based on the paraformer voice input module by team member @solo fish, integrated the text2image branch, released the third phase of the second-generation application based on OpenXLab A100 [openxlab app](https://openxlab.org.cn/apps/detail/zhanghui-china/nlp_shishen3)
-- [2024.2.24] Based on the RAG module (Chroma) by team member @Charles, integrated the text2image branch, released the second phase of the second-generation application based on OpenXLab A100 [openxlab app](https://openxlab.org.cn/apps/detail/zhanghui-china/nlp_shishen3)
-- [2024.2.22] Based on the text-to-image module by team member @Fang Shengliang and the whisper voice input module by @solo fish, integrated the text2image branch, released the first phase of the second-generation application based on OpenXLab A100 [openxlab app](https://openxlab.org.cn/apps/detail/zhanghui-china/nlp_shishen3)
-- [2024.1.30] Released the model and APP based on the second-generation 1.5 million recipe fine-tuning (Using InternStudio+A100 1/4X2 40G memory for fine-tuning, from 1.25 15:46 to 1.30 12:25, fine-tuning duration was 4 days 20 hours 39 minutes)
-- [2024.1.28] Released the model and APP based on the first-generation 1.5 million recipe fine-tuning (Using WSL+Ubuntu22.04+RTX4090 24G memory for fine-tuning, from 1.26 18:40 to 1.28 13:46, fine-tuning duration was 1 day 19 hours 6 minutes).
+- [2024.3.3] Based on the paraformer voice input module by team member @sole fish, integrated the text2image branch, released the third phase of the second-generation application based on OpenXLab A100 [Click to try it out](https://openxlab.org.cn/apps/detail/zhanghui-china/nlp_shishen3)
+- [2024.2.24] Based on the RAG module (Chroma) by team member [@Charles](https://github.com/SchweitzerGAO), integrated the text2image branch, released the second phase of the second-generation application based on OpenXLab A100 [Click to try it out](https://openxlab.org.cn/apps/detail/zhanghui-china/nlp_shishen3)
+- [2024.2.22] Based on the text-to-image module by team member [@Fang Yuliang](https://github.com/leonfrank) and the whisper voice input module by [@sole fish](https://github.com/YanxingLiu), integrated the text2image branch, released the first phase of the second-generation application([InternLM2-chat-7B](https://huggingface.co/internlm/internlm2-chat-7b) as the base model) based on OpenXLab A100 [openxlab app](https://openxlab.org.cn/apps/detail/zhanghui-china/nlp_shishen3)
+- [2024.1.30] Released the model and APP finetuned on the whole 1.5 million recipe based on InternLM-chat-7B (Using InternStudio+A100 1/4X2 40G memory for fine-tuning, from 1.25 15:46 to 1.30 12:25, fine-tuning duration was 4 days 20 hours 39 minutes) by team member @zhanghui-china.
+- [2024.1.28] Released the model and APP finetuned on a slice of 1.5 million recipe based on [InternLM-chat-7B](https://huggingface.co/internlm/internlm-chat-7b) (Using WSL+Ubuntu22.04+RTX4090 24G memory for fine-tuning, from 1.26 18:40 to 1.28 13:46, fine-tuning duration was 1 day 19 hours 6 minutes) by team member [@zhanghui-china](https://github.com/zhanghui-china)
 
 ## 🛠️ Usage Guide
 
