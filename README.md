@@ -19,7 +19,9 @@
 <p align="center"><b style="font-size:larger">《食神》项目获上海人工智能实验室主办的2024浦源大模型系列挑战赛春季赛创新创意奖！！！</b></p>
 
 ![](assets/2024_PuYuan_Competition_certificate.png)
+
 ## 📍目录
+
 - [📍目录](#目录)
 - [📖项目简介](#项目简介)
 - [🗺️技术架构](#️技术架构)
@@ -42,25 +44,25 @@
 - [开源协议](#开源协议)
 - [Star History](#star-history)
 
-## 📖项目简介	
+## 📖项目简介
 
-​		本项目名称为“食神”（ The God Of Cookery ），灵感来自喜剧大师周星驰主演的著名电影《食神》，旨在通过人工智能技术为用户提供烹饪咨询和食谱推荐，帮助用户更好地学习和实践烹饪技巧，降低烹饪门槛，实现《食神》电影中所讲的“只要用心，人人皆能做食神”。
+​        本项目名称为“食神”（ The God Of Cookery ），灵感来自喜剧大师周星驰主演的著名电影《食神》，旨在通过人工智能技术为用户提供烹饪咨询和食谱推荐，帮助用户更好地学习和实践烹饪技巧，降低烹饪门槛，实现《食神》电影中所讲的“只要用心，人人皆能做食神”。
 
-​		本APP的基本思想，是基于InternLM的对话模型，采用 XiaChuFang Recipe Corpus 提供的1,520,327种中国食谱进行微调，生成食谱模型。 模型存放在[ModelScope](https://www.modelscope.cn/models/zhanghuiATchina/zhangxiaobai_shishen2_full/summary)上，应用部署在[OpenXlab](https://openxlab.org.cn/apps/detail/zhanghui-china/shishen2024)上。为此感谢魔搭社区提供免费的模型存放空间，感谢OpenXLab提供应用部署环境及GPU资源。
+​        本APP的基本思想，是基于InternLM的对话模型，采用 XiaChuFang Recipe Corpus 提供的1,520,327种中国食谱进行微调，生成食谱模型。 模型存放在[ModelScope](https://www.modelscope.cn/models/zhanghuiATchina/zhangxiaobai_shishen2_full/summary)上，应用部署在[OpenXlab](https://openxlab.org.cn/apps/detail/zhanghui-china/shishen2024)上。为此感谢魔搭社区提供免费的模型存放空间，感谢OpenXLab提供应用部署环境及GPU资源。
 
-​		本APP提供的回答仅供参考，不作为正式菜谱的真实制作步骤。由于大模型的“幻觉”特性，很可能有些食谱会给用户带来心理或生理上的不利影响，切勿上纲上线。
+​        本APP提供的回答仅供参考，不作为正式菜谱的真实制作步骤。由于大模型的“幻觉”特性，很可能有些食谱会给用户带来心理或生理上的不利影响，切勿上纲上线。
 
 ## 🗺️技术架构
 
 ### 1. 整体技术架构
 
-​		项目主要依赖上海人工智能实验室开源模型internlm-chat-7b（包含1代和2代），在XiaChuFang Recipe Corpus 提供的1,520,327种中国食谱数据集上借助Xtuner进行LoRA微调，形成shishen2_full模型，并将微调后模型与向量数据库整合入langchain，实现RAG检索增强的效果，并可进行多模态（语音、文字、图片）问答对话，前端基于streamlit实现与用户的交互。
+​        项目主要依赖上海人工智能实验室开源模型internlm-chat-7b（包含1代和2代），在XiaChuFang Recipe Corpus 提供的1,520,327种中国食谱数据集上借助Xtuner进行LoRA微调，形成shishen2_full模型，并将微调后模型与向量数据库整合入langchain，实现RAG检索增强的效果，并可进行多模态（语音、文字、图片）问答对话，前端基于streamlit实现与用户的交互。
 
 ![](assets/整体技术架构.png)
 
 ### 2. 应用整体流程
 
-​		用户发出请求后，应用加载模型（语音模型，文生图模型，微调后的对话模型），并处理用户的文字输入或者语音输入，如果未打开RAG开关，则直接调用微调后的对话模型生成回复，对结果进行格式化输出，并调用stable diffusion模型生成图片，最后将相应结果返回用户；如果打开RAG开关，则利用langchain检索向量数据库，并将检索结果输入微调后的对话模型生成回复，对结果进行格式化输出，并调用stable diffusion模型生成图片，最后将相应结果返回用户。
+​        用户发出请求后，应用加载模型（语音模型，文生图模型，微调后的对话模型），并处理用户的文字输入或者语音输入，如果未打开RAG开关，则直接调用微调后的对话模型生成回复，对结果进行格式化输出，并调用stable diffusion模型生成图片，最后将相应结果返回用户；如果打开RAG开关，则利用langchain检索向量数据库，并将检索结果输入微调后的对话模型生成回复，对结果进行格式化输出，并调用stable diffusion模型生成图片，最后将相应结果返回用户。
 
 ![](assets/处理流程.png)
 
@@ -70,26 +72,44 @@
 
 [**2.讲解视频**](https://www.bilibili.com/video/BV1kr421W7iA)
 
-| **章节名称** | **文档写作负责人** | **技术负责人**  |
-| :----------: | :----------------: | :-------------: |
-| **总体概述** |  轩辕, 九月, 张辉  |      张辉       |
-| **语音识别** |        轩辕        |    sole fish    |
-|  **文生图**  |       房宇亮       |     房宇亮      |
-|   **RAG**    |        轩辕        | Charles，乐正萌 |
-| **模型微调** |        轩辕        |  张辉，轩辕   |
-|  **Web UI**  |       房宇亮       |     房宇亮      |
+| **章节名称**   | **文档写作负责人**                                                            | **技术负责人**   |
+|:----------:|:----------------------------------------------------------------------:|:-----------:|
+| **总体概述**   | [轩辕](https://github.com/zzd2001), [九月](https://github.com/chg0901), 张辉 | 张辉          |
+| **语音识别**   | 轩辕                                                                     | sole fish   |
+| **文生图**    | 房宇亮                                                                    | 房宇亮         |
+| **RAG**    | 轩辕                                                                     | Charles，乐正萌 |
+| **模型微调**   | 轩辕                                                                     | 张辉，轩辕       |
+| **Web UI** | 房宇亮                                                                    | 房宇亮         |
 
 ## 📆更新说明
 
+- **敬请期待...**
+
+- [ ]  基于llama-index和HyQE的RAG系统
+
+- [ ]  语音输出
+
+- [ ]  其他大模型支持
+
+- [2024.4.21] 基于团队成员 @乐正萌 的HyQE(基于LangChain)合并到main分支
+
 - [2024.3.20] 修改readme
+
 - [2024.3.19] 整合文档到docs目录
-- [2024.3.9] 基于团队成员 @乐正萌 的RAG模块(faiss)，整合 text2image分支，发布二阶段第4个基于openxlab A100的应用 [openxlab A100 app](https://openxlab.org.cn/apps/detail/zhanghui-china/shishen2024) 和 openxlab A10的应用 [openxlab A10 app](https://openxlab.org.cn/apps/detail/zhanghui-china/shishen2024_1.8b)  
+
+- [2024.3.9] 基于团队成员 [@乐正萌](https://github.com/YueZhengMeng) 的RAG模块(faiss)，整合 text2image分支，发布二阶段第4个基于openxlab A100的应用 [点我体验](https://openxlab.org.cn/apps/detail/zhanghui-china/shishen2024) 和 openxlab A10的应用 [点我体验](https://openxlab.org.cn/apps/detail/zhanghui-china/shishen2024_1.8b)  
+
 - [2024.3.4] 增加英文readme
-- [2024.3.3] 基于团队成员 @solo fish 的 paraformer语音输入模块，整合 text2image分支，发布二阶段第3个基于openxlab A100的应用 [openxlab app](https://openxlab.org.cn/apps/detail/zhanghui-china/nlp_shishen3)
-- [2024.2.24] 基于团队成员 @Charles 的RAG模块(Chroma)，整合 text2image分支，发布二阶段第2个基于openxlab A100的应用 [openxlab app](https://openxlab.org.cn/apps/detail/zhanghui-china/nlp_shishen3)
-- [2024.2.22] 基于团队成员 @房生亮 的文生图模块 以及 @solo fish 的 whisper语音输入模块，整合 text2image分支，发布二阶段第1个基于openxlab A100的应用 [openxlab app](https://openxlab.org.cn/apps/detail/zhanghui-china/nlp_shishen3)
-- [2024.1.30] 基于二代150万菜谱微调的模型和APP发布。（使用InternStudio+A100 1/4X2 40G显存微调，1.25 15:46-1.30 12:25，微调历时4天20小时39分钟）
-- [2024.1.28] 基于一代150万菜谱微调的模型和APP发布。（使用WSL+Ubuntu22.04+RTX4090 24G显存微调，1.26 18:40-1.28 13:46历时1天19小时6分钟）。
+
+- [2024.3.3] 基于团队成员 @sole fish 的 paraformer语音输入模块，整合 text2image分支，发布二阶段第3个基于openxlab A100的应用 [点我体验](https://openxlab.org.cn/apps/detail/zhanghui-china/nlp_shishen3)
+
+- [2024.2.24] 基于团队成员 [@Charles](https://github.com/SchweitzerGAO) 的RAG模块(Chroma)，整合 text2image分支，发布二阶段第2个基于openxlab A100的应用 [点我体验](https://openxlab.org.cn/apps/detail/zhanghui-china/nlp_shishen3)
+
+- [2024.2.22] 基于团队成员 [@房宇亮](https://github.com/leonfrank) 的文生图模块 以及 [@sole fish](https://github.com/YanxingLiu) 的 whisper语音输入模块，整合 text2image分支，发布二阶段（模型基座[InternLM2-Chat-7B](https://huggingface.co/internlm/internlm2-chat-7b)）第1个基于openxlab A100的应用 [openxlab app](https://openxlab.org.cn/apps/detail/zhanghui-china/nlp_shishen3)
+
+- [2024.1.30] 基于团队成员 @张辉 二代150万菜谱微调的模型和APP发布。（使用InternStudio+A100 1/4X2 40G显存微调，1.25 15:46-1.30 12:25，微调历时4天20小时39分钟）
+
+- [2024.1.28] 基于团队成员 [@张辉](https://github.com/zhanghui-china)一代150万菜谱(使用了其中一部分数据)微调的模型（模型基座为[InternLM-Chat-7B](https://huggingface.co/internlm/internlm-chat-7b)）和APP发布。（使用WSL+Ubuntu22.04+RTX4090 24G显存微调，1.26 18:40-1.28 13:46历时1天19小时6分钟）。
 
 ## 🛠️使用指南
 
@@ -119,6 +139,7 @@ cd ./TheGodOfCookery
 conda install pytorch torchvision torchaudio pytorch-cuda=12.1 -c pytorch -c nvidia
 pip install -r requirements.txt
 ```
+
 这里cuda的版本根据用户自己的cuda版本确定。一般为 11.8或12.1
 
 ### 3. 训练
@@ -211,7 +232,6 @@ response, history = model.chat(tokenizer, "酸菜鱼怎么做", history=history)
 print(response)
 ```
 
-
 ### 7. 实践文档
 
 [一阶段一代实践](https://zhuanlan.zhihu.com/p/678019309)  <br />
@@ -287,17 +307,17 @@ print(response)
 
 ## ☕项目成员（排名不分先后）
 
-|                        用户名                         |                      组织                      |                            贡献                            |                             备注                             |
-| :---------------------------------------------------: | :--------------------------------------------: | :--------------------------------------------------------: | :----------------------------------------------------------: |
-| [张小白](https://www.zhihu.com/people/zhanghui_china) |     南京大学本科毕业，现为某公司数据工程师     |                    项目策划、测试和打杂                    | 华为云HCDE（原华为云MVP），2020年华为云社区十佳博主，2022年昇腾社区优秀开发者，2022年华为云社区年度优秀版主，MindSpore布道师，DataWhale优秀学习者 |
-|      [sole fish](https://github.com/YanxingLiu)       |          中国科学院大学在读博士研究生          |                        语音输入模块                        |                                                              |
-|      [Charles](https://github.com/SchweitzerGAO)      |           同济大学本科毕业生，考研中           |                 一代RAG模块（基于Chroma）                  |                                                              |
-|       [乐正萌](https://github.com/YueZhengMeng)       |         上海海洋大学本科毕业生，考研中         |              二代RAG模块（基于faiss&Chroma）               |                                                              |
-|        [彬彬](https://github.com/Everfighting)        | 华东师范大学本科毕业、现为某公司算法开发工程师 |                         格式化输出                         |                                                              |
-|        [房宇亮](https://github.com/leonfrank)         |     南京大学本科毕业，现为某公司算法工程师     |                    文生图模块、配置工具                    |                                                              |
-|        [刘光磊](https://github.com/Mrguanglei)        |                       -                        |                     图标设计                     |                                                              |
-|          [轩辕](https://github.com/zzd2001)           |                南京大学在读硕士                |                   项目文档、视频整合                   |                                                              |
-|          [程宏](https://github.com/chg0901)           |                [minisora](https://github.com/mini-sora/minisora)主要维护者                |                   技术资源整合                   |  
+| 用户名                                                | 组织                                                     | 贡献                      | 备注                                                                                          |
+|:--------------------------------------------------:|:------------------------------------------------------:|:-----------------------:|:-------------------------------------------------------------------------------------------:|
+| [张小白](https://www.zhihu.com/people/zhanghui_china) | 南京大学本科毕业，现为某公司数据工程师                                    | 项目策划、测试和打杂              | 华为云HCDE（原华为云MVP），2020年华为云社区十佳博主，2022年昇腾社区优秀开发者，2022年华为云社区年度优秀版主，MindSpore布道师，DataWhale优秀学习者 |
+| [sole fish](https://github.com/YanxingLiu)         | 中国科学院大学在读博士研究生                                         | 语音输入模块                  |                                                                                             |
+| [Charles](https://github.com/SchweitzerGAO)        | 同济大学本科毕业生，考研中                                          | 一代RAG模块（基于Chroma）       |                                                                                             |
+| [乐正萌](https://github.com/YueZhengMeng)             | 上海海洋大学本科毕业生，考研中                                        | 二代RAG模块（基于faiss&Chroma） |                                                                                             |
+| [彬彬](https://github.com/Everfighting)              | 华东师范大学本科毕业、现为某公司算法开发工程师                                | 格式化输出                   |                                                                                             |
+| [房宇亮](https://github.com/leonfrank)                | 南京大学本科毕业，现为某公司算法工程师                                    | 文生图模块、配置工具              |                                                                                             |
+| [刘光磊](https://github.com/Mrguanglei)               | -                                                      | 图标设计                    |                                                                                             |
+| [轩辕](https://github.com/zzd2001)                   | 南京大学在读硕士                                               | 项目文档、视频整合               |                                                                                             |
+| [程宏](https://github.com/chg0901)                   | [minisora](https://github.com/mini-sora/minisora)主要维护者 | 技术资源整合                  |                                                                                             |
 
 ## 💖特别鸣谢
 

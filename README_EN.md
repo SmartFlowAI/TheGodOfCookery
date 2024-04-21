@@ -15,6 +15,7 @@
 </div>
 
 ## 📍Table of Contents
+
 - [📍Table of Contents](#table-of-contents)
 - [📖 Project Introduction](#-project-introduction)
 - [🗺️ Technical Architecture](#️-technical-architecture)
@@ -37,11 +38,11 @@
 - [License](#license)
 - [Star History](#star-history)
 
-
 ## 📖 Project Introduction
-​	This project, named "The God of Cookery," is inspired by the renowned movie of the same name starring the comedic master, Stephen Chow. The project's goal is to provide cooking advice and recipe recommendations through artificial intelligence technology, helping users to enhance their cooking skills and reduce the barriers to cooking, thereby realizing the movie's message: "With heart, anyone can become a god of cookery."
-​	The core concept of this application is based on the InternLM dialogue model, which has been fine-tuned using the XiaChuFang Recipe Corpus, consisting of 1,520,327 Chinese recipes. The model is hosted on [ModelScope](https://www.modelscope.cn/models/zhanghuiATchina/zhangxiaobai_shishen2_full/summary), and the application is deployed on [OpenXLab](https://openxlab.org.cn/apps/detail/zhanghui-china/shishen2024). Special thanks to the Moda Community for providing free space for model hosting and to OpenXLab for offering the deployment environment and GPU resources.
-​	Please note that the answers provided by this application are intended for reference only and should not be considered as actual steps for recipe preparation. Due to the "hallucination" characteristics of large-scale models, some recipes might cause psychological or physiological effects. Users are advised not to take these recipes out of context.
+
+​    This project, named "The God of Cookery," is inspired by the renowned movie of the same name starring the comedic master, Stephen Chow. The project's goal is to provide cooking advice and recipe recommendations through artificial intelligence technology, helping users to enhance their cooking skills and reduce the barriers to cooking, thereby realizing the movie's message: "With heart, anyone can become a god of cookery."
+​    The core concept of this application is based on the InternLM dialogue model, which has been fine-tuned using the XiaChuFang Recipe Corpus, consisting of 1,520,327 Chinese recipes. The model is hosted on [ModelScope](https://www.modelscope.cn/models/zhanghuiATchina/zhangxiaobai_shishen2_full/summary), and the application is deployed on [OpenXLab](https://openxlab.org.cn/apps/detail/zhanghui-china/shishen2024). Special thanks to the Moda Community for providing free space for model hosting and to OpenXLab for offering the deployment environment and GPU resources.
+​    Please note that the answers provided by this application are intended for reference only and should not be considered as actual steps for recipe preparation. Due to the "hallucination" characteristics of large-scale models, some recipes might cause psychological or physiological effects. Users are advised not to take these recipes out of context.
 
 ## 🗺️ Technical Architecture
 
@@ -65,26 +66,46 @@ Access the technical report and explanatory videos through the following links:
 
 [**2. Explanatory Video**](https://www.bilibili.com/video/BV1kr421W7iA)
 
-| **Section Name**      | **Document Author**        | **Technical Lead**     |
-| --------------------- | -------------------------- |------------------------|
-| **General Overview**  | Xuanyuan, Jiuyue, Zhanghui | Zhanghui               |
-| **Voice Recognition** | Xuanyuan                   | sole fish              |
-| **Text-to-Image**     | Fang Yuliang               | Fang Yuliang           |
-| **RAG**               | Xuanyuan                   | Charles, Yue Zhengmeng |
-| **Model Fine-Tuning** | Xuanyuan                   | Wang Weilong, Xuanyuan |
-| **Web UI**            | Fang Yuliang               | Fang Yuliang           |
+| **Section Name**      | **Document Author**                                                                         | **Technical Lead**              |
+| --------------------- | ------------------------------------------------------------------------------------------- | ------------------------------- |
+| **General Overview**  | [zzd2001](https://github.com/zzd2001), [chg001](https://github.com/chg0901), zhanghui-china | zhanghui-china                  |
+| **Voice Recognition** | zzd001                                                                                      | sole fish                       |
+| **Text-to-Image**     | Fang Yuliang                                                                                | Fang Yuliang                    |
+| **RAG**               | zzd2001                                                                                     | Charles, Yue Zhengmeng          |
+| **Model Fine-Tuning** | zzd2001                                                                                     | chg001, zzd2001, zhanghui-china |
+| **Web UI**            | Fang Yuliang                                                                                | Fang Yuliang                    |
 
 ## 📆 Update Notes
 
+- **Coming Soon...**
+
+- [ ]  RAG system based on llama-index and HyQE
+
+- [ ]  Speech output
+
+- [ ]  Support of other LLMs
+  
+  - 
+
+- [2024.4.21] HyQE RAG system with LangChain proposed by team member @Yue Zhengmeng merged to main branch
+
 - [2024.3.20] Updated README
+
 - [2024.3.19] Integrated documentation into the docs directory
-- [2024.3.9] Based on the RAG module (faiss) by team member @Yue Zhengmeng, integrated the text2image branch, released the fourth phase of the second-generation application based on OpenXLab A100 [openxlab A100 app](https://openxlab.org.cn/apps/detail/zhanghui-china/shishen2024) and OpenXLab A10 application [openxlab A10 app](https://openxlab.org.cn/apps/detail/zhanghui-china/shishen2024_1.8b)
+
+- [2024.3.9] Based on the RAG module (faiss) by team member [@Yue Zhengmeng](https://github.com/YueZhengMeng) , integrated the text2image branch, released the fourth phase of the second-generation application based on OpenXLab A100 [Click to try it out](https://openxlab.org.cn/apps/detail/zhanghui-china/shishen2024) and OpenXLab A10 application [Click to try it out](https://openxlab.org.cn/apps/detail/zhanghui-china/shishen2024_1.8b)
+
 - [2024.3.4] Added English README
-- [2024.3.3] Based on the paraformer voice input module by team member @solo fish, integrated the text2image branch, released the third phase of the second-generation application based on OpenXLab A100 [openxlab app](https://openxlab.org.cn/apps/detail/zhanghui-china/nlp_shishen3)
-- [2024.2.24] Based on the RAG module (Chroma) by team member @Charles, integrated the text2image branch, released the second phase of the second-generation application based on OpenXLab A100 [openxlab app](https://openxlab.org.cn/apps/detail/zhanghui-china/nlp_shishen3)
-- [2024.2.22] Based on the text-to-image module by team member @Fang Shengliang and the whisper voice input module by @solo fish, integrated the text2image branch, released the first phase of the second-generation application based on OpenXLab A100 [openxlab app](https://openxlab.org.cn/apps/detail/zhanghui-china/nlp_shishen3)
-- [2024.1.30] Released the model and APP based on the second-generation 1.5 million recipe fine-tuning (Using InternStudio+A100 1/4X2 40G memory for fine-tuning, from 1.25 15:46 to 1.30 12:25, fine-tuning duration was 4 days 20 hours 39 minutes)
-- [2024.1.28] Released the model and APP based on the first-generation 1.5 million recipe fine-tuning (Using WSL+Ubuntu22.04+RTX4090 24G memory for fine-tuning, from 1.26 18:40 to 1.28 13:46, fine-tuning duration was 1 day 19 hours 6 minutes).
+
+- [2024.3.3] Based on the paraformer voice input module by team member @sole fish, integrated the text2image branch, released the third phase of the second-generation application based on OpenXLab A100 [Click to try it out](https://openxlab.org.cn/apps/detail/zhanghui-china/nlp_shishen3)
+
+- [2024.2.24] Based on the RAG module (Chroma) by team member [@Charles](https://github.com/SchweitzerGAO), integrated the text2image branch, released the second phase of the second-generation application based on OpenXLab A100 [Click to try it out](https://openxlab.org.cn/apps/detail/zhanghui-china/nlp_shishen3)
+
+- [2024.2.22] Based on the text-to-image module by team member [@Fang Yuliang](https://github.com/leonfrank) and the whisper voice input module by [@sole fish](https://github.com/YanxingLiu), integrated the text2image branch, released the first phase of the second-generation application([InternLM2-chat-7B](https://huggingface.co/internlm/internlm2-chat-7b) as the base model) based on OpenXLab A100 [openxlab app](https://openxlab.org.cn/apps/detail/zhanghui-china/nlp_shishen3)
+
+- [2024.1.30] Released the model and APP finetuned on the whole 1.5 million recipe based on InternLM-chat-7B (Using InternStudio+A100 1/4X2 40G memory for fine-tuning, from 1.25 15:46 to 1.30 12:25, fine-tuning duration was 4 days 20 hours 39 minutes) by team member @zhanghui-china.
+
+- [2024.1.28] Released the model and APP finetuned on a slice of 1.5 million recipe based on [InternLM-chat-7B](https://huggingface.co/internlm/internlm-chat-7b) (Using WSL+Ubuntu22.04+RTX4090 24G memory for fine-tuning, from 1.26 18:40 to 1.28 13:46, fine-tuning duration was 1 day 19 hours 6 minutes) by team member [@zhanghui-china](https://github.com/zhanghui-china)
 
 ## 🛠️ Usage Guide
 
@@ -283,18 +304,18 @@ Project Directory
 
 ## ☕ Project Members (listed in no particular order)
 
-|                             Name                             |                         Organization                         |                         Contribution                         |                           Remarks                            |
-|:------------------------------------------------------------:| :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
-| [Zhang Xiaobai](https://www.zhihu.com/people/zhanghui_china) | Graduated from Nanjing University, Data Engineer at a company |      Project planning, testing, and miscellaneous tasks      | Huawei Cloud HCDE (formerly Huawei Cloud MVP), Top 10 Huawei Cloud Community Bloggers in 2020, Outstanding Ascend Community Developer in 2022, Outstanding Huawei Cloud Community Moderator in 2022, MindSpore Evangelist, Excellent DataWhale Learner |
-|          [sole fish](https://github.com/YanxingLiu)          | PhD student at the University of Chinese Academy of Sciences |                      Voice input module                      |                                                              |
-|         [Charles](https://github.com/SchweitzerGAO)          | Bachelor's degree from Tongji University, currently applying for master's |    RAG module (based on Chroma) for the first generation     |                                                              |
-|       [Yue Zhengmeng](https://github.com/YueZhengMeng)       | Bachelor's degree from Shanghai Ocean University, currently applying for master's | RAG module (based on faiss & Chroma) for the second generation |                                                              |
-|          [Bin Bin](https://github.com/Everfighting)          | Bachelor's degree from East China Normal University, Algorithm Developer at a company |                      Formatting output                       |                                                              |
-|         [Fang Yuliang](https://github.com/leonfrank)         | Graduated from Nanjing University, Algorithm Engineer at a company |          Text-to-Image module, configuration tools           |                                                              |
-|        [Liu Guanglei](https://github.com/Mrguanglei)         |                              -                               |              Icon design, frontend optimization              |                                                              |
-|         [Miao Miao Mi](https://github.com/miyc1996)          | Master's degree from Beijing University of Aeronautics and Astronautics, Engineer at a state-owned enterprise in Shanghai | Dataset preparation, subsequent local model deployment testing |                                                              |
-|                         Wang Weilong                         |                              -                               |                  Dataset, model fine-tuning                  |                                                              |
-|            [Xuanyuan](https://github.com/zzd2001)            |            Master's student at Nanjing University            |       Document preparation, dataset, model fine-tuning       |                                                              |
+| Name                                                         | Organization                                                                                                              | Contribution                                                   | Remarks                                                                                                                                                                                                                                                |
+|:------------------------------------------------------------:|:-------------------------------------------------------------------------------------------------------------------------:|:--------------------------------------------------------------:|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
+| [Zhang Xiaobai](https://www.zhihu.com/people/zhanghui_china) | Graduated from Nanjing University, Data Engineer at a company                                                             | Project planning, testing, and miscellaneous tasks             | Huawei Cloud HCDE (formerly Huawei Cloud MVP), Top 10 Huawei Cloud Community Bloggers in 2020, Outstanding Ascend Community Developer in 2022, Outstanding Huawei Cloud Community Moderator in 2022, MindSpore Evangelist, Excellent DataWhale Learner |
+| [sole fish](https://github.com/YanxingLiu)                   | PhD student at the University of Chinese Academy of Sciences                                                              | Voice input module                                             |                                                                                                                                                                                                                                                        |
+| [Charles](https://github.com/SchweitzerGAO)                  | Bachelor's degree from Tongji University, currently applying for master's                                                 | RAG module (based on Chroma) for the first generation          |                                                                                                                                                                                                                                                        |
+| [Yue Zhengmeng](https://github.com/YueZhengMeng)             | Bachelor's degree from Shanghai Ocean University, currently applying for master's                                         | RAG module (based on faiss & Chroma) for the second generation |                                                                                                                                                                                                                                                        |
+| [Bin Bin](https://github.com/Everfighting)                   | Bachelor's degree from East China Normal University, Algorithm Developer at a company                                     | Formatting output                                              |                                                                                                                                                                                                                                                        |
+| [Fang Yuliang](https://github.com/leonfrank)                 | Graduated from Nanjing University, Algorithm Engineer at a company                                                        | Text-to-Image module, configuration tools                      |                                                                                                                                                                                                                                                        |
+| [Liu Guanglei](https://github.com/Mrguanglei)                | -                                                                                                                         | Icon design, frontend optimization                             |                                                                                                                                                                                                                                                        |
+| [Miao Miao Mi](https://github.com/miyc1996)                  | Master's degree from Beijing University of Aeronautics and Astronautics, Engineer at a state-owned enterprise in Shanghai | Dataset preparation, subsequent local model deployment testing |                                                                                                                                                                                                                                                        |
+| Wang Weilong                                                 | -                                                                                                                         | Dataset, model fine-tuning                                     |                                                                                                                                                                                                                                                        |
+| [Xuanyuan](https://github.com/zzd2001)                       | Master's student at Nanjing University                                                                                    | Document preparation, dataset, model fine-tuning               |                                                                                                                                                                                                                                                        |
 
 ## 💖 Special Thanks
 
