@@ -56,7 +56,7 @@ Config['speech'] = {
                          + "/models/iic/speech_paraformer-large-vad-punc_asr_nat-zh-cn-16k-common-vocab8404-pytorch"
 }
 
-# rag
+# RAG with LangChain
 Config['rag_langchain'] = {
     # 'rag_model_type': "chroma", # 使用chroma数据库
     'rag_model_type': "faiss",  # 使用faiss数据库
@@ -73,34 +73,36 @@ Config['rag_langchain'] = {
     'faiss_config': {
         'save_path': './faiss_index',  # 保存faiss索引的路径
         'load_path': './rag_langchain/faiss_index',  # streamlit加载faiss索引的路径
-        'search_type': "similarity_score_threshold",
-        'search_kwargs': {"k": 3, "score_threshold": 0.6}
+        'search_type': "similarity_score_threshold", # 搜索方式，指定相似度指标
+        'search_kwargs': {"k": 3, "score_threshold": 0.6} # k: 保留top-k, score_threshold为相似度阈值
     },
-    'chroma_config': {
-        'save_path': './chroma_db',  # 保存chroma索引的路径
-        'load_path': './rag_langchain/chroma_db',  # streamlit加载chroma索引的路径
-        'search_type': "similarity",
-        'search_kwargs': {"k": 3}
-    },
+    # chroma_config 键已弃用
+    # 'chroma_config': {
+    #     'save_path': './chroma_db',  # 保存chroma索引的路径
+    #     'load_path': './rag_langchain/chroma_db',  # streamlit加载chroma索引的路径
+    #     'search_type': "similarity", # 使用点积相似度标准搜索
+    #     'search_kwargs': {"k": 3} # 保留top-k
+    # },
     'bm25_config': {
         'dir_path': './retriever',  # 保存bm25检索器的文件夹的路径
         'save_path': './retriever/bm25retriever.pkl',  # 保存bm25检索器的路径
         'load_path': './rag_langchain/retriever/bm25retriever.pkl',  # streamlit加载bm25检索器的路径
-        'search_kwargs': {"k": 3}
+        'search_kwargs': {"k": 3} # 保留top-k
     },
     'bce_emb_config': {
-        'model_name': os.environ.get('HOME') + "/models/bce-embedding-base_v1",
-        'model_kwargs': {'device': 'cuda:0'},
-        'encode_kwargs': {'batch_size': 32, 'normalize_embeddings': True, 'show_progress_bar': False}
+        'model_name': os.environ.get('HOME') + "/models/bce-embedding-base_v1", # 模型路径
+        'model_kwargs': {'device': 'cuda:0'}, # 加载模型的其他可选参数，这里设置了加载到GPU
+        'encode_kwargs': {'batch_size': 32, 'normalize_embeddings': True, 'show_progress_bar': False} # 进行encode时的超参设置
     },
     'bce_reranker_config': {
-        'model': os.environ.get('HOME') + "/models/bce-reranker-base_v1",
-        'top_n': 1,
-        'device': 'cuda:0',
-        'use_fp16': True
+        'model': os.environ.get('HOME') + "/models/bce-reranker-base_v1", # 模型路径
+        'top_n': 1, # 保留top-n
+        'device': 'cuda:0', # 加载设备
+        'use_fp16': True # 模型参数精度是否使用fp16
     }
 }
 
+# RAG with llama-index
 Config['rag_llama'] = {
     'rag_model_type': "faiss",  # 使用faiss数据库
     'verbose': True,  # 是否打印详细的模型输入内容信息
