@@ -25,6 +25,7 @@ with open(data_path, 'r', encoding='utf-8') as f:
 # test_count小于等于0时, 取全部元素
 if test_count > 0:
     json_data = json_data[:test_count]
+print("共有{}条数据".format(len(json_data)))
 print("数据集加载完成")
 
 emb_strategy = load_config('rag_langchain', 'emb_strategy')
