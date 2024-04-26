@@ -37,3 +37,28 @@ python tools/process_data.py --config <path_to_config.yaml>
 cd <path_to_script>
 python convert_juicer_to_data.py
 ```
+## 第一次实验
+使用之前Charles佬编写的config.yaml  
+清洗后数据剩余869264条  
+高字符相似度数据去重效果较好，但是低字符相似度数据去重效果较差  
+实验日志与去重样本见exp1下log和trace文件夹  
+
+## 第二次实验
+修改实验一的config.yaml  
+增加了文档级MD5 hash去重  
+扩大window_size为data juicer默认值  
+其他参数中也全部使用data juicer默认值  
+清洗后数据剩余726717条  
+仍有低字符相似度数据未去重问题  
+实验日志与去重样本见exp2下log和trace文件夹  
+
+## 第三次实验
+在实验二的基础上，修改tokenization分割方法为space  
+尝试进行句子级的去重  
+清洗后数据剩余725条  
+显然有些用力过猛  
+实验日志与去重样本见exp3下log和trace文件夹
+
+## 后续改进方向
+1. 在实验二的基础上，继续增加window_size
+2. 在实验三的基础上，减小window_size
