@@ -1,7 +1,7 @@
 import os
 from collections import defaultdict
 
-dataset_scale = 'test'  # 可选 test、small、base 或 large
+dataset_scale = 'test'  # 可选 test(1,000)、small(100,000)、base(536,834) 或 large(1,000,000)
 home = os.environ.get('HOME')
 
 # 总的config

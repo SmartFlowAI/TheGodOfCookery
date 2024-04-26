@@ -1,5 +1,3 @@
-# 这是用data-juicer进行数据去重的YAML配置文件
-
 # global parameters
 project_name: 'dedup'
 dataset_path: '/root/cook-data/recipe_corpus_juicer.json'  # path to your dataset directory or file
@@ -14,7 +12,7 @@ trace_num: 1000
 # 开启算子融合，加速
 op_fusion: true
 # 数据保存路径
-export_path: '/root/cook-data/recipe_corpus_dedup.json'
+export_path: '/root/cook-data/recipe_corpus_decup.json'
 
 
 # process schedule

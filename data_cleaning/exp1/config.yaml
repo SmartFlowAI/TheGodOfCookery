@@ -1,0 +1,29 @@
+# global parameters
+project_name: 'dedup'
+dataset_path: '/root/cook-data/recipe_corpus_juicer.json'  # path to your dataset directory or file
+np: 8  # number of subprocess to process your dataset
+# 使用下述key进行相似度比较
+text_keys: 'name'
+
+# 开启tracer可以记录过滤掉的数据，可以通过事后查看防止高质量数据被过滤
+open_tracer: true
+trace_num: 1000
+
+# 开启算子融合，加速
+op_fusion: true
+# 数据保存路径
+export_path: '/root/cook-data/recipe_corpus_decup.json'
+
+
+# process schedule
+# a list of several process operators with their arguments
+process:
+  - document_minhash_deduplicator: # 采用MinHash算法进行去重
+      tokenization: 'character' # 字符级分割
+      jaccard_threshold: 0.6 # 当两个数据 jaccard 相似度（类似交并比）>= 0.6时，舍弃其中一个
+      window_size: 3 # 3-gram窗口（每个窗口包含3个字符）
+  - document_simhash_deduplicator: # 采用SimHash算法进行去重
+      tokenization: 'character'
+      window_size: 3 # 同上
+      hamming_distance: 5 # 当两个数据 hamming 距离 <= 5时，舍弃其中一个
+      num_blocks: 6 # 需要满足num_blocks > hamming_distance
