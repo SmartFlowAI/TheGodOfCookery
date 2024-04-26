@@ -3,7 +3,7 @@ import json
 from tqdm import tqdm
 
 print("开始加载数据集")
-data_path_juicer = os.environ.get('HOME') + "/cook-data/recipe_corpus_decup.json"
+data_path_juicer = os.environ.get('HOME') + "/cook-data/recipe_corpus_dedup.json"
 f = open(data_path_juicer, 'r', encoding='utf-8')
 json_data = []
 # data juicer在保存时，以1000条数据为一组，每组数据单独保存在一行

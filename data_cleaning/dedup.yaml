@@ -2,10 +2,10 @@
 
 # global parameters
 project_name: 'dedup'
-dataset_path: '/root/TheGodOfCookery/eval/conversations.json'  # path to your dataset directory or file
-np: 8  # number of subprocess to process your dataset
+dataset_path: '/root/cook-data/recipe_corpus_juicer.json'  # path to your dataset directory or file
+np: 12  # number of subprocess to process your dataset
 # 使用下述key进行相似度比较
-text_keys: 'input'
+text_keys: 'name'
 
 # 开启tracer可以记录过滤掉的数据，可以通过事后查看防止高质量数据被过滤
 open_tracer: true
@@ -14,18 +14,31 @@ trace_num: 1000
 # 开启算子融合，加速
 op_fusion: true
 # 数据保存路径
-export_path: '/root/TheGodOfCookery/eval/conversations_dedup.jsonl'
+export_path: '/root/cook-data/recipe_corpus_dedup.json'
 
 
 # process schedule
 # a list of several process operators with their arguments
+# 中文注释的是需要我们调整的重要参数
+# 英文注释的参数都是默认
 process:
-  - document_minhash_deduplicator: # 采用MinHash算法进行去重
-      tokenization: 'character' # 字符级分割
-      jaccard_threshold: 0.6 # 当两个数据 jaccard 相似度（类似交并比）>= 0.6时，舍弃其中一个
-      window_size: 3 # 3-gram窗口（每个窗口包含3个字符）
-  - document_simhash_deduplicator: # 采用SimHash算法进行去重
-      tokenization: 'character'
-      window_size: 3 # 同上
-      hamming_distance: 5 # 当两个数据 hamming 距离 <= 5时，舍弃其中一个
-      num_blocks: 6 # 需要满足num_blocks > hamming_distance 
+  - document_deduplicator:                                  # deduplicate text samples using md5 hashing exact matching method
+      lowercase: false                                        # whether to convert text to lower case
+      ignore_non_character: false                             # whether to ignore non-alphabet characters, including whitespaces, digits, and punctuations
+  - document_minhash_deduplicator:                          # 采用MinHash算法进行去重
+      tokenization: 'sentencepiece'                           # 文本分割方法 One of [space, punctuation, character, sentencepiece]
+      window_size: 5                                          # 5-gram窗口（每个窗口包含5个字符）
+      num_permutations: 256                                   # number of permutations in minhash computing
+      jaccard_threshold: 0.7                                  # 当两个数据 jaccard 相似度（类似交并比）>= 0.7时，舍弃其中一个
+      num_bands: null                                         # number of bands in LSH. Default it's None, and it will be determined by an optimal params computation algorithm by minimize the weighted sum of probs of False Positives and False Negatives
+      num_rows_per_band: null                                 # number of rows in each band in LSH. Default it's None, and it will be determined by an optimal params computation algorithm
+      lowercase: true                                         # whether to convert text to lower case
+      ignore_pattern: null                                    # whether to ignore sub-strings with specific pattern when computing simhash.
+      tokenizer_model: '/root/models/Shanghai_AI_Laboratory/internlm2-chat-1_8b/tokenizer.model'                                  # path for the sentencepiece model, used for sentencepiece tokenization.
+  - document_simhash_deduplicator:                          # 采用SimHash算法进行去重
+      tokenization: 'character'                               # 文本分割方法  One of [space, punctuation, character]
+      window_size: 6                                          # 同上
+      num_blocks: 6                                           # 需要满足num_blocks > hamming_distance
+      hamming_distance: 4                                     # 当两个数据 hamming 距离 <= 4时，舍弃其中一个
+      lowercase: true                                         # whether to convert text to lower case
+      ignore_pattern: null                                    # whether to ignore sub-strings with specific pattern when computing simhash.
