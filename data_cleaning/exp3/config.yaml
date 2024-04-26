@@ -23,8 +23,8 @@ process:
   - document_deduplicator:                                  # deduplicate text samples using md5 hashing exact matching method
       lowercase: false                                        # whether to convert text to lower case
       ignore_non_character: false                             # whether to ignore non-alphabet characters, including whitespaces, digits, and punctuations
-  - document_minhash_deduplicator:                            # 采用MinHash算法进行去重
-      tokenization: 'space'                               # 字符级分割
+  - document_minhash_deduplicator:                          # 采用MinHash算法进行去重
+      tokenization: 'space'                                   # 字符级分割
       window_size: 5                                          # 5-gram窗口（每个窗口包含5个字符）
       num_permutations: 256                                   # number of permutations in minhash computing
       jaccard_threshold: 0.7                                  # 当两个数据 jaccard 相似度（类似交并比）>= 0.7时，舍弃其中一个
@@ -33,8 +33,8 @@ process:
       lowercase: true                                         # whether to convert text to lower case
       ignore_pattern: null                                    # whether to ignore sub-strings with specific pattern when computing simhash.
       tokenizer_model: null                                   # path for the sentencepiece model, used for sentencepiece tokenization.
-  - document_simhash_deduplicator:                            # 采用SimHash算法进行去重
-      tokenization: 'space'                               # 字符级分割
+  - document_simhash_deduplicator:                          # 采用SimHash算法进行去重
+      tokenization: 'space'                                   # 字符级分割
       window_size: 6                                          # 同上
       num_blocks: 6                                           # 需要满足num_blocks > hamming_distance
       hamming_distance: 4                                     # 当两个数据 hamming 距离 <= 4时，舍弃其中一个
