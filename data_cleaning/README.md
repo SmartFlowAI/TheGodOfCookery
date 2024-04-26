@@ -66,6 +66,11 @@ python convert_juicer_to_data.py
 还是有些用力过猛  
 实验日志与去重样本见exp4下log和trace文件夹
 
+## 第五次实验
+在实验二的基础上，修改tokenization分割方法为sentencepiece  
+sentencepiece模型为 internlm2-chat-1_8b/tokenizer.model  
+清洗后数据剩余559546条   
+实验日志与去重样本见exp5下log和trace文件夹  
+
 ## 后续改进方向
-1. 在实验二的基础上，继续增加window_size
-2. 在实验四的基础上，尝试减小window_size
+1. 在实验五的基础上，继续增加window_size
