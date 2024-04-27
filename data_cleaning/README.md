@@ -37,7 +37,7 @@ python tools/process_data.py --config <path_to_config.yaml>
 cd <path_to_script>
 python convert_juicer_to_data.py
 ```
-## 第一次实验
+<!-- ## 第一次实验
 使用之前Charles佬编写的config.yaml  
 清洗后数据剩余869264条  
 高字符相似度数据去重效果较好，但是低字符相似度数据去重效果较差  
@@ -72,5 +72,10 @@ sentencepiece模型为 internlm2-chat-1_8b/tokenizer.model
 清洗后数据剩余559546条   
 实验日志与去重样本见exp5下log和trace文件夹  
 
+## 第六次实验
+在实验五基础上，修改部分超参
+清洗后数据剩余546881条   
+实验日志与去重样本见exp6下log和trace文件夹  
+
 ## 后续改进方向
-1. 在实验五的基础上，继续增加window_size
+1. 在实验五的基础上，继续增加window_size -->
