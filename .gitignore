@@ -13,3 +13,7 @@ gen_image/__pycache__
 rag_langchain/__pycache__
 rag_llama/__pycache__
 speech/__pycache__
+dataset_large.json
+recipe_corpus_dedup.json
+log
+trace
