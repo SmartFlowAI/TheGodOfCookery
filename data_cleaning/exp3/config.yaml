@@ -12,7 +12,7 @@ trace_num: 1000
 # 开启算子融合，加速
 op_fusion: true
 # 数据保存路径
-export_path: '/root/cook-data/recipe_corpus_decup.json'
+export_path: '/root/cook-data/recipe_corpus_dedup.json'
 
 
 # process schedule
