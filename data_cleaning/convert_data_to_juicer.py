@@ -1,17 +1,8 @@
 import os
 import json
+from emoji import replace_emoji
 from tqdm import tqdm
 from functools import cmp_to_key
-
-print("开始加载数据集")
-data_path = os.environ.get('HOME') + "/cook-data/recipe_corpus_full.json"
-f = open(data_path, 'r', encoding='utf-8')
-json_data = []
-for line in f.readlines():
-    json_data.append(json.loads(line))
-print("加载数据集结束")
-
-print("开始排序数据集")
 
 
 def compare(x, y):
@@ -26,15 +17,24 @@ def compare(x, y):
         return len(x['name']) - len(y['name'])
 
 
+print("开始加载数据集")
+data_path = os.environ.get('HOME') + "/cook-data/recipe_corpus_full.json"
+f = open(data_path, 'r', encoding='utf-8')
+json_data = []
+for line in f.readlines():
+    json_data.append(json.loads(line))
+print("加载数据集结束")
+
+print("开始排序数据集")
+
 json_data.sort(key=cmp_to_key(compare))
 print("数据集排序结束")
 
 result = []
 print("开始转换数据集")
-# 原计划在这里去掉多余字段
-# 现放弃，转换为最终数据集时再处理
+# 去重前对name字段去掉emoji
 for recipe in tqdm(json_data):
-    # result.append({'name': recipe['name'], 'recipeIngredient': recipe['recipeIngredient'], 'recipeInstructions': recipe['recipeInstructions']})
+    recipe['name'] = replace_emoji(recipe['name'])
     result.append(recipe)
 print("转换数据集结束")
 
