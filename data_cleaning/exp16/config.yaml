@@ -4,7 +4,7 @@ dataset_path: '/root/cook-data/recipe_corpus_juicer.json'  # 数据加载路径
 export_path: '/root/cook-data/recipe_corpus_dedup.json'  # 数据保存路径
 np: 16  # number of subprocess to process your dataset
 
-# 使用下述key进行相似度比较
+# 对以下字段进行分析或处理
 text_keys: 'name'
 
 # 开启tracer可以记录过滤掉的数据，可以通过事后查看防止高质量数据被过滤
@@ -30,7 +30,7 @@ process:
   - text_length_filter: # 文本长度上限与下限
       min_len: 2                                              # 最短文本长度
       max_len: 30                                             # 最长文本长度
-  
+
   - alphanumeric_filter: # 限定中文、英文、数字等有效字符占原始文本的比例
       tokenization: false                                     # whether to count the ratio of alphanumeric to the total number of tokens.
       min_ratio: 0.7                                          # 最低占比

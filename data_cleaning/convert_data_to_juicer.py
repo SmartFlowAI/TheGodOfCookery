@@ -26,7 +26,6 @@ for line in f.readlines():
 print("加载数据集结束")
 
 print("开始排序数据集")
-
 json_data.sort(key=cmp_to_key(compare))
 print("数据集排序结束")
 
