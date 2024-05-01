@@ -1,8 +1,9 @@
 ## 本文件夹说明
 convert_origin_data_to_juicer_input.py : 将原始数据集转换为data juicer输入格式的脚本  
-convert_juicer_output_to_xtuner_data.py : 将data juicer输出转换为xtuner格式数据集的脚本
-dedup.yaml data : data juicer配置文件  
-## 实验记录
+convert_juicer_output_to_xtuner_data.py : 将data juicer输出转换为xtuner格式数据集的脚本  
+config.yaml data : data juicer配置文件  
+results_analyse.ipynb : 进一步分析data juicer数据分析结果的jupyter notebook
+## 复现指南
 ### 下载原始数据集
 https://counterfactual-recipe-generation.github.io/dataset_en.html  
 选择Download Full Recipe Dataset  
@@ -27,15 +28,10 @@ pip install simhash-pybind fasttext-wheel kenlm sentencepiece ftfy transformers=
 cd <path_to_script>
 python convert_origin_data_to_juicer_input.py
 ```
-### data juicer去重
+### data juicer清洗
 ```shell
 cd <path_to_data_juicer>
 python tools/process_data.py --config <path_to_config.yaml>
-```
-### data juicer数据分析
-```shell
-cd <path_to_data_juicer>
-python tools/analyze_data.py --config <path_to_config.yaml>
 ```
 ### data juicer输出转换转换为xtuner格式数据集
 data juicer的输出格式为一个jsonl文件，文件每行为一个dict  
@@ -44,8 +40,9 @@ data juicer的输出格式为一个jsonl文件，文件每行为一个dict
 cd <path_to_script>
 python convert_juicer_output_to_xtuner_data.py
 ```
-### data juicer输出转换为data juicer输入
+### data juicer数据分析
 ```shell
-cd <path_to_script>
-python convert_juicer_output_to_input.py
+cd <path_to_data_juicer>
+python tools/analyze_data.py --config <path_to_config.yaml>
 ```
+分析得到的recipe_corpus_ana_stats.jsonl文件使用results_analyse.ipynb进行进一步分析
