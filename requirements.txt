@@ -29,3 +29,6 @@ llama-index-retrievers-bm25==0.1.3
 llama-index-vector-stores-faiss==0.1.2
 llama-index-embeddings-huggingface==0.2.0
 BCEmbedding==0.1.3
+
+# data cleaning
+emoji==2.10.1

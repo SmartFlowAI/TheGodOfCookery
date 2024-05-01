@@ -20,9 +20,9 @@ export_path: '/root/cook-data/original/dataset_large_dedup_3.jsonl'
 # 中文注释的是需要我们调整的重要参数
 # 英文注释的参数都是默认
 process:
-#   - document_deduplicator:                                  # deduplicate text samples using md5 hashing exact matching method
-#       lowercase: false                                        # whether to convert text to lower case
-#       ignore_non_character: false                             # whether to ignore non-alphabet characters, including whitespaces, digits, and punctuations
+#  - document_deduplicator:                                  # deduplicate text samples using md5 hashing exact matching method
+#      lowercase: false                                        # whether to convert text to lower case
+#      ignore_non_character: false                             # whether to ignore non-alphabet characters, including whitespaces, digits, and punctuations
   - document_minhash_deduplicator:                          # 采用MinHash算法进行去重
       tokenization: 'character'                           # 文本分割方法 One of [space, punctuation, character, sentencepiece]
       window_size: 3                                          # 5-gram窗口（每个窗口包含5个字符）
