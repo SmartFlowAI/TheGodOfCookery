@@ -35,12 +35,15 @@ python tools/process_data.py --config <path_to_config.yaml>
 ```
 ### data juicer输出转换转换为xtuner格式数据集
 data juicer的输出格式为一个jsonl文件，文件每行为一个dict  
-该脚本会将data juicer输出转换为xtuner格式数据集
+该脚本会将data juicer输出转换为xtuner格式数据集  
+xtuner数据集格式是json，详细见：https://github.com/InternLM/xtuner/blob/main/docs/zh_cn/user_guides/dataset_format.md
 ```shell
 cd <path_to_script>
 python convert_juicer_output_to_xtuner_data.py
 ```
 ### data juicer数据分析
+数据分析用于统计分析数据集的分布情况，基于3-σ原则，确定超参数  
+复现数据清洗流程不需要运行该步骤，如果想尝试，可以运行以下命令  
 ```shell
 cd <path_to_data_juicer>
 python tools/analyze_data.py --config <path_to_config.yaml>
