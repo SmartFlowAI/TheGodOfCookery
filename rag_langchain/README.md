@@ -107,7 +107,6 @@ Config['rag_langchain'] = {
         'use_fp16': True # 模型参数精度是否使用fp16
     }
 }
-
 ```
 
 2. 运行建库脚本
@@ -249,10 +248,14 @@ def load_retriever():
 
 - BM25
   
-  - [简介]((https://en.wikipedia.org/wiki/Okapi_BM25)
+  - [简介](https://en.wikipedia.org/wiki/Okapi_BM25)
 
 - FAISS
   
   - [Github 仓库](https://github.com/facebookresearch/faiss)
   
   - [文档](https://faiss.ai/)
+
+- HyDE技术
+  
+  - [论文](https://arxiv.org/pdf/2212.10496)
