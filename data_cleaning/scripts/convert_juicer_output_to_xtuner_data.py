@@ -4,7 +4,7 @@ from tqdm import tqdm
 
 print("开始加载数据集")
 # data juicer保存的输出文件是jsonl格式，这里需要逐行读取
-data_path_juicer = os.environ.get('HOME') + "/cook-data/recipe_corpus_dedup.jsonl"
+data_path_juicer = os.environ.get('HOME') + "/cook-data/recipe_corpus_dedup_conversation.jsonl"
 f1 = open(data_path_juicer, 'r', encoding='utf-8')
 json_data = []
 for line in tqdm(f1.readlines()):
@@ -17,9 +17,8 @@ print("开始转换数据集")
 for recipe in tqdm(json_data):
     result.append({"conversation": [{
         "system": "你是一个专业的厨师，你会做很多菜。用户报上自己所需的菜名后，你可以把做菜所需要的原料，以及做菜的方法告诉用户",
-        "input": recipe['name'] + "的做法",
-        "output": "您需要准备以下食材:\n" + str(recipe['recipeIngredient']) + "\n按以下方法制作:\n"
-                  + str(recipe['recipeInstructions']) + "\n"}]
+        "input": recipe['input'],
+        "output": recipe['output']}]
     })
 print("转换数据集结束")
 
