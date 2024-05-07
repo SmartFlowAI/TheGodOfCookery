@@ -20,10 +20,29 @@ export_path: '/root/cook-data/recipe_corpus_dedup.json'
 # 中文注释的是需要我们调整的重要参数
 # 英文注释的参数都是默认
 process:
-  - document_deduplicator:                                  # deduplicate text samples using md5 hashing exact matching method
-      lowercase: false                                        # whether to convert text to lower case
-      ignore_non_character: false                             # whether to ignore non-alphabet characters, including whitespaces, digits, and punctuations
-  - document_minhash_deduplicator:                          # 采用MinHash算法进行去重
+  # Filter ops
+  - language_id_score_filter: # filter text in specific language with language scores larger than a specific max value
+      lang: zh                                                # keep text in what language
+      min_score: 0.8                                          # the min language scores to filter text
+
+  - perplexity_filter: # filter text with perplexity score out of specific range
+      lang: zh                                                # compute perplexity in what language
+      max_ppl: 1500                                           # the max perplexity score to filter text
+
+  # Deduplicator ops
+  - document_deduplicator: # deduplicate text samples using md5 hashing exact matching method
+      lowercase: true                                           # whether to convert text to lower case
+      ignore_non_character: true                                # whether to ignore non-alphabet characters, including whitespaces, digits, and punctuations
+
+  - document_simhash_deduplicator: # 采用SimHash算法进行去重
+      tokenization: 'character'                               # 文本分割方法  One of [space, punctuation, character]
+      window_size: 6                                          # 同上
+      num_blocks: 6                                           # 需要满足num_blocks > hamming_distance
+      hamming_distance: 4                                     # 当两个数据 hamming 距离 <= 4时，舍弃其中一个
+      lowercase: true                                         # whether to convert text to lower case
+      ignore_pattern: null                                    # whether to ignore sub-strings with specific pattern when computing simhash.
+
+  - document_minhash_deduplicator: # 采用MinHash算法进行去重
       tokenization: 'sentencepiece'                           # 文本分割方法 One of [space, punctuation, character, sentencepiece]
       window_size: 5                                          # 5-gram窗口（每个窗口包含5个字符）
       num_permutations: 256                                   # number of permutations in minhash computing
@@ -33,10 +52,3 @@ process:
       lowercase: true                                         # whether to convert text to lower case
       ignore_pattern: null                                    # whether to ignore sub-strings with specific pattern when computing simhash.
       tokenizer_model: '/root/models/Shanghai_AI_Laboratory/internlm2-chat-1_8b/tokenizer.model'                                  # path for the sentencepiece model, used for sentencepiece tokenization.
-  - document_simhash_deduplicator:                          # 采用SimHash算法进行去重
-      tokenization: 'character'                               # 文本分割方法  One of [space, punctuation, character]
-      window_size: 6                                          # 同上
-      num_blocks: 6                                           # 需要满足num_blocks > hamming_distance
-      hamming_distance: 4                                     # 当两个数据 hamming 距离 <= 4时，舍弃其中一个
-      lowercase: true                                         # whether to convert text to lower case
-      ignore_pattern: null                                    # whether to ignore sub-strings with specific pattern when computing simhash.

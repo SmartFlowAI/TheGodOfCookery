@@ -1,0 +1,78 @@
+# global parameters
+project_name: 'dedup'
+dataset_path: '/root/cook-data/recipe_corpus_juicer.json'  # path to your dataset directory or file
+np: 12  # number of subprocess to process your dataset
+# 使用下述key进行相似度比较
+text_keys: 'name'
+
+# 开启tracer可以记录过滤掉的数据，可以通过事后查看防止高质量数据被过滤
+open_tracer: true
+trace_num: 1000
+
+# 开启算子融合，加速
+op_fusion: true
+# 数据保存路径
+export_path: '/root/cook-data/recipe_corpus_dedup.json'
+
+
+# process schedule
+# a list of several process operators with their arguments
+# 中文注释的是需要我们调整的重要参数
+# 英文注释的参数都是默认
+process:
+  # Mapper ops. Most of these ops need no arguments.
+  - fix_unicode_mapper:                                     # fix unicode errors in text.
+  - punctuation_normalization_mapper:                       # normalize unicode punctuations to English punctuations.
+  - whitespace_normalization_mapper:                        # normalize different kinds of whitespaces to English whitespace.
+  
+  # Deduplicator ops
+  - document_deduplicator: # deduplicate text samples using md5 hashing exact matching method
+      lowercase: true                                           # whether to convert text to lower case
+      ignore_non_character: true                                # whether to ignore non-alphabet characters, including whitespaces, digits, and punctuations
+
+  # Filter ops
+  - alphanumeric_filter: # filter text with alphabet/numeric ratio out of specific range.
+      tokenization: false                                     # whether to count the ratio of alphanumeric to the total number of tokens.
+      min_ratio: 0.1                                          # the min ratio of filter range
+
+  - character_repetition_filter: # filter text with the character repetition ratio out of specific range
+      rep_len: 10                                             # repetition length for char-level n-gram
+      min_ratio: 0.0                                          # the min ratio of filter range
+      max_ratio: 0.6                                          # the max ratio of filter range
+
+  - flagged_words_filter: # filter text with the flagged-word ratio larger than a specific max value
+      lang: zh                                                # consider flagged words in what language
+      tokenization: true                                      # whether to use model to tokenize documents
+      use_words_aug: true                                     # whether to augment words, especially for Chinese and Vietnamese
+      max_ratio: 0.017                                        # the max ratio to filter text
+
+  - text_length_filter: # filter text with length out of specific range
+      min_len: 3                                              # the min length of filter range
+      max_len: 50                                          # the max length of filter range
+
+#  - language_id_score_filter: # filter text in specific language with language scores larger than a specific max value
+#      lang: zh                                                # keep text in what language
+#      min_score: 0.8                                          # the min language scores to filter text
+
+#  - perplexity_filter: # filter text with perplexity score out of specific range
+#      lang: zh                                                # compute perplexity in what language
+#      max_ppl: 1500                                           # the max perplexity score to filter text
+
+  - document_simhash_deduplicator: # 采用SimHash算法进行去重
+      tokenization: 'character'                               # 文本分割方法  One of [space, punctuation, character]
+      window_size: 6                                          # 同上
+      num_blocks: 6                                           # 需要满足num_blocks > hamming_distance
+      hamming_distance: 4                                     # 当两个数据 hamming 距离 <= 4时，舍弃其中一个
+      lowercase: true                                         # whether to convert text to lower case
+      ignore_pattern: null                                    # whether to ignore sub-strings with specific pattern when computing simhash.
+
+  - document_minhash_deduplicator: # 采用MinHash算法进行去重
+      tokenization: 'sentencepiece'                           # 文本分割方法 One of [space, punctuation, character, sentencepiece]
+      window_size: 5                                          # 5-gram窗口（每个窗口包含5个字符）
+      num_permutations: 256                                   # number of permutations in minhash computing
+      jaccard_threshold: 0.7                                  # 当两个数据 jaccard 相似度（类似交并比）>= 0.7时，舍弃其中一个
+      num_bands: null                                         # number of bands in LSH. Default it's None, and it will be determined by an optimal params computation algorithm by minimize the weighted sum of probs of False Positives and False Negatives
+      num_rows_per_band: null                                 # number of rows in each band in LSH. Default it's None, and it will be determined by an optimal params computation algorithm
+      lowercase: true                                         # whether to convert text to lower case
+      ignore_pattern: null                                    # whether to ignore sub-strings with specific pattern when computing simhash.
+      tokenizer_model: '/root/models/Shanghai_AI_Laboratory/internlm2-chat-1_8b/tokenizer.model'                                  # path for the sentencepiece model, used for sentencepiece tokenization.

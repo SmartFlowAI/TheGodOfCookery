@@ -39,6 +39,7 @@
 - [📋项目代码结构](#项目代码结构)
 - [☕项目成员（排名不分先后）](#项目成员排名不分先后)
 - [💖特别鸣谢](#特别鸣谢)
+- [参考资料](#参考资料)
 - [开源协议](#开源协议)
 - [Star History](#star-history)
 
@@ -80,7 +81,8 @@
 |  **Web UI**  |       房宇亮       |     房宇亮      |
 
 ## 📆更新说明
-
+- [2024.5.1] 初步数据清洗实验完成
+- [2024.4.18] 基于llama-index的新RAG模块最小可行性实现发布
 - [2024.3.20] 修改readme
 - [2024.3.19] 整合文档到docs目录
 - [2024.3.9] 基于团队成员 @乐正萌 的RAG模块(faiss)，整合 text2image分支，发布二阶段第4个基于openxlab A100的应用 [openxlab A100 app](https://openxlab.org.cn/apps/detail/zhanghui-china/shishen2024) 和 openxlab A10的应用 [openxlab A10 app](https://openxlab.org.cn/apps/detail/zhanghui-china/shishen2024_1.8b)  
@@ -238,6 +240,12 @@ print(response)
 |     |---__init__.py                                      #初始化脚本
 |     |---config.py                                        #配置脚本
 |
+|---data_cleaning   # 数据清洗目录（主要贡献者 @乐正萌 @Charles）
+|     |---convert_origin_data_to_juicer_input.py           #将原始数据集转换为data juicer输入格式的脚本  
+|     |---convert_juicer_output_to_xtuner_data.py          #将data juicer输出转换为xtuner格式数据集的脚本  
+|     |---config.yaml data                                 #data juicer配置文件  
+|     |---results_analyse.ipynb                            #进一步分析data juicer数据分析结果的jupyter notebook
+|
 |---docs   # 文档目录
 |     |---tech_report.md                                   #技术报告
 |     |---Introduce_x.x.pdf                                #项目介绍PPT
@@ -254,7 +262,7 @@ print(response)
 |
 |---images   # 暂存文生图模型生成的图片的目录
 |
-|---rag_langchain   # 基于langchain的RAG代码目录（主要贡献者 @乐正萌）
+|---rag_langchain   # 基于langchain的RAG代码目录（主要贡献者 @乐正萌 @Charles）
 |     |---CookMasterLLM.py                                 #langchain封装的大模型
 |     |---create_db_json.py                                #从json数据集文件创建向量数据库
 |     |---HyQEContextualCompressionRetriever.py            #HyQE检索器
@@ -309,6 +317,10 @@ print(response)
 <p align="center"><b>感谢 浦语小助手 对项目的支持~~~</b></p>
 
 <div align=center><img width = '150' height ='150' src ="https://github.com/SmartFlowAI/TheGodOfCookery/blob/main/assets/internlm.jpg"/></div>
+
+## 参考资料
+
+- 本项目RAG模块的封装与调用逻辑参考了[EmoLLM项目](https://github.com/SmartFlowAI/EmoLLM), 在此表示感谢。
 
 ## 加入我们
 

@@ -1,81 +1,55 @@
-# 原始数据集去重测试实验记录
 ## 本文件夹说明
-convert_data_to_juicer.py : 将原始数据集转换为data juicer输入格式的脚本  
+convert_origin_data_to_juicer_input.py : 将原始数据集转换为data juicer输入格式的脚本  
+convert_juicer_output_to_xtuner_data.py : 将data juicer输出转换为xtuner格式数据集的脚本  
 config.yaml data : data juicer配置文件  
 convert_juicer_to_data.py : 将data juicer输出转换为xtuner格式数据集的脚本  
 log : data juicer去重记录日志  
 trace : data juicer重复数据样本  
 ## 复现流程
+results_analyse.ipynb : 进一步分析data juicer数据分析结果的jupyter notebook
+## 复现指南
 ### 下载原始数据集
 https://counterfactual-recipe-generation.github.io/dataset_en.html  
 选择Download Full Recipe Dataset  
 下载后解压到/root/cook-data/目录下  
 ### 安装data juicer
-我们的任务只需要安装data juicer最小依赖项和simhash算子即可，安装方法如下：  
-建议先新建一个python 3.10的conda虚拟环境，然后再安装data juicer
+我们的任务只需要安装data juicer最小依赖项和部分算子即可，安装方法如下：  
+建议先新建一个 python 3.10.13 的conda虚拟环境，然后再安装data juicer
 ```shell
 # conda create -n data-juicer python=3.10.13 -y
 # conda activate data-juicer
 git clone https://github.com/modelscope/data-juicer.git
 cd <path_to_data_juicer>
 pip install -v -e .
-pip install simhash-pybind
+pip install simhash-pybind fasttext-wheel kenlm sentencepiece ftfy transformers==4.37
 ```
-### 原始数据集转换
-该脚本会在转换的同时，将数据安装菜品排序，相同菜品按照菜名长度排序，方便后续查看去重效果
+### 原始数据集转换为data juicer输入
+原始数据集的后缀虽然是json，但实际上是jsonl格式，文件每行为一个json对象  
+该脚本会将原始数据集转换为data juicer输入的jsonl格式  
+转换时会去原始文本中包含的emoji，以及将多个多余的空格替换为一个  
+此外会将数据按照dish(菜品)排序，相同菜品按照name(菜名)长度排序，方便后续查看去重效果
 ```shell
 cd <path_to_script>
-python convert_data_to_juicer.py
+python convert_origin_data_to_juicer_input.py
 ```
-### data juicer去重
+### data juicer清洗
 ```shell
 cd <path_to_data_juicer>
 python tools/process_data.py --config <path_to_config.yaml>
 ```
-### data juicer输出转换
+### data juicer输出转换转换为xtuner格式数据集
+data juicer的输出格式为一个jsonl文件，文件每行为一个dict  
+该脚本会将data juicer输出转换为xtuner格式数据集  
+xtuner数据集格式是json，详细见：https://github.com/InternLM/xtuner/blob/main/docs/zh_cn/user_guides/dataset_format.md
 ```shell
 cd <path_to_script>
-python convert_juicer_to_data.py
+python convert_juicer_output_to_xtuner_data.py
 ```
-<!-- ## 第一次实验
-使用之前Charles佬编写的config.yaml  
-清洗后数据剩余869264条  
-高字符相似度数据去重效果较好，但是低字符相似度数据去重效果较差  
-实验日志与去重样本见exp1下log和trace文件夹  
-
-## 第二次实验
-修改实验一的config.yaml  
-增加了文档级MD5 hash去重  
-扩大window_size为data juicer默认值  
-其他参数中也全部使用data juicer默认值  
-清洗后数据剩余726717条  
-仍有低字符相似度数据未去重问题  
-实验日志与去重样本见exp2下log和trace文件夹  
-
-## 第三次实验
-在实验二的基础上，修改tokenization分割方法为space  
-尝试进行sub sentence level的去重  
-清洗后数据剩余725条  
-显然有些用力过猛  
-实验日志与去重样本见exp3下log和trace文件夹
-
-## 第四次实验
-在实验二的基础上，修改tokenization分割方法为punctuation  
-尝试进行sub sentence level的去重  
-清洗后数据剩余3187条  
-还是有些用力过猛  
-实验日志与去重样本见exp4下log和trace文件夹
-
-## 第五次实验
-在实验二的基础上，修改tokenization分割方法为sentencepiece  
-sentencepiece模型为 internlm2-chat-1_8b/tokenizer.model  
-清洗后数据剩余559546条   
-实验日志与去重样本见exp5下log和trace文件夹  
-
-## 第六次实验
-在实验五基础上，修改部分超参,将tokenization方法改为character
-清洗后数据剩余546881条   
-实验日志与去重样本见exp6下log和trace文件夹  
-
-## 后续改进方向
-1. 在实验五的基础上，继续增加window_size -->
+### data juicer数据分析
+数据分析用于统计分析数据集的分布情况，基于3-σ原则，确定超参数  
+复现数据清洗流程不需要运行该步骤，如果想尝试，可以运行以下命令  
+```shell
+cd <path_to_data_juicer>
+python tools/analyze_data.py --config <path_to_config.yaml>
+```
+分析得到的recipe_corpus_ana_stats.jsonl文件使用results_analyse.ipynb进行进一步分析
