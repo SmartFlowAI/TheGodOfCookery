@@ -2,6 +2,10 @@
 convert_origin_data_to_juicer_input.py : 将原始数据集转换为data juicer输入格式的脚本  
 convert_juicer_output_to_xtuner_data.py : 将data juicer输出转换为xtuner格式数据集的脚本  
 config.yaml data : data juicer配置文件  
+convert_juicer_to_data.py : 将data juicer输出转换为xtuner格式数据集的脚本  
+log : data juicer去重记录日志  
+trace : data juicer重复数据样本  
+## 复现流程
 results_analyse.ipynb : 进一步分析data juicer数据分析结果的jupyter notebook
 ## 复现指南
 ### 下载原始数据集
