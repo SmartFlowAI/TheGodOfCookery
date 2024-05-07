@@ -5,7 +5,7 @@ config.yaml data : data juicer配置文件
 convert_juicer_to_data.py : 将data juicer输出转换为xtuner格式数据集的脚本  
 log : data juicer去重记录日志  
 trace : data juicer重复数据样本  
-## 实验记录
+## 复现流程
 ### 下载原始数据集
 https://counterfactual-recipe-generation.github.io/dataset_en.html  
 选择Download Full Recipe Dataset  
@@ -73,7 +73,7 @@ sentencepiece模型为 internlm2-chat-1_8b/tokenizer.model
 实验日志与去重样本见exp5下log和trace文件夹  
 
 ## 第六次实验
-在实验五基础上，修改部分超参
+在实验五基础上，修改部分超参,将tokenization方法改为character
 清洗后数据剩余546881条   
 实验日志与去重样本见exp6下log和trace文件夹  
 
