@@ -41,7 +41,7 @@ print("数据集排序结束")
 print("开始保存数据集")
 # data juicer的输入与输出文件格式都是jsonl
 # 所以这里需要逐行写入
-data_path_juicer = os.environ.get('HOME') + "/cook-data/recipe_corpus_juicer_input.jsonl"
+data_path_juicer = os.environ.get('HOME') + "/cook-data/recipe_corpus_juicer_input_name.jsonl"
 f2 = open(data_path_juicer, 'w', encoding='utf-8')
 for recipe in tqdm(json_data):
     f2.write(json.dumps(recipe, ensure_ascii=False) + '\n')

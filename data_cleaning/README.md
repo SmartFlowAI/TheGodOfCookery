@@ -1,11 +1,11 @@
 ## 本文件夹说明
 convert_origin_data_to_juicer_input.py : 将原始数据集转换为data juicer输入格式的脚本  
+convert_juicer_output_to_conversation.py : 将data juicer输出转换为conversation的脚本  
 convert_juicer_output_to_xtuner_data.py : 将data juicer输出转换为xtuner格式数据集的脚本  
-config.yaml data : data juicer配置文件  
-convert_juicer_to_data.py : 将data juicer输出转换为xtuner格式数据集的脚本  
+name_config.yaml : data juicer配置文件, 用于清洗name(菜名)字段  
+output_config.yaml : data juicer配置文件, 用于清洗食材(recipeIngredient)和烹饪方法(recipeInstructions)构成的output字段  
 log : data juicer去重记录日志  
 trace : data juicer重复数据样本  
-## 复现流程
 results_analyse.ipynb : 进一步分析data juicer数据分析结果的jupyter notebook
 ## 复现指南
 ### 下载原始数据集
@@ -32,10 +32,23 @@ pip install simhash-pybind fasttext-wheel kenlm sentencepiece ftfy transformers=
 cd <path_to_script>
 python convert_origin_data_to_juicer_input.py
 ```
-### data juicer清洗
+### data juicer清洗name字段
 ```shell
 cd <path_to_data_juicer>
-python tools/process_data.py --config <path_to_config.yaml>
+python tools/process_data.py --config <path_to_name_config.yaml>
+```
+### name字段清洗结果转换为conversation格式
+将清洗后的数据集初步转换为"conversation" : {"input" : " ", "output" : " "}的一问一答格式  
+input部分是之前清洗过的菜名(name)  
+output部分由食材(recipeIngredient)和烹饪方法(recipeInstructions)构成  
+```shell
+cd <path_to_script>
+python convert_juicer_output_to_conversation.py
+```
+### data juicer清洗output字段
+```shell
+cd <path_to_data_juicer>
+python tools/process_data.py --config <path_to_output_config.yaml>
 ```
 ### data juicer输出转换转换为xtuner格式数据集
 data juicer的输出格式为一个jsonl文件，文件每行为一个dict  
