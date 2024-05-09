@@ -5,6 +5,7 @@ import time
 import json
 import jsonlines
 import random
+import csv
 
 prompt = """你是一个菜品名称提取器，熟悉各种菜品名称，现在给你一些含有冗余词语的菜品名称,输入中每个菜品名称严格以换行符\\n分割。
 你需要按照“序号 提取结果”输出你的提取结果，例如：
@@ -50,7 +51,7 @@ def read_data():
         names = [json.loads(l)['input'][:-3] for l in lines]
     return names
 
-names = read_data()
+# names = read_data()
 
 # with open('./original_name.txt','w',encoding='utf-8') as f:
 #     names_with_newline = list(map(lambda s: s + '\n',names))
@@ -136,10 +137,24 @@ def internlm2_20b():
 '''
 Stage 4: Store the extracted names to compare
 '''
-extracted_names_deepseek = deepseek()
+# extracted_names_deepseek = deepseek()
+# # extracted_names_deepseek = internlm2_20b()
+# print(len(extracted_names_deepseek))
 
-print(len(extracted_names_deepseek))
+# with open('./deepseek_test_extracted_name.txt','w',encoding='utf-8') as f:
+#     extracted_names_deepseek = list(map(lambda s: s + '\n',extracted_names_deepseek))
+#     f.writelines(extracted_names_deepseek)
 
-with open('./deepseek_test_extracted_name.txt','w',encoding='utf-8') as f:
-    extracted_names_deepseek = list(map(lambda s: s + '\n',extracted_names_deepseek))
-    f.writelines(extracted_names_deepseek)
+'''
+Stage 5: Store the original and extracted to compare
+'''
+# with open('./original_name.txt','r',encoding='utf-8') as f:
+#     original_names = f.readlines()[:200]
+# with open('./deepseek_test_extracted_name.txt','r',encoding='utf-8') as f:
+#     extracted_names = f.readlines()
+
+# with open('deepseek_compare.csv','w',newline='',encoding='utf-8') as f:
+#     writer = csv.writer(f)
+#     writer.writerow(['Original','Deepseek'])
+#     for o, e in zip(original_names, extracted_names):
+#         writer.writerow([o, e])
