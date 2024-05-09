@@ -1,21 +1,45 @@
 import json
 from openai import OpenAI
 import requests
+import time
+import json
+import jsonlines
+import random
 
-prompt = """你是一个菜品名称提取器，熟悉各种菜品名称，现在给你一些含有冗余词语的菜品名称，冗余的词语可能是emoji或不必要的修饰语。
+prompt = """你是一个菜品名称提取器，熟悉各种菜品名称，现在给你一些含有冗余词语的菜品名称,输入中每个菜品名称严格以换行符\\n分割。
 你需要按照“序号 提取结果”输出你的提取结果，例如：
 输入：
 10寸戚风蛋糕，云朵般柔软
-10寸披萨🍕一个的做法
+超简单家常版奶茶（龟苓膏奶茶）
+香酥鱼排//日式七味虾-大宇空气煎炸杯食谱
 输出：
 1 10寸戚风蛋糕
-2 10寸披萨
+2 龟苓膏奶茶
+3 香酥鱼排和日式七味虾
 现在，请你提取以下输入的菜品名称,注意，严格按照以上格式输出，不要输出多余字符：
-{input}
-"""
+{input}"""
 
-data_path = '../data/recipe_corpus_dedup.jsonl' # 修改成你的路径
+data_path = '../data/recipe_corpus_dedup_conversation.jsonl' # 修改成你的路径
 batch_size = 20 # 每次送入大模型处理的数据量，可视情况修改
+
+'''
+Stage 0: preprocess the data
+'''
+# with open(data_path, 'r',encoding='utf-8') as f:
+#     lines = f.readlines()
+#     data = [json.loads(l) for l in lines]
+#     new_data = []
+#     for d in data:
+#         d['input'] = d['input'].replace('\n','').replace('\r','')
+#         new_data.append(d)
+#     random.shuffle(new_data)
+# with jsonlines.open(data_path,'w') as f:
+#     for d in new_data:
+#         f.write(d)
+
+
+
+
 
 '''
 Stage 1: Read the data
@@ -23,19 +47,28 @@ Stage 1: Read the data
 def read_data():
     with open(data_path, 'r',encoding='utf-8') as f:
         lines = f.readlines()
-        names = [json.loads(l)['name'] for l in lines]
+        names = [json.loads(l)['input'][:-3] for l in lines]
     return names
 
 names = read_data()
+
+# with open('./original_name.txt','w',encoding='utf-8') as f:
+#     names_with_newline = list(map(lambda s: s + '\n',names))
+#     f.writelines(names_with_newline)
+
+
+
+
 
 '''
 Stage 2: Load the data to the prompt
 '''
 def generate_prompt():
     global names
+    names_test = names[:200]
     i = 0
-    while i < len(names[:200]):
-        batch = '\n'.join(names[i:i+batch_size])
+    while i < len(names_test):
+        batch = '\n'.join(names_test[i:i+batch_size])
         i += batch_size
         yield batch
 
@@ -46,6 +79,7 @@ Stage 3: Feed into the LLMs
 
 def deepseek():
     global names
+
     with open('./deepseek_key.txt','r',encoding='utf-8') as f:
         DEEPSEEK_KEY = f.readline()
     extracted_names = []
@@ -53,6 +87,8 @@ def deepseek():
     i = 0
     for batch in generate_prompt():
         final_prompt = prompt.replace('{input}',batch)
+        print(final_prompt)
+        print()
         response = client.chat.completions.create(
             model='deepseek-chat',
             messages=[
@@ -61,17 +97,23 @@ def deepseek():
             ]
         )
         names_with_idx = response.choices[0].message.content.split('\n') # 得到 “序号 菜品名称”
+        if len(names_with_idx) != batch_size:
+            print(names_with_idx)
+            print('数据长度有误，停止请求')
+            break
         for name in names_with_idx:
-            splitted_name_idx = name.split(' ') # 分出 “菜品名称” 这一项
-            if len(splitted_name_idx) != 2: # 回答格式有误，加入原名称
+            splitted_name_idx = name.strip().split(' ') # 分出 “菜品名称” 这一项
+            if len(splitted_name_idx) < 2: # 回答格式有误，加入原名称
                 print(name + '格式不正确, 加入原名称')
                 extracted_names.append(names[i])
             else:
-                extracted_names.append(splitted_name_idx[1])
-        i += 1
+                extracted_names.append(' '.join(splitted_name_idx[1:]))
+            i += 1
+        time.sleep(1)
     return extracted_names
     
 def internlm2_20b():
+    global names
     extracted_names = []
     i = 0
     for batch in generate_prompt():
@@ -87,13 +129,17 @@ def internlm2_20b():
                 extracted_names.append(names[i])
             else:
                 extracted_names.append(splitted_name_idx[1])
-        i += 1
+            i += 1
+        time.sleep(1)
     return extracted_names
 
 '''
-TODO: Stage 4: Store the extracted names to compare
+Stage 4: Store the extracted names to compare
 '''
+extracted_names_deepseek = deepseek()
 
+print(len(extracted_names_deepseek))
 
-for batch in generate_prompt():
-    print(prompt.replace('{input}',batch))
+with open('./deepseek_test_extracted_name.txt','w',encoding='utf-8') as f:
+    extracted_names_deepseek = list(map(lambda s: s + '\n',extracted_names_deepseek))
+    f.writelines(extracted_names_deepseek)

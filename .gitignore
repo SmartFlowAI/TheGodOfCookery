@@ -16,4 +16,4 @@ speech/__pycache__
 dataset_large_dedup.*
 log
 trace
-deepseek_key.txt
+*.txt
