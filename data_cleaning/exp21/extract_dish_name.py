@@ -137,24 +137,26 @@ def internlm2_20b():
 '''
 Stage 4: Store the extracted names to compare
 '''
-# extracted_names_deepseek = deepseek()
-# # extracted_names_deepseek = internlm2_20b()
-# print(len(extracted_names_deepseek))
+def store_extracted():
+    extracted_names_deepseek = deepseek()
+    # extracted_names_deepseek = internlm2_20b()
+    print(len(extracted_names_deepseek))
 
-# with open('./deepseek_test_extracted_name.txt','w',encoding='utf-8') as f:
-#     extracted_names_deepseek = list(map(lambda s: s + '\n',extracted_names_deepseek))
-#     f.writelines(extracted_names_deepseek)
+    with open('./deepseek_test_extracted_name.txt','w',encoding='utf-8') as f:
+        extracted_names_deepseek = list(map(lambda s: s + '\n',extracted_names_deepseek))
+        f.writelines(extracted_names_deepseek)
 
 '''
 Stage 5: Store the original and extracted to compare
 '''
-# with open('./original_name.txt','r',encoding='utf-8') as f:
-#     original_names = f.readlines()[:200]
-# with open('./deepseek_test_extracted_name.txt','r',encoding='utf-8') as f:
-#     extracted_names = f.readlines()
+def store_original_and_compare():
+    with open('./original_name.txt','r',encoding='utf-8') as f:
+        original_names = f.readlines()[:200]
+    with open('./deepseek_test_extracted_name.txt','r',encoding='utf-8') as f:
+        extracted_names = f.readlines()
 
-# with open('deepseek_compare.csv','w',newline='',encoding='utf-8') as f:
-#     writer = csv.writer(f)
-#     writer.writerow(['Original','Deepseek'])
-#     for o, e in zip(original_names, extracted_names):
-#         writer.writerow([o, e])
+    with open('deepseek_compare.csv','w',newline='',encoding='utf-8') as f:
+        writer = csv.writer(f)
+        writer.writerow(['Original','Deepseek'])
+        for o, e in zip(original_names, extracted_names):
+            writer.writerow([o, e])
