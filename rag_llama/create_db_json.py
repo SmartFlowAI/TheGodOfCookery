@@ -46,7 +46,12 @@ for i in range(len(json_data)):
     # 假设问题为“菜谱名+怎么做”
     # 加入假设问题，原始菜谱存放入metadata
     if emb_strategy['HyQE']:
-        nodes.append(TextNode(text=question, metadata={"caipu": question + "\n" + answer}))
+        HyQE_textNode = TextNode(text=question, metadata={"caipu": question + "\n" + answer})
+        # 设置metadata中的answer不参与LLM的读取
+        HyQE_textNode.excluded_llm_metadata_keys = ["answer"]
+        # 设置metadata中的answer不参与编码和检索
+        HyQE_textNode.excluded_embed_metadata_keys = ["answer"]
+        nodes.append(HyQE_textNode)
 print("待编码文档集构建完成")
 
 print("开始加载编码模型")
