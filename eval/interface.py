@@ -119,6 +119,7 @@ def load_model():
         bnb_4bit_use_double_quant=True,
     )
     print("正在从本地加载模型...")
+    print(llm_model_path)
     model = AutoModelForCausalLM.from_pretrained(llm_model_path, trust_remote_code=True, torch_dtype=torch.float16,
                                                  device_map="auto",
                                                  quantization_config=quantization_config).eval()
