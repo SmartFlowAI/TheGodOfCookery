@@ -11,6 +11,7 @@ from langchain_core.documents import Document
 import sys
 sys.path.append('..')
 from config import load_config
+from rag_langchain.tokenize_chinese import tokenize_chinese  # 这个路径要写完整，不然pickle load的时候会找不到tokenize_chinese
 
 dataset_config = load_config('rag_langchain', 'dataset_config')
 data_path = dataset_config['data_path']
@@ -60,7 +61,7 @@ print("编码模型加载完成")
 print("开始构建BM25检索器")
 # 构建BM25检索器
 bm25_config = load_config('rag_langchain', 'bm25_config')
-bm25retriever = BM25Retriever.from_documents(documents=split_docs)
+bm25retriever = BM25Retriever.from_documents(documents=split_docs, preprocess_func=tokenize_chinese)
 bm25retriever.k = bm25_config['search_kwargs']['k']
 
 # BM25Retriever序列化到磁盘

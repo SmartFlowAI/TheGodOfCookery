@@ -11,6 +11,7 @@ from llama_index.vector_stores.faiss import FaissVectorStore
 import sys
 sys.path.append('..')
 from config import load_config
+from rag_llama.tokenize_chinese import tokenize_chinese  # 这个路径要写完整，不然pickle load的时候会找不到tokenize_chinese
 
 dataset_config = load_config('rag_llama', 'dataset_config')
 data_path = dataset_config['data_path']
@@ -66,7 +67,7 @@ print("开始构建BM25检索器")
 # 构建BM25检索器
 bm25_config = load_config('rag_llama', 'bm25_config')
 bm25_top_k = bm25_config['search_kwargs']['k']
-bm25retriever = BM25Retriever.from_defaults(nodes=nodes, similarity_top_k=bm25_top_k)
+bm25retriever = BM25Retriever.from_defaults(nodes=nodes, similarity_top_k=bm25_top_k, tokenizer=tokenize_chinese)
 
 # BM25Retriever序列化到磁盘
 if not os.path.exists(bm25_config['dir_path']):
