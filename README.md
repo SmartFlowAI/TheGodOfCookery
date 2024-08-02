@@ -140,6 +140,47 @@ conda install pytorch torchvision torchaudio pytorch-cuda=12.1 -c pytorch -c nvi
 pip install -r requirements.txt
 ```
 
+- 解决portaudio编译错误
+在安装requirements.txt时，可能遇到如下错误
+```shell
+Building wheels for collected packages: pyaudio
+  Building wheel for pyaudio (pyproject.toml) ... error
+  error: subprocess-exited-with-error
+  
+  × Building wheel for pyaudio (pyproject.toml) did not run successfully.
+  │ exit code: 1
+  ╰─> [18 lines of output]
+      running bdist_wheel
+      running build
+      running build_py
+      creating build
+      creating build/lib.linux-x86_64-cpython-310
+      creating build/lib.linux-x86_64-cpython-310/pyaudio
+      copying src/pyaudio/__init__.py -> build/lib.linux-x86_64-cpython-310/pyaudio
+      running build_ext
+      building 'pyaudio._portaudio' extension
+      creating build/temp.linux-x86_64-cpython-310
+      creating build/temp.linux-x86_64-cpython-310/src
+      creating build/temp.linux-x86_64-cpython-310/src/pyaudio
+      gcc -pthread -B /root/.conda/envs/cook/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /root/.conda/envs/cook/include -fPIC -O2 -isystem /root/.conda/envs/cook/include -fPIC -I/usr/local/include -I/usr/include -I/root/.conda/envs/cook/include/python3.10 -c src/pyaudio/device_api.c -o build/temp.linux-x86_64-cpython-310/src/pyaudio/device_api.o
+      src/pyaudio/device_api.c:9:10: fatal error: portaudio.h: No such file or directory
+          9 | #include "portaudio.h"
+            |          ^~~~~~~~~~~~~
+      compilation terminated.
+      error: command '/usr/bin/gcc' failed with exit code 1
+      [end of output]
+  
+  note: This error originates from a subprocess, and is likely not a problem with pip.
+  ERROR: Failed building wheel for pyaudio
+Failed to build pyaudio
+ERROR: Could not build wheels for pyaudio, which is required to install pyproject.toml-based projects
+```
+这是因为系统里缺少portaudio相关开发包，需要先安装它。
+```shell
+sudo apt update
+sudo apt install -y portaudio19-dev
+```
+
 这里cuda的版本根据用户自己的cuda版本确定。一般为 11.8或12.1
 
 ### 3. 训练
